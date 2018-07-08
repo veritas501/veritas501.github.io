@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="写在最前：我不会web，这种做法可能带来很多的bug，请自行衡量！！ 此脚本高度实验性！！此脚本高度实验性！！此脚本高度实验性！！重要的事情说三遍！！（如果这个页面的图片挂了那说明这种方法应该不能稳定外链） 主要脚本：main.py">
+<meta name="keywords" content="markdown">
+<meta property="og:type" content="article">
+<meta property="og:title" content="把网和谐易LOF和谐TER作为图床提高markdown写作舒适度">
+<meta property="og:url" content="https://veritas501.github.io/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="写在最前：我不会web，这种做法可能带来很多的bug，请自行衡量！！ 此脚本高度实验性！！此脚本高度实验性！！此脚本高度实验性！！重要的事情说三遍！！（如果这个页面的图片挂了那说明这种方法应该不能稳定外链） 主要脚本：main.py">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://imglf1.nosdn.127.net/img/QndsbTdhbEtXdVRmMytlbjF3UFQ3T1lVNUxkOHlFdHJEZ2c5N2F2Y0tFSStSV0xWS3NlcWFBPT0.png">
+<meta property="og:image" content="http://imglf1.nosdn.127.net/img/QndsbTdhbEtXdVRmMytlbjF3UFQ3RmlRNWpvYWVmeUtjNmowMjBBSUprOTlRUHk5eGpnL2JnPT0.png">
+<meta property="og:updated_time" content="2017-06-05T03:42:35.316Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="把网和谐易LOF和谐TER作为图床提高markdown写作舒适度">
+<meta name="twitter:description" content="写在最前：我不会web，这种做法可能带来很多的bug，请自行衡量！！ 此脚本高度实验性！！此脚本高度实验性！！此脚本高度实验性！！重要的事情说三遍！！（如果这个页面的图片挂了那说明这种方法应该不能稳定外链） 主要脚本：main.py">
+<meta name="twitter:image" content="http://imglf1.nosdn.127.net/img/QndsbTdhbEtXdVRmMytlbjF3UFQ3T1lVNUxkOHlFdHJEZ2c5N2F2Y0tFSStSV0xWS3NlcWFBPT0.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>把网和谐易LOF和谐TER作为图床提高markdown写作舒适度 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">把网和谐易LOF和谐TER作为图床提高markdown写作舒适度
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-04-18 00:00:00" itemprop="dateCreated datePublished" datetime="2017-04-18T00:00:00+08:00">2017-04-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-06-05 11:42:35" itemprop="dateModified" datetime="2017-06-05T11:42:35+08:00">2017-06-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/" class="leancloud_visitors" data-flag-title="把网和谐易LOF和谐TER作为图床提高markdown写作舒适度">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>写在最前：我不会web，这种做法可能带来很多的bug，请自行衡量！！</strong></p>
+<p>此脚本高度实验性！！此脚本高度实验性！！此脚本高度实验性！！重要的事情说三遍！！（如果这个页面的图片挂了那说明这种方法应该不能稳定外链）</p>
+<p>主要脚本：main.py<br><a id="more"></a><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image,ImageGrab</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> pyperclip</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_img_url</span><span class="params">(photo)</span>:</span></span><br><span class="line">	data = <span class="string">'''callCount=1\nscriptSessionId=$&#123;scriptSessionId&#125;187\nhttpSessionId=\nc0-scriptName=ImageBean\nc0-methodName=genTokens\nc0-id=0\nc0-param0=string:png\nc0-param1=string:\nc0-param2=string:\nc0-param3=string:\nc0-param4=string:\nbatchId=643779'''</span></span><br><span class="line"></span><br><span class="line">	cookies_raw = <span class="string">r'''此处为你的cookies'''</span></span><br><span class="line"></span><br><span class="line">	headers = &#123;<span class="string">'content-type'</span>: <span class="string">'text/plain'</span>,<span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'</span>,<span class="string">'Referer'</span>:<span class="string">'http://www.lofter.com/'</span>,<span class="string">'Accept-Language'</span>:<span class="string">'zh-CN,zh;q=0.8'</span>&#125;</span><br><span class="line"></span><br><span class="line">	cookies=&#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> cookies_raw.split(<span class="string">';'</span>):</span><br><span class="line">		name,value=line.strip().split(<span class="string">'='</span>,<span class="number">1</span>)</span><br><span class="line">		cookies[name]=value</span><br><span class="line">	</span><br><span class="line">	token_raw = requests.post(<span class="string">'http://www.lofter.com/dwr/call/plaincall/ImageBean.genTokens.dwr'</span>, data=data, headers=headers, cookies = cookies).text</span><br><span class="line">	</span><br><span class="line">	token=&#123;&#125;</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> token_raw.split(<span class="string">';'</span>):  </span><br><span class="line">		<span class="keyword">if</span> <span class="string">"bucketName"</span> <span class="keyword">in</span> line:</span><br><span class="line">			expr = re.compile(<span class="string">r"\"(.*?)\""</span>)</span><br><span class="line">			token[<span class="string">"bucketName"</span>] = expr.search(line).group().strip(<span class="string">"\""</span>).encode(<span class="string">"utf-8"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="string">"objectName"</span> <span class="keyword">in</span> line:</span><br><span class="line">			expr = re.compile(<span class="string">r"\"(.*?)\""</span>)</span><br><span class="line">			token[<span class="string">"objectName"</span>] = expr.search(line).group().strip(<span class="string">"\""</span>).encode(<span class="string">"utf-8"</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="string">"uploadToken"</span> <span class="keyword">in</span> line:</span><br><span class="line">			expr = re.compile(<span class="string">r"\"(.*?)\""</span>)</span><br><span class="line">			token[<span class="string">"uploadToken"</span>] = expr.search(line).group().strip(<span class="string">"\""</span>).encode(<span class="string">"utf-8"</span>)</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	photo_head = &#123;<span class="string">'content-type'</span>: <span class="string">'image/jpeg'</span>,<span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'</span>,<span class="string">'Accept-Language'</span>:<span class="string">'zh-CN,zh;q=0.8'</span>,<span class="string">'x-nos-token'</span>:token[<span class="string">'uploadToken'</span>]&#125;</span><br><span class="line">	</span><br><span class="line">	token_raw = requests.post(<span class="string">'http://223.252.216.48/'</span>+token[<span class="string">'bucketName'</span>]+<span class="string">'/'</span>+token[<span class="string">'objectName'</span>]+<span class="string">'?version=1.0&amp;offset=0&amp;complete=true'</span>, data=photo, headers=photo_head).text</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="string">'![](http://'</span>+token[<span class="string">'bucketName'</span>]+<span class="string">'.nosdn.127.net/'</span>+token[<span class="string">'objectName'</span>]+<span class="string">')'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">filename = <span class="string">r"D:/grab_grabclipboard.png"</span></span><br><span class="line"></span><br><span class="line">im = ImageGrab.grabclipboard()</span><br><span class="line"><span class="keyword">if</span> isinstance(im, Image.Image):</span><br><span class="line">	im.save(filename)</span><br><span class="line">	ret = get_img_url(open(<span class="string">r'D:\grab_grabclipboard.png'</span>,<span class="string">'rb'</span>).read())</span><br><span class="line">	<span class="keyword">print</span> ret</span><br><span class="line">	pyperclip.copy(ret)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">"clipboard no img!"</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>然后就是用热键快速调用脚本，关于这点，我用c不知道该怎么写，确实挺尴尬的，就用国内的易语言完成一下吧。。。</p>
+<p>代码界面：</p>
+<p><img src="http://imglf1.nosdn.127.net/img/QndsbTdhbEtXdVRmMytlbjF3UFQ3T1lVNUxkOHlFdHJEZ2c5N2F2Y0tFSStSV0xWS3NlcWFBPT0.png" alt=""></p>
+<p><img src="http://imglf1.nosdn.127.net/img/QndsbTdhbEtXdVRmMytlbjF3UFQ3RmlRNWpvYWVmeUtjNmowMjBBSUprOTlRUHk5eGpnL2JnPT0.png" alt=""></p>
+<p>易语言文件（源码加程序打包zip）base64加密：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">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</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a><strong>使用方法</strong></h3><p>loader.exe和main.py放在一个文件夹内，启动loader.exe不要关闭，截图后（比如用QQ截图）在你想粘贴的位置按Ctrl+Shift+V即可快速粘贴图片外链。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/" title="把网和谐易LOF和谐TER作为图床提高markdown写作舒适度">https://veritas501.github.io/2017/04/18/把网和谐易LOF和谐TER作为图床提高markdown写作舒适度/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/markdown/" rel="tag"># markdown</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/13/[搬运]ELF如何摧毁圣诞/" rel="next" title="【搬运】ELF如何摧毁圣诞">
+                <i class="fa fa-chevron-left"></i> 【搬运】ELF如何摧毁圣诞
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/21/日常练习 - 汇编写base64加密函数/" rel="prev" title="日常练习 - 汇编写base64加密函数">
+                日常练习 - 汇编写base64加密函数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方法"><span class="nav-number">1.</span> <span class="nav-text">使用方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言这道题是iscc 2017中的安卓第二题，所有的算法都在lib库中，而lib库又是加了壳的，所以就用动态调试解决吧。第一次动态调试安卓，就写的详细一些吧。 文中用到1.能正常运行这个crackme的手机一部，需要root（本人手上的主力机是安卓7.1的就运行不了）2.IDA一个3.IDA神级插件Keypatch4.安卓调试adb5.python6.这个crackme 题目链接链接：http:/">
+<meta name="keywords" content="Mobile,ISCC_2017">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录一次安卓动态调试lib库">
+<meta property="og:url" content="https://veritas501.github.io/2017/06/04/记录一次安卓动态调试lib库/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="前言这道题是iscc 2017中的安卓第二题，所有的算法都在lib库中，而lib库又是加了壳的，所以就用动态调试解决吧。第一次动态调试安卓，就写的详细一些吧。 文中用到1.能正常运行这个crackme的手机一部，需要root（本人手上的主力机是安卓7.1的就运行不了）2.IDA一个3.IDA神级插件Keypatch4.安卓调试adb5.python6.这个crackme 题目链接链接：http:/">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8dc0238d14b3e4acd5ff0eed2d93ad13.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_14c15ef29fc8e062fb52325ae4a511e0.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_966e419be601b6c8be4ad88103810fb1.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c117daab91abb5e8bd8c51397c878677.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5263fd444bca2534afcadb424c2cf68b.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_cb101eae0a64730fc0b157de8e1f97c7.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_69ac151ca103ef9482a44ebe3ba5ab46.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a48b10e88f3c7c3e412adee477df394a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3b8cc7eae16d22a08feab4d08ae2191f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_815d06cd54eb6b8df2928b58a80d6f4f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a972ed0d59c1f2bd1ede68903b9dbf8.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_f324840f8f2651543c48f453eaa38fa0.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1c4cad3d43ce12d23c8edf4f3b489758.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_04c1cd0b8c025ac3a54f6fdc4a9f8108.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_807674aaa026af8c591763c48db1f756.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_39c321129d26d8216cd122443bcbf3c1.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_64be8f45e5ac4c15ac8100e9a27bb446.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_7fedd350f904564e4b6e2b37b827a18a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_32b4e026fa0d202cee99e3622d82cb34.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8db239d0de7fedf5bf8f024d82e05dfb.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ac8e1cabc1a92417762bc19b014226b7.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c7a8060760ab38e528125c4d0ff24e2d.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a727c1b7c64339a82c60a8475b739b13.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5424e011ca9628baff83b4a935938f3a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5d1ba5b288f98a09ab62f20255855694.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_d733c5edf6641271d116a31468e6570d.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_95d2c5ae15e2a6b7a23922d32fb47d2c.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_6c0bea21f8f05fccb94431ea41bf9929.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c0a585b319b0d3384224a3d8f42353f4.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_16337b75d1b4c0ea8c0c234520f16e8e.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_02233be220103eee2194b9aa12d034fd.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_29ff5e89fd9f0caaeeeca9b624645abb.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_9c85b30936f38e6cbb1de6934352b3b0.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a42b0ce72c75de31700e5060c7ae5f5.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ad77b344794448f626f0a55c15c30572.png">
+<meta property="og:updated_time" content="2017-08-25T06:31:41.480Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记录一次安卓动态调试lib库">
+<meta name="twitter:description" content="前言这道题是iscc 2017中的安卓第二题，所有的算法都在lib库中，而lib库又是加了壳的，所以就用动态调试解决吧。第一次动态调试安卓，就写的详细一些吧。 文中用到1.能正常运行这个crackme的手机一部，需要root（本人手上的主力机是安卓7.1的就运行不了）2.IDA一个3.IDA神级插件Keypatch4.安卓调试adb5.python6.这个crackme 题目链接链接：http:/">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/06/04/记录一次安卓动态调试lib库/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>记录一次安卓动态调试lib库 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/06/04/记录一次安卓动态调试lib库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记录一次安卓动态调试lib库
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2017-06-04T00:00:00+08:00">2017-06-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-08-25 14:31:41" itemprop="dateModified" datetime="2017-08-25T14:31:41+08:00">2017-08-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/04/记录一次安卓动态调试lib库/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/06/04/记录一次安卓动态调试lib库/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/04/记录一次安卓动态调试lib库/" class="leancloud_visitors" data-flag-title="记录一次安卓动态调试lib库">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这道题是iscc 2017中的安卓第二题，所有的算法都在lib库中，而lib库又是加了壳的，所以就用动态调试解决吧。第一次动态调试安卓，就写的详细一些吧。</p>
+<h1 id="文中用到"><a href="#文中用到" class="headerlink" title="文中用到"></a>文中用到</h1><p>1.能正常运行这个crackme的手机一部，需要root（本人手上的主力机是安卓7.1的就运行不了）<br>2.IDA一个<br>3.IDA神级插件Keypatch<br>4.安卓调试adb<br>5.python<br>6.这个crackme</p>
+<h1 id="题目链接"><a href="#题目链接" class="headerlink" title="题目链接"></a>题目链接</h1><p>链接：<a href="http://pan.baidu.com/s/1kVLYYOJ" target="_blank" rel="noopener">http://pan.baidu.com/s/1kVLYYOJ</a> 密码：e2tj</p>
+<a id="more"></a>
+<h1 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h1><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>首先在手机上安装这个crackme，这个不需要多说。</p>
+<p>通过jeb的逆向，发现所有与题目解题相关的代码都在libtutu.so中。ida直接载入会发现这个so是被加密的。</p>
+<p>那就开始动态调试。</p>
+<p>在ida的目录下有一个叫dbgsrv的文件夹</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png" alt=""></p>
+<p>此次我们动态调试所需要的是android_server。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8dc0238d14b3e4acd5ff0eed2d93ad13.png" alt=""></p>
+<p>通过各种方法，把它放到<code>/system/bin/</code>目录下，并给予执行权限</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_14c15ef29fc8e062fb52325ae4a511e0.png" alt=""></p>
+<p>然后在电脑上执行<code>adb shell</code>，输入<code>su</code>拿到root权限后再输入<code>andoird_server</code>。<br><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_966e419be601b6c8be4ad88103810fb1.png" alt=""></p>
+<p>看到<code>Listening on port #23946...</code></p>
+<p>再开一个命令行窗口，输入 <code>adb forward tcp:23946 tcp:23946</code>进行端口转发。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c117daab91abb5e8bd8c51397c878677.png" alt=""></p>
+<p>至此，准备工作就完成了。</p>
+<h2 id="IDA连接调试"><a href="#IDA连接调试" class="headerlink" title="IDA连接调试"></a>IDA连接调试</h2><p>在手机端打开待调试的crackme</p>
+<p>在x86的ida下，选择如下菜单</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5263fd444bca2534afcadb424c2cf68b.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_cb101eae0a64730fc0b157de8e1f97c7.png" alt=""></p>
+<p>点击OK。</p>
+<p>找到待调试的应用：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_69ac151ca103ef9482a44ebe3ba5ab46.png" alt=""></p>
+<p>点击OK，等待片刻后进入调试界面。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a48b10e88f3c7c3e412adee477df394a.png" alt=""></p>
+<p>由于要等待so解密，所以我们打开这一项</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3b8cc7eae16d22a08feab4d08ae2191f.png" alt=""></p>
+<p>勾上这里</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_815d06cd54eb6b8df2928b58a80d6f4f.png" alt=""></p>
+<p>点击运行让程序跑起来。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a972ed0d59c1f2bd1ede68903b9dbf8.png" alt=""></p>
+<p>手机端随便输入一些东西后点击确定，发现IDA成功断下。</p>
+<p>出现这个直接点OK跳过<br><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_f324840f8f2651543c48f453eaa38fa0.png" alt=""></p>
+<p>直接apply</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1c4cad3d43ce12d23c8edf4f3b489758.png" alt=""></p>
+<p>断在linker</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_04c1cd0b8c025ac3a54f6fdc4a9f8108.png" alt=""></p>
+<p>手动按f8从linker走到libart.so（我调试用的手机是安卓5.1的）</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_807674aaa026af8c591763c48db1f756.png" alt=""></p>
+<p>在Modules里找到libtutu.so</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_39c321129d26d8216cd122443bcbf3c1.png" alt=""></p>
+<p>双击check</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_64be8f45e5ac4c15ac8100e9a27bb446.png" alt=""></p>
+<p>发现代码已经解密了。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_7fedd350f904564e4b6e2b37b827a18a.png" alt=""></p>
+<p>可以按F5看看</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_32b4e026fa0d202cee99e3622d82cb34.png" alt=""></p>
+<p>一切正常。</p>
+<h2 id="方法一：静态分析"><a href="#方法一：静态分析" class="headerlink" title="方法一：静态分析"></a>方法一：静态分析</h2><p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8db239d0de7fedf5bf8f024d82e05dfb.png" alt=""></p>
+<p>这些明显是函数指针，我们双击过去，按<code>c</code>转换成代码，再回来按f5。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ac8e1cabc1a92417762bc19b014226b7.png" alt=""></p>
+<p>上面有个未知作用的函数，我们一层层点进去看，发现是strlen。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png" alt=""></p>
+<p>稍微重命名一下，我们可以看出就是一个AES_ECB模式的加密</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png" alt=""></p>
+<p>IV和enc都有了，直接用python解密一下就出来了。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c7a8060760ab38e528125c4d0ff24e2d.png" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line">iv = <span class="string">'122B157F2BAED2A6ACF7158807CF4F3C'</span>.decode(<span class="string">'hex'</span>)</span><br><span class="line">enc = <span class="string">'47FE6CEEA092F9A72A73B3763613701A'</span>.decode(<span class="string">'hex'</span>)</span><br><span class="line"></span><br><span class="line">cryptor = AES.new(iv,AES.MODE_ECB)</span><br><span class="line">dec = cryptor.decrypt(enc)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> dec</span><br><span class="line"><span class="comment">#6ae379eaf3ccada5</span></span><br></pre></td></tr></table></figure>
+<p>flag:<code>6ae379eaf3ccada5</code></p>
+<h2 id="方法二：纯动态调试"><a href="#方法二：纯动态调试" class="headerlink" title="方法二：纯动态调试"></a>方法二：纯动态调试</h2><p>既然都已经开始动态调试了，为什么还要劳烦我们去分析代码呢？总有人会这样想。</p>
+<p>也算是锻炼一下动态的能力，我们现在用纯动态的方法来做。</p>
+<p>首先，如果你脱完壳直接f9开跑的话，你会发现程序结束了，因为这个so里有一个叫做antiDebug的函数</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a727c1b7c64339a82c60a8475b739b13.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5424e011ca9628baff83b4a935938f3a.png" alt=""></p>
+<p>我们不用去管这个函数内部到底干了什么，我们只要直接将这个函数在段首ret掉，这样下面的所有代码都不会被执行了。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5d1ba5b288f98a09ab62f20255855694.png" alt=""></p>
+<p>我们掏出插件keypatch，ctrl+alt+k</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_d733c5edf6641271d116a31468e6570d.png" alt=""></p>
+<p>改成<code>POP {R4-R7,PC}</code></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_95d2c5ae15e2a6b7a23922d32fb47d2c.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_6c0bea21f8f05fccb94431ea41bf9929.png" alt=""></p>
+<p>这样这个antiDebug就被patch掉了。</p>
+<p>我们还发现这个so中自带了decrypt函数。</p>
+<p>我们来到check函数，找到这一段。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c0a585b319b0d3384224a3d8f42353f4.png" alt=""></p>
+<p>我们要把原来的<code>AES128_ECB_encrypt)(input, &amp;IV, &amp;enc_out)</code>改成<code>AES128_ECB_decrypt)(enc_right, &amp;IV, &amp;enc_out)</code>，这样enc_out里保存的就是我们所需要的flag了。</p>
+<p>这里，我们发现我们需要的enc_right保存在R6寄存器里</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_16337b75d1b4c0ea8c0c234520f16e8e.png" alt=""></p>
+<p>所以我们patch这两句<br><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_02233be220103eee2194b9aa12d034fd.png" alt=""></p>
+<p>重新f5，现在变成了我们所希望的样子</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_29ff5e89fd9f0caaeeeca9b624645abb.png" alt=""></p>
+<p>用f2下好断点，f9运行</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_9c85b30936f38e6cbb1de6934352b3b0.png" alt=""></p>
+<p>enc_out是在R7寄存器里，此时的R7为FFABD2A4</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a42b0ce72c75de31700e5060c7ae5f5.png" alt=""></p>
+<p>在数据窗口我们按G键，跳转到FFABD2A4</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ad77b344794448f626f0a55c15c30572.png" alt=""></p>
+<p>成功得到flag：<code>6ae379eaf3ccada5</code></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>作为第一次安卓动态调试，很多地方还做的很生疏，但收获也是很多的。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/06/04/记录一次安卓动态调试lib库/" title="记录一次安卓动态调试lib库">https://veritas501.github.io/2017/06/04/记录一次安卓动态调试lib库/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mobile/" rel="tag"># Mobile</a>
+          
+            <a href="/tags/ISCC-2017/" rel="tag"># ISCC_2017</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/26/记录DDCTF中一道非常需要耐心的逆向题/" rel="next" title="记录DDCTF中一道非常需要耐心的逆向题">
+                <i class="fa fa-chevron-left"></i> 记录DDCTF中一道非常需要耐心的逆向题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/13/记录一次安卓动态调试dex/" rel="prev" title="记录一次安卓动态调试dex">
+                记录一次安卓动态调试dex <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文中用到"><span class="nav-number">2.</span> <span class="nav-text">文中用到</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#题目链接"><span class="nav-number">3.</span> <span class="nav-text">题目链接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解析"><span class="nav-number">4.</span> <span class="nav-text">解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备"><span class="nav-number">4.1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDA连接调试"><span class="nav-number">4.2.</span> <span class="nav-text">IDA连接调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法一：静态分析"><span class="nav-number">4.3.</span> <span class="nav-text">方法一：静态分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法二：纯动态调试"><span class="nav-number">4.4.</span> <span class="nav-text">方法二：纯动态调试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

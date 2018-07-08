@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近由于某些原因,更新了一下pwndbg,结果发现原本好好的bins功能被改成了一坨屎!! 去github看了一下issues,果然也有人说到这个问题. https://github.com/pwndbg/pwndbg/issues/424">
+<meta name="keywords" content="pwndbg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="调教pwndbg">
+<meta property="og:url" content="https://veritas501.github.io/2018/03/27/调教pwndbg/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="最近由于某些原因,更新了一下pwndbg,结果发现原本好好的bins功能被改成了一坨屎!! 去github看了一下issues,果然也有人说到这个问题. https://github.com/pwndbg/pwndbg/issues/424">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-03-27T12:26:48.342Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="调教pwndbg">
+<meta name="twitter:description" content="最近由于某些原因,更新了一下pwndbg,结果发现原本好好的bins功能被改成了一坨屎!! 去github看了一下issues,果然也有人说到这个问题. https://github.com/pwndbg/pwndbg/issues/424">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2018/03/27/调教pwndbg/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>调教pwndbg | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2018/03/27/调教pwndbg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">调教pwndbg
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-03-27 00:00:00 / Modified: 20:26:48" itemprop="dateCreated datePublished" datetime="2018-03-27T00:00:00+08:00">2018-03-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/27/调教pwndbg/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/03/27/调教pwndbg/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/03/27/调教pwndbg/" class="leancloud_visitors" data-flag-title="调教pwndbg">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近由于某些原因,更新了一下pwndbg,结果发现原本好好的<code>bins</code>功能被改成了一坨屎!!</p>
+<p>去github看了一下issues,果然也有人说到这个问题.</p>
+<p><a href="https://github.com/pwndbg/pwndbg/issues/424" target="_blank" rel="noopener">https://github.com/pwndbg/pwndbg/issues/424</a></p>
+<a id="more"></a>
+<p>原本是这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bins</span><br><span class="line">fastbins</span><br><span class="line">0x20: 0x602000 ◂— 0x0</span><br><span class="line">0x30: 0x0</span><br><span class="line">0x40: 0x0</span><br><span class="line">0x50: 0x0</span><br><span class="line">0x60: 0x0</span><br><span class="line">0x70: 0x0</span><br><span class="line">0x80: 0x0</span><br><span class="line">unsortedbin</span><br><span class="line">all: 0x0</span><br><span class="line">smallbins</span><br><span class="line">empty</span><br><span class="line">largebins</span><br><span class="line">empty</span><br></pre></td></tr></table></figure>
+<p>后来变成了这样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; bins</span><br><span class="line">fastbins</span><br><span class="line">0x20: 0x602000 ◂— 0x0</span><br><span class="line">0x30: 0x0</span><br><span class="line">0x40: 0x0</span><br><span class="line">0x50: 0x0</span><br><span class="line">0x60: 0x0</span><br><span class="line">0x70: 0x0</span><br><span class="line">0x80: 0x0</span><br><span class="line">unsortedbin</span><br><span class="line">all: 0x7ffff7dd1b78 (main_arena+88) ◂— 0x7ffff7dd1b78</span><br><span class="line">smallbins</span><br><span class="line">0x20: 0x7ffff7dd1b88 (main_arena+104) ◂— 0x7ffff7dd1b88</span><br><span class="line">0x30: 0x7ffff7dd1b98 (main_arena+120) ◂— 0x7ffff7dd1b98</span><br><span class="line">0x40: 0x7ffff7dd1ba8 (main_arena+136) ◂— 0x7ffff7dd1ba8</span><br><span class="line">0x50: 0x7ffff7dd1bb8 (main_arena+152) ◂— 0x7ffff7dd1bb8</span><br><span class="line">0x60: 0x7ffff7dd1bc8 (main_arena+168) ◂— 0x7ffff7dd1bc8</span><br><span class="line">0x70: 0x7ffff7dd1bd8 (main_arena+184) ◂— 0x7ffff7dd1bd8</span><br><span class="line">0x80: 0x7ffff7dd1be8 (main_arena+200) ◂— 0x7ffff7dd1be8</span><br><span class="line">0x90: 0x7ffff7dd1bf8 (main_arena+216) ◂— 0x7ffff7dd1bf8</span><br><span class="line">0xa0: 0x7ffff7dd1c08 (main_arena+232) ◂— 0x7ffff7dd1c08</span><br><span class="line">0xb0: 0x7ffff7dd1c18 (main_arena+248) ◂— 0x7ffff7dd1c18</span><br><span class="line">0xc0: 0x7ffff7dd1c28 (main_arena+264) ◂— 0x7ffff7dd1c28</span><br><span class="line">0xd0: 0x7ffff7dd1c38 (main_arena+280) ◂— 0x7ffff7dd1c38</span><br><span class="line">0xe0: 0x7ffff7dd1c48 (main_arena+296) ◂— 0x7ffff7dd1c48</span><br><span class="line">0xf0: 0x7ffff7dd1c58 (main_arena+312) ◂— 0x7ffff7dd1c58</span><br><span class="line">0x100: 0x7ffff7dd1c68 (main_arena+328) ◂— 0x7ffff7dd1c68</span><br><span class="line">0x110: 0x7ffff7dd1c78 (main_arena+344) ◂— 0x7ffff7dd1c78</span><br><span class="line">0x120: 0x7ffff7dd1c88 (main_arena+360) ◂— 0x7ffff7dd1c88</span><br><span class="line">0x130: 0x7ffff7dd1c98 (main_arena+376) ◂— 0x7ffff7dd1c98</span><br><span class="line">0x140: 0x7ffff7dd1ca8 (main_arena+392) ◂— 0x7ffff7dd1ca8</span><br><span class="line">0x150: 0x7ffff7dd1cb8 (main_arena+408) ◂— 0x7ffff7dd1cb8</span><br><span class="line">0x160: 0x7ffff7dd1cc8 (main_arena+424) ◂— 0x7ffff7dd1cc8</span><br><span class="line">0x170: 0x7ffff7dd1cd8 (main_arena+440) ◂— 0x7ffff7dd1cd8</span><br><span class="line">0x180: 0x7ffff7dd1ce8 (main_arena+456) ◂— 0x7ffff7dd1ce8</span><br><span class="line">0x190: 0x7ffff7dd1cf8 (main_arena+472) ◂— 0x7ffff7dd1cf8</span><br><span class="line">0x1a0: 0x7ffff7dd1d08 (main_arena+488) ◂— 0x7ffff7dd1d08</span><br><span class="line">0x1b0: 0x7ffff7dd1d18 (main_arena+504) ◂— 0x7ffff7dd1d18</span><br><span class="line">0x1c0: 0x7ffff7dd1d28 (main_arena+520) ◂— 0x7ffff7dd1d28</span><br><span class="line">0x1d0: 0x7ffff7dd1d38 (main_arena+536) ◂— 0x7ffff7dd1d38</span><br><span class="line">0x1e0: 0x7ffff7dd1d48 (main_arena+552) ◂— 0x7ffff7dd1d48</span><br><span class="line">0x1f0: 0x7ffff7dd1d58 (main_arena+568) ◂— 0x7ffff7dd1d58</span><br><span class="line">0x200: 0x7ffff7dd1d68 (main_arena+584) ◂— 0x7ffff7dd1d68</span><br><span class="line">0x210: 0x7ffff7dd1d78 (main_arena+600) ◂— 0x7ffff7dd1d78</span><br><span class="line">0x220: 0x7ffff7dd1d88 (main_arena+616) ◂— 0x7ffff7dd1d88</span><br><span class="line">0x230: 0x7ffff7dd1d98 (main_arena+632) ◂— 0x7ffff7dd1d98</span><br><span class="line">0x240: 0x7ffff7dd1da8 (main_arena+648) ◂— 0x7ffff7dd1da8</span><br><span class="line">0x250: 0x7ffff7dd1db8 (main_arena+664) ◂— 0x7ffff7dd1db8</span><br><span class="line">0x260: 0x7ffff7dd1dc8 (main_arena+680) ◂— 0x7ffff7dd1dc8</span><br><span class="line">0x270: 0x7ffff7dd1dd8 (main_arena+696) ◂— 0x7ffff7dd1dd8</span><br><span class="line">0x280: 0x7ffff7dd1de8 (main_arena+712) ◂— 0x7ffff7dd1de8</span><br><span class="line">0x290: 0x7ffff7dd1df8 (main_arena+728) ◂— 0x7ffff7dd1df8</span><br><span class="line">0x2a0: 0x7ffff7dd1e08 (main_arena+744) ◂— 0x7ffff7dd1e08</span><br><span class="line">0x2b0: 0x7ffff7dd1e18 (main_arena+760) ◂— 0x7ffff7dd1e18</span><br><span class="line">0x2c0: 0x7ffff7dd1e28 (main_arena+776) ◂— 0x7ffff7dd1e28</span><br><span class="line">0x2d0: 0x7ffff7dd1e38 (main_arena+792) ◂— 0x7ffff7dd1e38</span><br><span class="line">0x2e0: 0x7ffff7dd1e48 (main_arena+808) ◂— 0x7ffff7dd1e48</span><br><span class="line">0x2f0: 0x7ffff7dd1e58 (main_arena+824) ◂— 0x7ffff7dd1e58</span><br><span class="line">0x300: 0x7ffff7dd1e68 (main_arena+840) ◂— 0x7ffff7dd1e68</span><br><span class="line">0x310: 0x7ffff7dd1e78 (main_arena+856) ◂— 0x7ffff7dd1e78</span><br><span class="line">0x320: 0x7ffff7dd1e88 (main_arena+872) ◂— 0x7ffff7dd1e88</span><br><span class="line">0x330: 0x7ffff7dd1e98 (main_arena+888) ◂— 0x7ffff7dd1e98</span><br><span class="line">0x340: 0x7ffff7dd1ea8 (main_arena+904) ◂— 0x7ffff7dd1ea8</span><br><span class="line">0x350: 0x7ffff7dd1eb8 (main_arena+920) ◂— 0x7ffff7dd1eb8</span><br><span class="line">0x360: 0x7ffff7dd1ec8 (main_arena+936) ◂— 0x7ffff7dd1ec8</span><br><span class="line">0x370: 0x7ffff7dd1ed8 (main_arena+952) ◂— 0x7ffff7dd1ed8</span><br><span class="line">0x380: 0x7ffff7dd1ee8 (main_arena+968) ◂— 0x7ffff7dd1ee8</span><br><span class="line">0x390: 0x7ffff7dd1ef8 (main_arena+984) ◂— 0x7ffff7dd1ef8</span><br><span class="line">0x3a0: 0x7ffff7dd1f08 (main_arena+1000) ◂— 0x7ffff7dd1f08</span><br><span class="line">0x3b0: 0x7ffff7dd1f18 (main_arena+1016) ◂— 0x7ffff7dd1f18</span><br><span class="line">0x3c0: 0x7ffff7dd1f28 (main_arena+1032) ◂— 0x7ffff7dd1f28</span><br><span class="line">0x3d0: 0x7ffff7dd1f38 (main_arena+1048) ◂— 0x7ffff7dd1f38</span><br><span class="line">0x3e0: 0x7ffff7dd1f48 (main_arena+1064) ◂— 0x7ffff7dd1f48</span><br><span class="line">0x3f0: 0x7ffff7dd1f58 (main_arena+1080) ◂— 0x7ffff7dd1f58</span><br><span class="line">largebins</span><br><span class="line">0x400: 0x7ffff7dd1f68 (main_arena+1096) ◂— 0x7ffff7dd1f68</span><br><span class="line">0x440: 0x7ffff7dd1f78 (main_arena+1112) ◂— 0x7ffff7dd1f78</span><br><span class="line">0x480: 0x7ffff7dd1f88 (main_arena+1128) ◂— 0x7ffff7dd1f88</span><br><span class="line">0x4c0: 0x7ffff7dd1f98 (main_arena+1144) ◂— 0x7ffff7dd1f98</span><br><span class="line">0x500: 0x7ffff7dd1fa8 (main_arena+1160) ◂— 0x7ffff7dd1fa8</span><br><span class="line">0x540: 0x7ffff7dd1fb8 (main_arena+1176) ◂— 0x7ffff7dd1fb8</span><br><span class="line">0x580: 0x7ffff7dd1fc8 (main_arena+1192) ◂— 0x7ffff7dd1fc8</span><br><span class="line">0x5c0: 0x7ffff7dd1fd8 (main_arena+1208) ◂— 0x7ffff7dd1fd8</span><br><span class="line">0x600: 0x7ffff7dd1fe8 (main_arena+1224) ◂— 0x7ffff7dd1fe8</span><br><span class="line">0x640: 0x7ffff7dd1ff8 (main_arena+1240) ◂— 0x7ffff7dd1ff8</span><br><span class="line">0x680: 0x7ffff7dd2008 (main_arena+1256) ◂— 0x7ffff7dd2008</span><br><span class="line">0x6c0: 0x7ffff7dd2018 (main_arena+1272) ◂— 0x7ffff7dd2018</span><br><span class="line">0x700: 0x7ffff7dd2028 (main_arena+1288) ◂— 0x7ffff7dd2028</span><br><span class="line">0x740: 0x7ffff7dd2038 (main_arena+1304) ◂— 0x7ffff7dd2038</span><br><span class="line">0x780: 0x7ffff7dd2048 (main_arena+1320) ◂— 0x7ffff7dd2048</span><br><span class="line">0x7c0: 0x7ffff7dd2058 (main_arena+1336) ◂— 0x7ffff7dd2058</span><br><span class="line">0x800: 0x7ffff7dd2068 (main_arena+1352) ◂— 0x7ffff7dd2068</span><br><span class="line">0x840: 0x7ffff7dd2078 (main_arena+1368) ◂— 0x7ffff7dd2078</span><br><span class="line">0x880: 0x7ffff7dd2088 (main_arena+1384) ◂— 0x7ffff7dd2088</span><br><span class="line">0x8c0: 0x7ffff7dd2098 (main_arena+1400) ◂— 0x7ffff7dd2098</span><br><span class="line">0x900: 0x7ffff7dd20a8 (main_arena+1416) ◂— 0x7ffff7dd20a8</span><br><span class="line">0x940: 0x7ffff7dd20b8 (main_arena+1432) ◂— 0x7ffff7dd20b8</span><br><span class="line">0x980: 0x7ffff7dd20c8 (main_arena+1448) ◂— 0x7ffff7dd20c8</span><br><span class="line">0x9c0: 0x7ffff7dd20d8 (main_arena+1464) ◂— 0x7ffff7dd20d8</span><br><span class="line">0xa00: 0x7ffff7dd20e8 (main_arena+1480) ◂— 0x7ffff7dd20e8</span><br><span class="line">0xa40: 0x7ffff7dd20f8 (main_arena+1496) ◂— 0x7ffff7dd20f8</span><br><span class="line">0xa80: 0x7ffff7dd2108 (main_arena+1512) ◂— 0x7ffff7dd2108</span><br><span class="line">0xac0: 0x7ffff7dd2118 (main_arena+1528) ◂— 0x7ffff7dd2118</span><br><span class="line">0xb00: 0x7ffff7dd2128 (main_arena+1544) ◂— 0x7ffff7dd2128</span><br><span class="line">0xb40: 0x7ffff7dd2138 (main_arena+1560) ◂— 0x7ffff7dd2138</span><br><span class="line">0xb80: 0x7ffff7dd2148 (main_arena+1576) ◂— 0x7ffff7dd2148</span><br><span class="line">0xbc0: 0x7ffff7dd2158 (main_arena+1592) ◂— 0x7ffff7dd2158</span><br><span class="line">0xc00: 0x7ffff7dd2168 (main_arena+1608) ◂— 0x7ffff7dd2168</span><br><span class="line">0xc40: 0x7ffff7dd2178 (main_arena+1624) ◂— 0x7ffff7dd2178</span><br><span class="line">0xe00: 0x7ffff7dd2188 (main_arena+1640) ◂— 0x7ffff7dd2188</span><br><span class="line">0x1000: 0x7ffff7dd2198 (main_arena+1656) ◂— 0x7ffff7dd2198</span><br><span class="line">0x1200: 0x7ffff7dd21a8 (main_arena+1672) ◂— 0x7ffff7dd21a8</span><br><span class="line">0x1400: 0x7ffff7dd21b8 (main_arena+1688) ◂— 0x7ffff7dd21b8</span><br><span class="line">0x1600: 0x7ffff7dd21c8 (main_arena+1704) ◂— 0x7ffff7dd21c8</span><br><span class="line">0x1800: 0x7ffff7dd21d8 (main_arena+1720) ◂— 0x7ffff7dd21d8</span><br><span class="line">0x1a00: 0x7ffff7dd21e8 (main_arena+1736) ◂— 0x7ffff7dd21e8</span><br><span class="line">0x1c00: 0x7ffff7dd21f8 (main_arena+1752) ◂— 0x7ffff7dd21f8</span><br><span class="line">0x1e00: 0x7ffff7dd2208 (main_arena+1768) ◂— 0x7ffff7dd2208</span><br><span class="line">0x2000: 0x7ffff7dd2218 (main_arena+1784) ◂— 0x7ffff7dd2218</span><br><span class="line">0x2200: 0x7ffff7dd2228 (main_arena+1800) ◂— 0x7ffff7dd2228</span><br><span class="line">0x2400: 0x7ffff7dd2238 (main_arena+1816) ◂— 0x7ffff7dd2238</span><br><span class="line">0x2600: 0x7ffff7dd2248 (main_arena+1832) ◂— 0x7ffff7dd2248</span><br><span class="line">0x2800: 0x7ffff7dd2258 (main_arena+1848) ◂— 0x7ffff7dd2258</span><br><span class="line">0x2a00: 0x7ffff7dd2268 (main_arena+1864) ◂— 0x7ffff7dd2268</span><br><span class="line">0x3000: 0x7ffff7dd2278 (main_arena+1880) ◂— 0x7ffff7dd2278</span><br><span class="line">0x4000: 0x7ffff7dd2288 (main_arena+1896) ◂— 0x7ffff7dd2288</span><br><span class="line">0x5000: 0x7ffff7dd2298 (main_arena+1912) ◂— 0x7ffff7dd2298</span><br><span class="line">0x6000: 0x7ffff7dd22a8 (main_arena+1928) ◂— 0x7ffff7dd22a8</span><br><span class="line">0x7000: 0x7ffff7dd22b8 (main_arena+1944) ◂— 0x7ffff7dd22b8</span><br><span class="line">0x8000: 0x7ffff7dd22c8 (main_arena+1960) ◂— 0x7ffff7dd22c8</span><br><span class="line">0x9000: 0x7ffff7dd22d8 (main_arena+1976) ◂— 0x7ffff7dd22d8</span><br><span class="line">0xa000: 0x7ffff7dd22e8 (main_arena+1992) ◂— 0x7ffff7dd22e8</span><br><span class="line">0x10000: 0x7ffff7dd22f8 (main_arena+2008) ◂— 0x7ffff7dd22f8</span><br><span class="line">0x18000: 0x7ffff7dd2308 (main_arena+2024) ◂— 0x7ffff7dd2308</span><br><span class="line">0x20000: 0x7ffff7dd2318 (main_arena+2040) ◂— 0x7ffff7dd2318</span><br><span class="line">0x28000: 0x7ffff7dd2328 (main_arena+2056) ◂— 0x7ffff7dd2328</span><br><span class="line">0x40000: 0x7ffff7dd2338 (main_arena+2072) ◂— 0x7ffff7dd2338</span><br><span class="line">0x80000: 0x7ffff7dd2348 (main_arena+2088) ◂— 0x7ffff7dd2348</span><br></pre></td></tr></table></figure>
+<p>what a shit code !!!</p>
+<p>这怎么能忍?</p>
+<p>对照comment前的代码,我修改了<code>pwndbg/chain.py</code>中<code>get</code>的代码</p>
+<p>修改后代码如下<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(address, limit=LIMIT, offset=<span class="number">0</span>, hard_stop=None, hard_end=<span class="number">0</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Recursively dereferences an address. For bare metal, it will stop when the address is not in any of vmmap pages to avoid redundant dereference.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        address(int): the first address to begin dereferencing</span></span><br><span class="line"><span class="string">        limit(int): number of valid pointers</span></span><br><span class="line"><span class="string">        offset(int): offset into the address to get the next pointer</span></span><br><span class="line"><span class="string">        hard_stop(int): address to stop at</span></span><br><span class="line"><span class="string">        hard_end: value to append when hard_stop is reached</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        A list representing pointers of each ```address``` and reference</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    limit = int(limit)</span><br><span class="line"></span><br><span class="line">    <span class="comment">##result = [address]</span></span><br><span class="line">    result = [] <span class="comment">##patch 1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(limit):</span><br><span class="line">        <span class="comment"># Don't follow cycles, except to stop at the second occurrence.</span></span><br><span class="line">        <span class="keyword">if</span> result.count(address) &gt;= <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> hard_stop <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> address == hard_stop:</span><br><span class="line">            result.append(hard_end)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        result.append(address) <span class="comment">##patch 2</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            address = address + offset</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Avoid redundant dereferences in bare metal mode by checking</span></span><br><span class="line">            <span class="comment"># if address is in any of vmmap pages</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> pwndbg.abi.linux <span class="keyword">and</span> <span class="keyword">not</span> pwndbg.vmmap.find(address):</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">            address = int(pwndbg.memory.poi(pwndbg.typeinfo.ppvoid, address))</span><br><span class="line">            address &amp;= pwndbg.arch.ptrmask</span><br><span class="line">            <span class="comment">##result.append(address) ##patch 3</span></span><br><span class="line">        <span class="keyword">except</span> gdb.MemoryError:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure></p>
+<p>世界终于正常了.</p>
+<p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></p>
+<p>但这远远没有结束.既然魔改了,就把之前不爽的地方都魔改一遍好了233333333</p>
+<p>首先是<code>heap</code>命令打印chunk的时候,prevsize和size是十进制打印的,实际比赛中你还得把他转换成hex才有意义…</p>
+<p>不过这不是pwndbg的错,因为gdb print malloc_chunk的时候就是这样打印的(真的怪</p>
+<p>通过修改<code>pwndbg/chain.py</code>中<code>malloc_chunk</code>实现.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@pwndbg.commands.ParsedCommand</span></span><br><span class="line"><span class="meta">@pwndbg.commands.OnlyWhenRunning</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">malloc_chunk</span><span class="params">(addr)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Prints out the malloc_chunk at the specified address.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    main_heap = pwndbg.heap.current</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(addr, six.integer_types):</span><br><span class="line">        addr = int(addr)</span><br><span class="line"></span><br><span class="line">    chunk = read_chunk(addr)</span><br><span class="line">    size = int(chunk[<span class="string">'size'</span>])</span><br><span class="line">    actual_size = size &amp; ~<span class="number">7</span></span><br><span class="line">    prev_inuse, is_mmapped, non_main_arena = main_heap.chunk_flags(size)</span><br><span class="line">    arena = <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">if</span> non_main_arena:</span><br><span class="line">        arena = main_heap.get_heap(addr)[<span class="string">'ar_ptr'</span>]</span><br><span class="line">        </span><br><span class="line">    fastbins = main_heap.fastbins(arena)</span><br><span class="line">    header = M.get(addr)</span><br><span class="line">    <span class="keyword">if</span> prev_inuse:</span><br><span class="line">        <span class="keyword">if</span> actual_size <span class="keyword">in</span> fastbins:</span><br><span class="line">            header += message.hint(<span class="string">' FASTBIN'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            header += message.hint(<span class="string">' PREV_INUSE'</span>)</span><br><span class="line">    <span class="keyword">if</span> is_mmapped:</span><br><span class="line">        header += message.hint(<span class="string">' IS_MMAPED'</span>)</span><br><span class="line">    <span class="keyword">if</span> non_main_arena:</span><br><span class="line">        header += message.hint(<span class="string">' NON_MAIN_ARENA'</span>)</span><br><span class="line">    <span class="comment">## edit start</span></span><br><span class="line">    chunk_str=<span class="string">'&#123;\n'</span></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> chunk[<span class="string">"value"</span>].type.keys():</span><br><span class="line">        chunk_str+=<span class="string">'  %s = %s,\n'</span>%(str(key),hex(int(chunk[<span class="string">"value"</span>][key])))</span><br><span class="line">    chunk_str+=<span class="string">'&#125;'</span></span><br><span class="line"></span><br><span class="line">    print(header, chunk_str)</span><br><span class="line">    <span class="comment">## edit end</span></span><br><span class="line">    <span class="keyword">return</span> chunk</span><br></pre></td></tr></table></figure>
+<p>实际效果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; heap</span><br><span class="line">Top Chunk: 0x113c0c0</span><br><span class="line">Last Remainder: 0</span><br><span class="line"></span><br><span class="line">0x113c000 FASTBIN &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x61,</span><br><span class="line">  fd = 0x113c060,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br><span class="line">0x113c060 FASTBIN &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x61,</span><br><span class="line">  fd = 0x113c000,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br><span class="line">0x113c0c0 PREV_INUSE &#123;</span><br><span class="line">  prev_size = 0x0,</span><br><span class="line">  size = 0x20f41,</span><br><span class="line">  fd = 0x0,</span><br><span class="line">  bk = 0x0,</span><br><span class="line">  fd_nextsize = 0x0,</span><br><span class="line">  bk_nextsize = 0x0,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>其次,我认为pwndbg自带的<code>find_fake_fast</code>太鸡肋了,一是要输入你指定的大小,二是还经常无故爆炸,三是还有bug</p>
+<p>为此我添加了这样一个commands</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@pwndbg.commands.ParsedCommand</span></span><br><span class="line"><span class="meta">@pwndbg.commands.OnlyWhenRunning</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fake_fastbin_all</span><span class="params">(addr)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Finds candidate fake fast chunks that will overlap with the specified</span></span><br><span class="line"><span class="string">    address. Used for fastbin dups and house of spirit</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    main_heap = pwndbg.heap.current</span><br><span class="line"></span><br><span class="line">    max_fast = main_heap.global_max_fast</span><br><span class="line">    max_idx  = main_heap.fastbin_index(max_fast)</span><br><span class="line">    start    = int(addr) - int(max_fast)</span><br><span class="line">    mem      = pwndbg.memory.read(start, max_fast, partial=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">    fmt = &#123;</span><br><span class="line">        <span class="string">'little'</span>: <span class="string">'&lt;'</span>,</span><br><span class="line">        <span class="string">'big'</span>: <span class="string">'&gt;'</span></span><br><span class="line">    &#125;[pwndbg.arch.endian] + &#123;</span><br><span class="line">        <span class="number">4</span>: <span class="string">'I'</span>,</span><br><span class="line">        <span class="number">8</span>: <span class="string">'Q'</span></span><br><span class="line">    &#125;[pwndbg.arch.ptrsize]</span><br><span class="line"></span><br><span class="line">    print(C.banner(<span class="string">"FAKE CHUNKS"</span>))</span><br><span class="line">    <span class="keyword">for</span> idx <span class="keyword">in</span> range(max_idx +<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> pwndbg.arch.ptrsize == <span class="number">8</span>:</span><br><span class="line">            print(message.hint(hex((idx+<span class="number">2</span>)&lt;&lt;<span class="number">4</span>))+<span class="string">": "</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(message.hint(hex((idx+<span class="number">2</span>)&lt;&lt;<span class="number">3</span>))+<span class="string">": "</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> offset <span class="keyword">in</span> range(max_fast - pwndbg.arch.ptrsize):</span><br><span class="line">            candidate = mem[offset:offset + pwndbg.arch.ptrsize]</span><br><span class="line">            <span class="keyword">if</span> len(candidate) == pwndbg.arch.ptrsize:</span><br><span class="line">                value = struct.unpack(fmt, candidate)[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">if</span> main_heap.fastbin_index(value&amp;<span class="number">0xffffffff</span>) == idx:</span><br><span class="line">                    print(<span class="string">'[+]'</span>,hex(start+offset-pwndbg.arch.ptrsize),<span class="string">', padding len:'</span>,hex(int(addr)-start-offset-pwndbg.arch.ptrsize))</span><br></pre></td></tr></table></figure>
+<p>这个命令只要你提供地址,就能打印出所有可行的fake chunk</p>
+<p>效果如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; p &amp;__malloc_hook</span><br><span class="line">$1 = (void *(**)(size_t, const void *)) 0x7f690516ab10 &lt;__malloc_hook&gt;</span><br><span class="line">pwndbg&gt; fake_fastbin_all 0x7f690516ab10</span><br><span class="line">FAKE CHUNKS</span><br><span class="line">0x20: </span><br><span class="line">0x30: </span><br><span class="line">0x40: </span><br><span class="line">0x50: </span><br><span class="line">0x60: </span><br><span class="line">0x70: </span><br><span class="line">[+] 0x7f690516aaed , padding len: 0x13</span><br><span class="line">[+] 0x7f690516aafd , padding len: 0x3</span><br><span class="line">0x80: </span><br><span class="line">pwndbg&gt; hex 0x7f690516aaed</span><br><span class="line">+0000 0x7f690516aaed  00 00 00 60  92 16 05 69  7f 00 00 00  00 00 00 00  │...`│...i│....│....│</span><br><span class="line">+0010 0x7f690516aafd  00 00 00 20  be e2 04 69  7f 00 00 00  ba e2 04 69  │....│...i│....│...i│</span><br><span class="line">+0020 0x7f690516ab0d  7f 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00  │....│....│....│....│</span><br><span class="line">+0030 0x7f690516ab1d  00 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00  │....│....│....│....│</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2018/03/27/调教pwndbg/" title="调教pwndbg">https://veritas501.github.io/2018/03/27/调教pwndbg/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/pwndbg/" rel="tag"># pwndbg</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/21/Celeste OST (FLAC)/" rel="next" title="Celeste OST (FLAC)">
+                <i class="fa fa-chevron-left"></i> Celeste OST (FLAC)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/28/两次CTF比赛总结/" rel="prev" title="两次CTF比赛总结">
+                两次CTF比赛总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

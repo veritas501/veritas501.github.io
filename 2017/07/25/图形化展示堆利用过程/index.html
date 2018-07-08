@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="首先你需要对堆的一些基本常识有了解，比如chunk，bin，fastbin，unsorted bin，small bin，large bin，prev_in_use，size，prev_size，fd，bk，topchunk，av-&amp;gt;top，main_arena等等。 本文旨在用更易懂的方式介绍一些堆的利用方式。 当然，这些方法都是前人研究的成果，我只是换了一种表述方法而已。">
+<meta name="keywords" content="PWN,Heap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用图形展示堆利用过程">
+<meta property="og:url" content="https://veritas501.github.io/2017/07/25/图形化展示堆利用过程/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="首先你需要对堆的一些基本常识有了解，比如chunk，bin，fastbin，unsorted bin，small bin，large bin，prev_in_use，size，prev_size，fd，bk，topchunk，av-&amp;gt;top，main_arena等等。 本文旨在用更易懂的方式介绍一些堆的利用方式。 当然，这些方法都是前人研究的成果，我只是换了一种表述方法而已。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_f8f744ba31de0f65c2f37ce5cd17d8d7.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_1ec2f834b224dfcd633095eb815df1b6.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_c08455ba309e72287b26d698a9b40578.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_b23fc4f0b4575456d17d035aebf73264.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_a73602f13a5b44e9fcb83a01c6cf01e7.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_a46533b9b3adb7a091513698fd0ffcc6.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_230a2428a0920ba8ff575f047dcd096f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_86f9e134396c4f076d6766cc0a59cd84.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_ea9f2d1331a1887814336346c4427cbd.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_10e207d3a592a9d49fdce24ad59a9fe0.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_95bcea49439afbbed824177750e51673.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_d82a19a08faae120a84ec7da30785bc6.png">
+<meta property="og:updated_time" content="2017-08-25T05:51:28.570Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用图形展示堆利用过程">
+<meta name="twitter:description" content="首先你需要对堆的一些基本常识有了解，比如chunk，bin，fastbin，unsorted bin，small bin，large bin，prev_in_use，size，prev_size，fd，bk，topchunk，av-&amp;gt;top，main_arena等等。 本文旨在用更易懂的方式介绍一些堆的利用方式。 当然，这些方法都是前人研究的成果，我只是换了一种表述方法而已。">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_f8f744ba31de0f65c2f37ce5cd17d8d7.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/07/25/图形化展示堆利用过程/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>用图形展示堆利用过程 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/07/25/图形化展示堆利用过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">用图形展示堆利用过程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-07-25 00:00:00" itemprop="dateCreated datePublished" datetime="2017-07-25T00:00:00+08:00">2017-07-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-08-25 13:51:28" itemprop="dateModified" datetime="2017-08-25T13:51:28+08:00">2017-08-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/07/25/图形化展示堆利用过程/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/07/25/图形化展示堆利用过程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/07/25/图形化展示堆利用过程/" class="leancloud_visitors" data-flag-title="用图形展示堆利用过程">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>首先你需要对堆的一些基本常识有了解，比如chunk，bin，fastbin，unsorted bin，small bin，large bin，prev_in_use，size，prev_size，fd，bk，topchunk，av-&gt;top，main_arena等等。</p>
+<p>本文旨在用更易懂的方式介绍一些堆的利用方式。</p>
+<p>当然，这些方法都是前人研究的成果，我只是换了一种表述方法而已。</p>
+<a id="more"></a>
+<hr>
+<h1 id="unlink"><a href="#unlink" class="headerlink" title="unlink"></a>unlink</h1><h2 id="n年前的unlink"><a href="#n年前的unlink" class="headerlink" title="n年前的unlink"></a>n年前的unlink</h2><p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_f8f744ba31de0f65c2f37ce5cd17d8d7.png" alt=""></p>
+<p>一般来说，由于当时没有NX，所以可以将AAAA填为某个能劫持程序流的指针，然后BBBB改为shellcode的地址。</p>
+<h2 id="如今的unlink"><a href="#如今的unlink" class="headerlink" title="如今的unlink"></a>如今的unlink</h2><p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_1ec2f834b224dfcd633095eb815df1b6.png" alt=""></p>
+<p>一般来说，如果在某处存着一个chunklist，通过这种方法再对第一个chunk写入就能覆盖后面chunk指针，从而间接获得任意地址读写。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_c08455ba309e72287b26d698a9b40578.png" alt=""></p>
+<hr>
+<h1 id="fastbin-attack"><a href="#fastbin-attack" class="headerlink" title="fastbin attack"></a>fastbin attack</h1><p>fastbin不同于其他的bin，他是单链表管理。而且在程序自身不加检测的情况下，fastbin的double free是非常容易的。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_b23fc4f0b4575456d17d035aebf73264.png" alt=""></p>
+<p>libc的检查只有一句，顶部不能为自身。就是不能连续两次free同一个fast chunk。因此只要double free时中间隔一个bin就好了。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_a73602f13a5b44e9fcb83a01c6cf01e7.png" alt=""></p>
+<p>使用这个攻击方法的前提是伪造的那个chunk的size位必须满足当前fast array的index值，size = （idx+[0,7]）</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_a46533b9b3adb7a091513698fd0ffcc6.png" alt=""></p>
+<p>而这个fastbin_index是这样定义的</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_230a2428a0920ba8ff575f047dcd096f.png" alt=""></p>
+<p>实际上是一个unsigned int，也就是说在x64上（假设此时idx为0x20），我们的size的高位不是全要为零，而是0x????????00000020 + [0,7]，高4字节是可以任意的。比如0xffffffff00000023就是可以的。</p>
+<hr>
+<h1 id="unsorted-bin-attack"><a href="#unsorted-bin-attack" class="headerlink" title="unsorted bin attack"></a>unsorted bin attack</h1><p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_86f9e134396c4f076d6766cc0a59cd84.png" alt=""></p>
+<p>单看unsorted bin attack没什么卵用，写的值不受我们控制。</p>
+<p>一般来说最普遍的做法是利用unsorted bin attack去修改libc中的global_max_fast这个全局变量为一个很大的数，因为他控制了多大的chunk被视为fastbin。修改后就是利用fastbin attack了。</p>
+<hr>
+<h1 id="extend-the-chunk"><a href="#extend-the-chunk" class="headerlink" title="extend the chunk"></a>extend the chunk</h1><h2 id="off-by-one"><a href="#off-by-one" class="headerlink" title="off-by-one"></a>off-by-one</h2><p>通过修改下一个chunk的size，从而得到overlap。</p>
+<p>这里有一个trick，一般来说1字节到不了size，前面还有prev_size。</p>
+<p>考虑64位，如果malloc的size没有16字节对齐，比如malloc（0x18），系统实际malloc了0x20字节给程序，不够的8字节由后面一个chunk的prev_size提供（共用）。这也很合理，当这个chunk在使用时，prev_size肯定为0，是没用的；当prev_size有用时，这个chunk已经被free了，里面的内容已经无用了。</p>
+<p>使用这个trick加off-by-one的溢出，我们刚好可以修改size。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_ea9f2d1331a1887814336346c4427cbd.png" alt=""></p>
+<h2 id="off-by-one-null-byte"><a href="#off-by-one-null-byte" class="headerlink" title="off-by-one null byte"></a>off-by-one null byte</h2><p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_10e207d3a592a9d49fdce24ad59a9fe0.png" alt=""></p>
+<hr>
+<h1 id="shrink-the-chunk"><a href="#shrink-the-chunk" class="headerlink" title="shrink the chunk"></a>shrink the chunk</h1><p>和extend the chunk 差不多，都是通过off-by-one null byte来获得overlap。但这个方法对堆布局的构造更加复杂。<br><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_95bcea49439afbbed824177750e51673.png" alt=""></p>
+<hr>
+<h1 id="house-of-force"><a href="#house-of-force" class="headerlink" title="house of force"></a>house of force</h1><p><img src="http://ordvwjm69.bkt.clouddn.com/jarvis_wp_d82a19a08faae120a84ec7da30785bc6.png" alt=""></p>
+<hr>
+<h1 id="MORE"><a href="#MORE" class="headerlink" title="MORE"></a>MORE</h1><p>先这样吧，我画的累死了 XD</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/07/25/图形化展示堆利用过程/" title="用图形展示堆利用过程">https://veritas501.github.io/2017/07/25/图形化展示堆利用过程/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PWN/" rel="tag"># PWN</a>
+          
+            <a href="/tags/Heap/" rel="tag"># Heap</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/25/堆入门资料/" rel="next" title="堆入门资料">
+                <i class="fa fa-chevron-left"></i> 堆入门资料
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/27/对system无法get_shell的探索/" rel="prev" title="对system无法get shell的探索">
+                对system无法get shell的探索 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#unlink"><span class="nav-number">1.</span> <span class="nav-text">unlink</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#n年前的unlink"><span class="nav-number">1.1.</span> <span class="nav-text">n年前的unlink</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如今的unlink"><span class="nav-number">1.2.</span> <span class="nav-text">如今的unlink</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fastbin-attack"><span class="nav-number">2.</span> <span class="nav-text">fastbin attack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unsorted-bin-attack"><span class="nav-number">3.</span> <span class="nav-text">unsorted bin attack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#extend-the-chunk"><span class="nav-number">4.</span> <span class="nav-text">extend the chunk</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#off-by-one"><span class="nav-number">4.1.</span> <span class="nav-text">off-by-one</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#off-by-one-null-byte"><span class="nav-number">4.2.</span> <span class="nav-text">off-by-one null byte</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shrink-the-chunk"><span class="nav-number">5.</span> <span class="nav-text">shrink the chunk</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#house-of-force"><span class="nav-number">6.</span> <span class="nav-text">house of force</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MORE"><span class="nav-number">7.</span> <span class="nav-text">MORE</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

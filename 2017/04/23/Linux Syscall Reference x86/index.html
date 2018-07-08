@@ -1,0 +1,4415 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这张表是x86下的syscall。">
+<meta name="keywords" content="Syscall">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Syscall Reference x86">
+<meta property="og:url" content="https://veritas501.github.io/2017/04/23/Linux Syscall Reference x86/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="这张表是x86下的syscall。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-04-23T03:54:00.001Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Syscall Reference x86">
+<meta name="twitter:description" content="这张表是x86下的syscall。">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/04/23/Linux Syscall Reference x86/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux Syscall Reference x86 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/04/23/Linux Syscall Reference x86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux Syscall Reference x86
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-04-23 00:00:00 / Modified: 11:54:00" itemprop="dateCreated datePublished" datetime="2017-04-23T00:00:00+08:00">2017-04-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/23/Linux Syscall Reference x86/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/04/23/Linux Syscall Reference x86/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/04/23/Linux Syscall Reference x86/" class="leancloud_visitors" data-flag-title="Linux Syscall Reference x86">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这张表是x86下的syscall。</p>
+<a id="more"></a>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">eax</th>
+<th style="text-align:left">ebx</th>
+<th style="text-align:left">ecx</th>
+<th style="text-align:left">edx</th>
+<th style="text-align:left">esi</th>
+<th style="text-align:left">edi</th>
+<th style="text-align:left">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">sys_restart_syscall</td>
+<td style="text-align:left">0x00</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2058</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_exit</td>
+<td style="text-align:left">0x01</td>
+<td style="text-align:left">int error_code</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/exit.c:1046</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fork</td>
+<td style="text-align:left">0x02</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/alpha/kernel/entry.S:716</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_read</td>
+<td style="text-align:left">0x03</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:391</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_write</td>
+<td style="text-align:left">0x04</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">const char __user *buf</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:408</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_open</td>
+<td style="text-align:left">0x05</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:900</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_close</td>
+<td style="text-align:left">0x06</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:969</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_waitpid</td>
+<td style="text-align:left">0x07</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">int __user *stat_addr</td>
+<td style="text-align:left">int options</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/exit.c:1771</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_creat</td>
+<td style="text-align:left">0x08</td>
+<td style="text-align:left">const char __user *pathname</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:933</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_link</td>
+<td style="text-align:left">0x09</td>
+<td style="text-align:left">const char __user *oldname</td>
+<td style="text-align:left">const char __user *newname</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2520</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_unlink</td>
+<td style="text-align:left">0x0a</td>
+<td style="text-align:left">const char __user *pathname</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2352</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_execve</td>
+<td style="text-align:left">0x0b</td>
+<td style="text-align:left">char __user *</td>
+<td style="text-align:left">char __user <em>__user </em></td>
+<td style="text-align:left">char __user <em>__user </em></td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/alpha/kernel/entry.S:925</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_chdir</td>
+<td style="text-align:left">0x0c</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:361</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_time</td>
+<td style="text-align:left">0x0d</td>
+<td style="text-align:left">time_t __user *tloc</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:855</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mknod</td>
+<td style="text-align:left">0x0e</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">unsigned dev</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2067</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_chmod</td>
+<td style="text-align:left">0x0f</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">mode_t mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:507</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lchown16</td>
+<td style="text-align:left">0x10</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">old_uid_t user</td>
+<td style="text-align:left">old_gid_t group</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:27</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x11</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_stat</td>
+<td style="text-align:left">0x12</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct __old_kernel_stat __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:150</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lseek</td>
+<td style="text-align:left">0x13</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">off_t offset</td>
+<td style="text-align:left">unsigned int origin</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:167</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getpid</td>
+<td style="text-align:left">0x14</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1337</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mount</td>
+<td style="text-align:left">0x15</td>
+<td style="text-align:left">char __user *dev_name</td>
+<td style="text-align:left">char __user *dir_name</td>
+<td style="text-align:left">char __user *type</td>
+<td style="text-align:left">unsigned long flags</td>
+<td style="text-align:left">void __user *data</td>
+<td style="text-align:left">fs/namespace.c:2118</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_oldumount</td>
+<td style="text-align:left">0x16</td>
+<td style="text-align:left">char __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namespace.c:1171</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setuid16</td>
+<td style="text-align:left">0x17</td>
+<td style="text-align:left">old_uid_t uid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:67</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getuid16</td>
+<td style="text-align:left">0x18</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:212</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_stime</td>
+<td style="text-align:left">0x19</td>
+<td style="text-align:left">time_t __user *tptr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/time.c:81</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ptrace</td>
+<td style="text-align:left">0x1a</td>
+<td style="text-align:left">long request</td>
+<td style="text-align:left">long pid</td>
+<td style="text-align:left">long addr</td>
+<td style="text-align:left">long data</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/ptrace.c:688</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_alarm</td>
+<td style="text-align:left">0x1b</td>
+<td style="text-align:left">unsigned int seconds</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1314</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fstat</td>
+<td style="text-align:left">0x1c</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">struct __old_kernel_stat __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:174</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pause</td>
+<td style="text-align:left">0x1d</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2700</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_utime</td>
+<td style="text-align:left">0x1e</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct utimbuf __user *times</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/utimes.c:27</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x1f</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x20</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_access</td>
+<td style="text-align:left">0x21</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:356</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_nice</td>
+<td style="text-align:left">0x22</td>
+<td style="text-align:left">int increment</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4282</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x23</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sync</td>
+<td style="text-align:left">0x24</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/sync.c:98</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_kill</td>
+<td style="text-align:left">0x25</td>
+<td style="text-align:left">int pid</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2317</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rename</td>
+<td style="text-align:left">0x26</td>
+<td style="text-align:left">const char __user *oldname</td>
+<td style="text-align:left">const char __user *newname</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2765</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mkdir</td>
+<td style="text-align:left">0x27</td>
+<td style="text-align:left">const char __user *pathname</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2130</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rmdir</td>
+<td style="text-align:left">0x28</td>
+<td style="text-align:left">const char __user *pathname</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2244</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_dup</td>
+<td style="text-align:left">0x29</td>
+<td style="text-align:left">unsigned int fildes</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/fcntl.c:131</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pipe</td>
+<td style="text-align:left">0x2a</td>
+<td style="text-align:left">int __user *fildes</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/pipe.c:1117</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_times</td>
+<td style="text-align:left">0x2b</td>
+<td style="text-align:left">struct tms __user *tbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:896</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x2c</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_brk</td>
+<td style="text-align:left">0x2d</td>
+<td style="text-align:left">unsigned long brk</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mmap.c:245</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setgid16</td>
+<td style="text-align:left">0x2e</td>
+<td style="text-align:left">old_gid_t gid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:51</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getgid16</td>
+<td style="text-align:left">0x2f</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:222</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_signal</td>
+<td style="text-align:left">0x30</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">__sighandler_t handler</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2683</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_geteuid16</td>
+<td style="text-align:left">0x31</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:217</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getegid16</td>
+<td style="text-align:left">0x32</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:227</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_acct</td>
+<td style="text-align:left">0x33</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/acct.c:274</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_umount</td>
+<td style="text-align:left">0x34</td>
+<td style="text-align:left">char __user *name</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namespace.c:1132</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x35</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ioctl</td>
+<td style="text-align:left">0x36</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">unsigned int cmd</td>
+<td style="text-align:left">unsigned long arg</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/ioctl.c:613</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fcntl</td>
+<td style="text-align:left">0x37</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">unsigned int cmd</td>
+<td style="text-align:left">unsigned long arg</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/fcntl.c:429</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x38</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setpgid</td>
+<td style="text-align:left">0x39</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">pid_t pgid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:921</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x3a</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_olduname</td>
+<td style="text-align:left">0x3b</td>
+<td style="text-align:left">struct oldold_utsname __user *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1132</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_umask</td>
+<td style="text-align:left">0x3c</td>
+<td style="text-align:left">int mask</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1460</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_chroot</td>
+<td style="text-align:left">0x3d</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:408</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ustat</td>
+<td style="text-align:left">0x3e</td>
+<td style="text-align:left">unsigned dev</td>
+<td style="text-align:left">struct ustat __user *ubuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/statfs.c:175</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_dup2</td>
+<td style="text-align:left">0x3f</td>
+<td style="text-align:left">unsigned int oldfd</td>
+<td style="text-align:left">unsigned int newfd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/fcntl.c:116</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getppid</td>
+<td style="text-align:left">0x40</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1348</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getpgrp</td>
+<td style="text-align:left">0x41</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1020</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setsid</td>
+<td style="text-align:left">0x42</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1055</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sigaction</td>
+<td style="text-align:left">0x43</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">const struct old_sigaction __user *act</td>
+<td style="text-align:left">struct old_sigaction __user *oact</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/mips/kernel/signal.c:300</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sgetmask</td>
+<td style="text-align:left">0x44</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2657</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ssetmask</td>
+<td style="text-align:left">0x45</td>
+<td style="text-align:left">int newmask</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2663</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setreuid16</td>
+<td style="text-align:left">0x46</td>
+<td style="text-align:left">old_uid_t ruid</td>
+<td style="text-align:left">old_uid_t euid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:59</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setregid16</td>
+<td style="text-align:left">0x47</td>
+<td style="text-align:left">old_gid_t rgid</td>
+<td style="text-align:left">old_gid_t egid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:43</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sigsuspend</td>
+<td style="text-align:left">0x48</td>
+<td style="text-align:left">int history0</td>
+<td style="text-align:left">int history1</td>
+<td style="text-align:left">old_sigset_t mask</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/s390/kernel/signal.c:58</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sigpending</td>
+<td style="text-align:left">0x49</td>
+<td style="text-align:left">old_sigset_t __user *set</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2562</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sethostname</td>
+<td style="text-align:left">0x4a</td>
+<td style="text-align:left">char __user *name</td>
+<td style="text-align:left">int len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1165</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setrlimit</td>
+<td style="text-align:left">0x4b</td>
+<td style="text-align:left">unsigned int resource</td>
+<td style="text-align:left">struct rlimit __user *rlim</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1275</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_old_getrlimit</td>
+<td style="text-align:left">0x4c</td>
+<td style="text-align:left">unsigned int resource</td>
+<td style="text-align:left">struct rlimit __user *rlim</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1256</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getrusage</td>
+<td style="text-align:left">0x4d</td>
+<td style="text-align:left">int who</td>
+<td style="text-align:left">struct rusage __user *ru</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1452</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_gettimeofday</td>
+<td style="text-align:left">0x4e</td>
+<td style="text-align:left">struct timeval __user *tv</td>
+<td style="text-align:left">struct timezone __user *tz</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/time.c:101</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_settimeofday</td>
+<td style="text-align:left">0x4f</td>
+<td style="text-align:left">struct timeval __user *tv</td>
+<td style="text-align:left">struct timezone __user *tz</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/time.c:185</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getgroups16</td>
+<td style="text-align:left">0x50</td>
+<td style="text-align:left">int gidsetsize</td>
+<td style="text-align:left">old_gid_t __user *grouplist</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:164</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setgroups16</td>
+<td style="text-align:left">0x51</td>
+<td style="text-align:left">int gidsetsize</td>
+<td style="text-align:left">old_gid_t __user *grouplist</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:187</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_old_select</td>
+<td style="text-align:left">0x52</td>
+<td style="text-align:left">struct sel_arg_struct __user *arg</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/select.c:701</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_symlink</td>
+<td style="text-align:left">0x53</td>
+<td style="text-align:left">const char __user *old</td>
+<td style="text-align:left">const char __user *new</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2419</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lstat</td>
+<td style="text-align:left">0x54</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct __old_kernel_stat __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:162</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_readlink</td>
+<td style="text-align:left">0x55</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">int bufsiz</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:311</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_uselib</td>
+<td style="text-align:left">0x56</td>
+<td style="text-align:left">const char __user *library</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/exec.c:107</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_swapon</td>
+<td style="text-align:left">0x57</td>
+<td style="text-align:left">const char __user *specialfile</td>
+<td style="text-align:left">int swap_flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/swapfile.c:1793</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_reboot</td>
+<td style="text-align:left">0x58</td>
+<td style="text-align:left">int magic1</td>
+<td style="text-align:left">int magic2</td>
+<td style="text-align:left">unsigned int cmd</td>
+<td style="text-align:left">void __user *arg</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:368</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_old_readdir</td>
+<td style="text-align:left">0x59</td>
+<td style="text-align:left">unsigned int</td>
+<td style="text-align:left">struct old_linux_dirent __user *</td>
+<td style="text-align:left">unsigned int</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/readdir.c:105</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_old_mmap</td>
+<td style="text-align:left">0x5a</td>
+<td style="text-align:left">struct mmap_arg_struct __user *arg</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mmap.c:1141</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_munmap</td>
+<td style="text-align:left">0x5b</td>
+<td style="text-align:left">unsigned long addr</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mmap.c:2109</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_truncate</td>
+<td style="text-align:left">0x5c</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">long length</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:127</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ftruncate</td>
+<td style="text-align:left">0x5d</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">unsigned long length</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:178</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fchmod</td>
+<td style="text-align:left">0x5e</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">mode_t mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:436</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fchown16</td>
+<td style="text-align:left">0x5f</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">old_uid_t user</td>
+<td style="text-align:left">old_gid_t group</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:35</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getpriority</td>
+<td style="text-align:left">0x60</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">int who</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:216</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setpriority</td>
+<td style="text-align:left">0x61</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">int who</td>
+<td style="text-align:left">int niceval</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:149</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x62</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_statfs</td>
+<td style="text-align:left">0x63</td>
+<td style="text-align:left">const char __user * path</td>
+<td style="text-align:left">struct statfs __user *buf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/statfs.c:102</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fstatfs</td>
+<td style="text-align:left">0x64</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">struct statfs __user *buf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/statfs.c:136</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ioperm</td>
+<td style="text-align:left">0x65</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_socketcall</td>
+<td style="text-align:left">0x66</td>
+<td style="text-align:left">int call</td>
+<td style="text-align:left">unsigned long __user *args</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">net/socket.c:2210</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_syslog</td>
+<td style="text-align:left">0x67</td>
+<td style="text-align:left">int type</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">int len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/printk.c:412</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setitimer</td>
+<td style="text-align:left">0x68</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">struct itimerval __user *value</td>
+<td style="text-align:left">struct itimerval __user *ovalue</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/itimer.c:279</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getitimer</td>
+<td style="text-align:left">0x69</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">struct itimerval __user *value</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/itimer.c:103</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_newstat</td>
+<td style="text-align:left">0x6a</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct stat __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:237</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_newlstat</td>
+<td style="text-align:left">0x6b</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct stat __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:247</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_newfstat</td>
+<td style="text-align:left">0x6c</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">struct stat __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:273</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_uname</td>
+<td style="text-align:left">0x6d</td>
+<td style="text-align:left">struct old_utsname __user *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1115</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_iopl</td>
+<td style="text-align:left">0x6e</td>
+<td style="text-align:left">unsigned int</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_vhangup</td>
+<td style="text-align:left">0x6f</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:1008</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x70</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_vm86old</td>
+<td style="text-align:left">0x71</td>
+<td style="text-align:left">struct vm86_struct __user *</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_wait4</td>
+<td style="text-align:left">0x72</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">int __user *stat_addr</td>
+<td style="text-align:left">int options</td>
+<td style="text-align:left">struct rusage __user *ru</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/exit.c:1726</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_swapoff</td>
+<td style="text-align:left">0x73</td>
+<td style="text-align:left">const char __user *specialfile</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/swapfile.c:1533</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sysinfo</td>
+<td style="text-align:left">0x74</td>
+<td style="text-align:left">struct sysinfo __user *info</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1565</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ipc</td>
+<td style="text-align:left">0x75</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">ipc/syscall.c:16</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fsync</td>
+<td style="text-align:left">0x76</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/sync.c:221</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sigreturn</td>
+<td style="text-align:left">0x77</td>
+<td style="text-align:left">struct pt_regs *regs</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/alpha/kernel/entry.S:758</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_clone</td>
+<td style="text-align:left">0x78</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">arch/alpha/kernel/entry.S:733</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setdomainname</td>
+<td style="text-align:left">0x79</td>
+<td style="text-align:left">char __user *name</td>
+<td style="text-align:left">int len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1214</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_newuname</td>
+<td style="text-align:left">0x7a</td>
+<td style="text-align:left">struct new_utsname __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1097</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_modify_ldt</td>
+<td style="text-align:left">0x7b</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">void __user *</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_adjtimex</td>
+<td style="text-align:left">0x7c</td>
+<td style="text-align:left">struct timex __user *txc_p</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/time.c:206</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mprotect</td>
+<td style="text-align:left">0x7d</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">unsigned long prot</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mprotect.c:221</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sigprocmask</td>
+<td style="text-align:left">0x7e</td>
+<td style="text-align:left">int how</td>
+<td style="text-align:left">old_sigset_t __user *set</td>
+<td style="text-align:left">old_sigset_t __user *oset</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2573</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x7f</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_init_module</td>
+<td style="text-align:left">0x80</td>
+<td style="text-align:left">void __user *umod</td>
+<td style="text-align:left">unsigned long len</td>
+<td style="text-align:left">const char __user *uargs</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/module.c:2611</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_delete_module</td>
+<td style="text-align:left">0x81</td>
+<td style="text-align:left">const char __user *name_user</td>
+<td style="text-align:left">unsigned int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/module.c:720</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x82</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_quotactl</td>
+<td style="text-align:left">0x83</td>
+<td style="text-align:left">unsigned int cmd</td>
+<td style="text-align:left">const char __user *special</td>
+<td style="text-align:left">qid_t id</td>
+<td style="text-align:left">void __user *addr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/quota/quota.c:333</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getpgid</td>
+<td style="text-align:left">0x84</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:990</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fchdir</td>
+<td style="text-align:left">0x85</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:382</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_bdflush</td>
+<td style="text-align:left">0x86</td>
+<td style="text-align:left">int func</td>
+<td style="text-align:left">long data</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/buffer.c:3278</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sysfs</td>
+<td style="text-align:left">0x87</td>
+<td style="text-align:left">int option</td>
+<td style="text-align:left">unsigned long arg1</td>
+<td style="text-align:left">unsigned long arg2</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/filesystems.c:182</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_personality</td>
+<td style="text-align:left">0x88</td>
+<td style="text-align:left">unsigned int personality</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/exec_domain.c:191</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x89</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setfsuid16</td>
+<td style="text-align:left">0x8a</td>
+<td style="text-align:left">old_uid_t uid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:118</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setfsgid16</td>
+<td style="text-align:left">0x8b</td>
+<td style="text-align:left">old_gid_t gid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:126</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_llseek</td>
+<td style="text-align:left">0x8c</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">unsigned long offset_high</td>
+<td style="text-align:left">unsigned long offset_low</td>
+<td style="text-align:left">loff_t __user *result</td>
+<td style="text-align:left">unsigned int origin</td>
+<td style="text-align:left">fs/read_write.c:191</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getdents</td>
+<td style="text-align:left">0x8d</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">struct linux_dirent __user *dirent</td>
+<td style="text-align:left">unsigned int count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/readdir.c:191</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_select</td>
+<td style="text-align:left">0x8e</td>
+<td style="text-align:left">int n</td>
+<td style="text-align:left">fd_set __user *inp</td>
+<td style="text-align:left">fd_set __user *outp</td>
+<td style="text-align:left">fd_set __user *exp</td>
+<td style="text-align:left">struct timeval __user *tvp</td>
+<td style="text-align:left">fs/select.c:596</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_flock</td>
+<td style="text-align:left">0x8f</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">unsigned int cmd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/locks.c:1569</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_msync</td>
+<td style="text-align:left">0x90</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/msync.c:31</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_readv</td>
+<td style="text-align:left">0x91</td>
+<td style="text-align:left">unsigned long fd</td>
+<td style="text-align:left">const struct iovec __user *vec</td>
+<td style="text-align:left">unsigned long vlen</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:711</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_writev</td>
+<td style="text-align:left">0x92</td>
+<td style="text-align:left">unsigned long fd</td>
+<td style="text-align:left">const struct iovec __user *vec</td>
+<td style="text-align:left">unsigned long vlen</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:732</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getsid</td>
+<td style="text-align:left">0x93</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1027</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fdatasync</td>
+<td style="text-align:left">0x94</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/sync.c:226</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sysctl</td>
+<td style="text-align:left">0x95</td>
+<td style="text-align:left">struct __sysctl_args __user *args</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sysctl_binary.c:1462</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mlock</td>
+<td style="text-align:left">0x96</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mlock.c:491</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_munlock</td>
+<td style="text-align:left">0x97</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mlock.c:519</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mlockall</td>
+<td style="text-align:left">0x98</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mlock.c:556</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_munlockall</td>
+<td style="text-align:left">0x99</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mlock.c:584</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_setparam</td>
+<td style="text-align:left">0x9a</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">struct sched_param __user *param</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4616</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_getparam</td>
+<td style="text-align:left">0x9b</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">struct sched_param __user *param</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4651</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_setscheduler</td>
+<td style="text-align:left">0x9c</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">int policy</td>
+<td style="text-align:left">struct sched_param __user *param</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4601</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_getscheduler</td>
+<td style="text-align:left">0x9d</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4625</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_yield</td>
+<td style="text-align:left">0x9e</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4851</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_get_priority_max</td>
+<td style="text-align:left">0x9f</td>
+<td style="text-align:left">int policy</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4989</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_get_priority_min</td>
+<td style="text-align:left">0xa0</td>
+<td style="text-align:left">int policy</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:5014</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_rr_get_interval</td>
+<td style="text-align:left">0xa1</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">struct timespec __user *interval</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:5039</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_nanosleep</td>
+<td style="text-align:left">0xa2</td>
+<td style="text-align:left">struct timespec __user *rqtp</td>
+<td style="text-align:left">struct timespec __user *rmtp</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/hrtimer.c:1606</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mremap</td>
+<td style="text-align:left">0xa3</td>
+<td style="text-align:left">unsigned long addr</td>
+<td style="text-align:left">unsigned long old_len</td>
+<td style="text-align:left">unsigned long new_len</td>
+<td style="text-align:left">unsigned long flags</td>
+<td style="text-align:left">unsigned long new_addr</td>
+<td style="text-align:left">mm/mremap.c:510</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setresuid16</td>
+<td style="text-align:left">0xa4</td>
+<td style="text-align:left">old_uid_t ruid</td>
+<td style="text-align:left">old_uid_t euid</td>
+<td style="text-align:left">old_uid_t suid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:75</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getresuid16</td>
+<td style="text-align:left">0xa5</td>
+<td style="text-align:left">old_uid_t __user *ruid</td>
+<td style="text-align:left">old_uid_t __user *euid</td>
+<td style="text-align:left">old_uid_t __user *suid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:84</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_vm86</td>
+<td style="text-align:left">0xa6</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">unsigned long</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0xa7</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_poll</td>
+<td style="text-align:left">0xa8</td>
+<td style="text-align:left">struct pollfd __user *ufds</td>
+<td style="text-align:left">unsigned int nfds</td>
+<td style="text-align:left">long timeout</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/select.c:915</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_nfsservctl</td>
+<td style="text-align:left">0xa9</td>
+<td style="text-align:left">int cmd</td>
+<td style="text-align:left">struct nfsctl_arg __user *arg</td>
+<td style="text-align:left">void __user *res</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/nfsctl.c:86</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setresgid16</td>
+<td style="text-align:left">0xaa</td>
+<td style="text-align:left">old_gid_t rgid</td>
+<td style="text-align:left">old_gid_t egid</td>
+<td style="text-align:left">old_gid_t sgid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:96</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getresgid16</td>
+<td style="text-align:left">0xab</td>
+<td style="text-align:left">old_gid_t __user *rgid</td>
+<td style="text-align:left">old_gid_t __user *egid</td>
+<td style="text-align:left">old_gid_t __user *sgid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:106</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_prctl</td>
+<td style="text-align:left">0xac</td>
+<td style="text-align:left">int option</td>
+<td style="text-align:left">unsigned long arg2</td>
+<td style="text-align:left">unsigned long arg3</td>
+<td style="text-align:left">unsigned long arg4</td>
+<td style="text-align:left">unsigned long arg5</td>
+<td style="text-align:left">kernel/sys.c:1466</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigreturn</td>
+<td style="text-align:left">0xad</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/alpha/kernel/entry.S:771</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigaction</td>
+<td style="text-align:left">0xae</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">const struct sigaction __user *act</td>
+<td style="text-align:left">struct sigaction __user *oact</td>
+<td style="text-align:left">size_t sigsetsize</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2624</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigprocmask</td>
+<td style="text-align:left">0xaf</td>
+<td style="text-align:left">int how</td>
+<td style="text-align:left">sigset_t __user *set</td>
+<td style="text-align:left">sigset_t __user *oset</td>
+<td style="text-align:left">size_t sigsetsize</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2111</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigpending</td>
+<td style="text-align:left">0xb0</td>
+<td style="text-align:left">sigset_t __user *set</td>
+<td style="text-align:left">size_t sigsetsize</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2171</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigtimedwait</td>
+<td style="text-align:left">0xb1</td>
+<td style="text-align:left">const sigset_t __user *uthese</td>
+<td style="text-align:left">siginfo_t __user *uinfo</td>
+<td style="text-align:left">const struct timespec __user *uts</td>
+<td style="text-align:left">size_t sigsetsize</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2242</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigqueueinfo</td>
+<td style="text-align:left">0xb2</td>
+<td style="text-align:left">int pid</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">siginfo_t __user *uinfo</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2404</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_sigsuspend</td>
+<td style="text-align:left">0xb3</td>
+<td style="text-align:left">sigset_t __user *unewset</td>
+<td style="text-align:left">size_t sigsetsize</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2710</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pread64</td>
+<td style="text-align:left">0xb4</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">loff_t pos</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pwrite64</td>
+<td style="text-align:left">0xb5</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">const char __user *buf</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">loff_t pos</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_chown16</td>
+<td style="text-align:left">0xb6</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">old_uid_t user</td>
+<td style="text-align:left">old_gid_t group</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/uid16.c:19</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getcwd</td>
+<td style="text-align:left">0xb7</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">unsigned long size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/dcache.c:2104</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_capget</td>
+<td style="text-align:left">0xb8</td>
+<td style="text-align:left">cap_user_header_t header</td>
+<td style="text-align:left">cap_user_data_t dataptr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/capability.c:161</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_capset</td>
+<td style="text-align:left">0xb9</td>
+<td style="text-align:left">cap_user_header_t header</td>
+<td style="text-align:left">const cap_user_data_t data</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/capability.c:235</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sigaltstack</td>
+<td style="text-align:left">0xba</td>
+<td style="text-align:left">const stack_t __user *</td>
+<td style="text-align:left">stack_t __user *</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/alpha/kernel/signal.c:199</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sendfile</td>
+<td style="text-align:left">0xbb</td>
+<td style="text-align:left">int out_fd</td>
+<td style="text-align:left">int in_fd</td>
+<td style="text-align:left">off_t __user *offset</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:897</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0xbc</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0xbd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_vfork</td>
+<td style="text-align:left">0xbe</td>
+<td style="text-align:left">struct pt_regs *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/alpha/kernel/entry.S:746</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getrlimit</td>
+<td style="text-align:left">0xbf</td>
+<td style="text-align:left">unsigned int resource</td>
+<td style="text-align:left">struct rlimit __user *rlim</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1237</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mmap_pgoff</td>
+<td style="text-align:left">0xc0</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mmap.c:1091</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_truncate64</td>
+<td style="text-align:left">0xc1</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">loff_t length</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ftruncate64</td>
+<td style="text-align:left">0xc2</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">loff_t length</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_stat64</td>
+<td style="text-align:left">0xc3</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct stat64 __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:358</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lstat64</td>
+<td style="text-align:left">0xc4</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct stat64 __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:369</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fstat64</td>
+<td style="text-align:left">0xc5</td>
+<td style="text-align:left">unsigned long fd</td>
+<td style="text-align:left">struct stat64 __user *statbuf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:380</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lchown</td>
+<td style="text-align:left">0xc6</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">uid_t user</td>
+<td style="text-align:left">gid_t group</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:583</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getuid</td>
+<td style="text-align:left">0xc7</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1359</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getgid</td>
+<td style="text-align:left">0xc8</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1371</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_geteuid</td>
+<td style="text-align:left">0xc9</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1365</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getegid</td>
+<td style="text-align:left">0xca</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1377</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setreuid</td>
+<td style="text-align:left">0xcb</td>
+<td style="text-align:left">uid_t ruid</td>
+<td style="text-align:left">uid_t euid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:594</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setregid</td>
+<td style="text-align:left">0xcc</td>
+<td style="text-align:left">gid_t rgid</td>
+<td style="text-align:left">gid_t egid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:484</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getgroups</td>
+<td style="text-align:left">0xcd</td>
+<td style="text-align:left">int gidsetsize</td>
+<td style="text-align:left">gid_t __user *grouplist</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/groups.c:203</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setgroups</td>
+<td style="text-align:left">0xce</td>
+<td style="text-align:left">int gidsetsize</td>
+<td style="text-align:left">gid_t __user *grouplist</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/groups.c:232</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fchown</td>
+<td style="text-align:left">0xcf</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">uid_t user</td>
+<td style="text-align:left">gid_t group</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:602</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setresuid</td>
+<td style="text-align:left">0xd0</td>
+<td style="text-align:left">uid_t ruid</td>
+<td style="text-align:left">uid_t euid</td>
+<td style="text-align:left">uid_t suid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:696</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getresuid</td>
+<td style="text-align:left">0xd1</td>
+<td style="text-align:left">uid_t __user *ruid</td>
+<td style="text-align:left">uid_t __user *euid</td>
+<td style="text-align:left">uid_t __user *suid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:746</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setresgid</td>
+<td style="text-align:left">0xd2</td>
+<td style="text-align:left">gid_t rgid</td>
+<td style="text-align:left">gid_t egid</td>
+<td style="text-align:left">gid_t sgid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:761</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getresgid</td>
+<td style="text-align:left">0xd3</td>
+<td style="text-align:left">gid_t __user *rgid</td>
+<td style="text-align:left">gid_t __user *egid</td>
+<td style="text-align:left">gid_t __user *sgid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:800</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_chown</td>
+<td style="text-align:left">0xd4</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">uid_t user</td>
+<td style="text-align:left">gid_t group</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:539</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setuid</td>
+<td style="text-align:left">0xd5</td>
+<td style="text-align:left">uid_t uid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:655</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setgid</td>
+<td style="text-align:left">0xd6</td>
+<td style="text-align:left">gid_t gid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:531</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setfsuid</td>
+<td style="text-align:left">0xd7</td>
+<td style="text-align:left">uid_t uid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:819</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setfsgid</td>
+<td style="text-align:left">0xd8</td>
+<td style="text-align:left">gid_t gid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:852</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pivot_root</td>
+<td style="text-align:left">0xd9</td>
+<td style="text-align:left">const char __user *new_root</td>
+<td style="text-align:left">const char __user *put_old</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namespace.c:2184</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mincore</td>
+<td style="text-align:left">0xda</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">unsigned char __user * vec</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mincore.c:256</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_madvise</td>
+<td style="text-align:left">0xdb</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">int behavior</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/madvise.c:335</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getdents64</td>
+<td style="text-align:left">0xdc</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">struct linux_dirent64 __user *dirent</td>
+<td style="text-align:left">unsigned int count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/readdir.c:273</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fcntl64</td>
+<td style="text-align:left">0xdd</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">unsigned int cmd</td>
+<td style="text-align:left">unsigned long arg</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/fcntl.c:452</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0xde</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0xdf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_gettid</td>
+<td style="text-align:left">0xe0</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/timer.c:1493</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_readahead</td>
+<td style="text-align:left">0xe1</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">loff_t offset</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_setxattr</td>
+<td style="text-align:left">0xe2</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">const void __user *value</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">fs/xattr.c:279</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lsetxattr</td>
+<td style="text-align:left">0xe3</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">const void __user *value</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">fs/xattr.c:298</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fsetxattr</td>
+<td style="text-align:left">0xe4</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">const void __user *value</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">fs/xattr.c:317</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getxattr</td>
+<td style="text-align:left">0xe5</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">void __user *value</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:376</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lgetxattr</td>
+<td style="text-align:left">0xe6</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">void __user *value</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:390</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fgetxattr</td>
+<td style="text-align:left">0xe7</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">void __user *value</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:404</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_listxattr</td>
+<td style="text-align:left">0xe8</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">char __user *list</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:449</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_llistxattr</td>
+<td style="text-align:left">0xe9</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">char __user *list</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:463</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_flistxattr</td>
+<td style="text-align:left">0xea</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">char __user *list</td>
+<td style="text-align:left">size_t size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:477</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_removexattr</td>
+<td style="text-align:left">0xeb</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:509</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lremovexattr</td>
+<td style="text-align:left">0xec</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:527</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fremovexattr</td>
+<td style="text-align:left">0xed</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/xattr.c:545</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_tkill</td>
+<td style="text-align:left">0xee</td>
+<td style="text-align:left">int pid</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2395</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sendfile64</td>
+<td style="text-align:left">0xef</td>
+<td style="text-align:left">int out_fd</td>
+<td style="text-align:left">int in_fd</td>
+<td style="text-align:left">loff_t __user *offset</td>
+<td style="text-align:left">size_t count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/read_write.c:916</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_futex</td>
+<td style="text-align:left">0xf0</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/futex.c:2605</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_setaffinity</td>
+<td style="text-align:left">0xf1</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">unsigned int len</td>
+<td style="text-align:left">unsigned long __user *user_mask_ptr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4765</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sched_getaffinity</td>
+<td style="text-align:left">0xf2</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">unsigned int len</td>
+<td style="text-align:left">unsigned long __user *user_mask_ptr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sched.c:4817</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_set_thread_area</td>
+<td style="text-align:left">0xf3</td>
+<td style="text-align:left">struct user_desc __user *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">arch/mips/kernel/syscall.c:222</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_get_thread_area</td>
+<td style="text-align:left">0xf4</td>
+<td style="text-align:left">struct user_desc __user *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_io_setup</td>
+<td style="text-align:left">0xf5</td>
+<td style="text-align:left">unsigned nr_reqs</td>
+<td style="text-align:left">aio_context_t __user *ctx</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/aio.c:1245</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_io_destroy</td>
+<td style="text-align:left">0xf6</td>
+<td style="text-align:left">aio_context_t ctx</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/aio.c:1283</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_io_getevents</td>
+<td style="text-align:left">0xf7</td>
+<td style="text-align:left">aio_context_t ctx_id</td>
+<td style="text-align:left">long min_nr</td>
+<td style="text-align:left">long nr</td>
+<td style="text-align:left">struct io_event __user *events</td>
+<td style="text-align:left">struct timespec __user *timeout</td>
+<td style="text-align:left">fs/aio.c:1808</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_io_submit</td>
+<td style="text-align:left">0xf8</td>
+<td style="text-align:left">aio_context_t</td>
+<td style="text-align:left">long</td>
+<td style="text-align:left">struct iocb <strong>user * \</strong>user *</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/aio.c:1711</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_io_cancel</td>
+<td style="text-align:left">0xf9</td>
+<td style="text-align:left">aio_context_t ctx_id</td>
+<td style="text-align:left">struct iocb __user *iocb</td>
+<td style="text-align:left">struct io_event __user *result</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/aio.c:1746</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fadvise64</td>
+<td style="text-align:left">0xfa</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">loff_t offset</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">int advice</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0xfb</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_exit_group</td>
+<td style="text-align:left">0xfc</td>
+<td style="text-align:left">int error_code</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/exit.c:1087</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_lookup_dcookie</td>
+<td style="text-align:left">0xfd</td>
+<td style="text-align:left">u64 cookie64</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_epoll_create</td>
+<td style="text-align:left">0xfe</td>
+<td style="text-align:left">int size</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventpoll.c:1215</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_epoll_ctl</td>
+<td style="text-align:left">0xff</td>
+<td style="text-align:left">int epfd</td>
+<td style="text-align:left">int op</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">struct epoll_event __user *event</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventpoll.c:1228</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_epoll_wait</td>
+<td style="text-align:left">0x100</td>
+<td style="text-align:left">int epfd</td>
+<td style="text-align:left">struct epoll_event __user *events</td>
+<td style="text-align:left">int maxevents</td>
+<td style="text-align:left">int timeout</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventpoll.c:1320</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_remap_file_pages</td>
+<td style="text-align:left">0x101</td>
+<td style="text-align:left">unsigned long start</td>
+<td style="text-align:left">unsigned long size</td>
+<td style="text-align:left">unsigned long prot</td>
+<td style="text-align:left">unsigned long pgoff</td>
+<td style="text-align:left">unsigned long flags</td>
+<td style="text-align:left">mm/fremap.c:123</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_set_tid_address</td>
+<td style="text-align:left">0x102</td>
+<td style="text-align:left">int __user *tidptr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/fork.c:920</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timer_create</td>
+<td style="text-align:left">0x103</td>
+<td style="text-align:left">clockid_t which_clock</td>
+<td style="text-align:left">struct sigevent __user *timer_event_spec</td>
+<td style="text-align:left">timer_t __user * created_timer_id</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:522</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timer_settime</td>
+<td style="text-align:left">0x104</td>
+<td style="text-align:left">timer_t timer_id</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">const struct itimerspec __user *new_setting</td>
+<td style="text-align:left">struct itimerspec __user *old_setting</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:800</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timer_gettime</td>
+<td style="text-align:left">0x105</td>
+<td style="text-align:left">timer_t timer_id</td>
+<td style="text-align:left">struct itimerspec __user *setting</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:702</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timer_getoverrun</td>
+<td style="text-align:left">0x106</td>
+<td style="text-align:left">timer_t timer_id</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:732</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timer_delete</td>
+<td style="text-align:left">0x107</td>
+<td style="text-align:left">timer_t timer_id</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:855</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_clock_settime</td>
+<td style="text-align:left">0x108</td>
+<td style="text-align:left">clockid_t which_clock</td>
+<td style="text-align:left">const struct timespec __user *tp</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:941</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_clock_gettime</td>
+<td style="text-align:left">0x109</td>
+<td style="text-align:left">clockid_t which_clock</td>
+<td style="text-align:left">struct timespec __user *tp</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:954</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_clock_getres</td>
+<td style="text-align:left">0x10a</td>
+<td style="text-align:left">clockid_t which_clock</td>
+<td style="text-align:left">struct timespec __user *tp</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:971</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_clock_nanosleep</td>
+<td style="text-align:left">0x10b</td>
+<td style="text-align:left">clockid_t which_clock</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">const struct timespec __user *rqtp</td>
+<td style="text-align:left">struct timespec __user *rmtp</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/posix-timers.c:1001</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_statfs64</td>
+<td style="text-align:left">0x10c</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">size_t sz</td>
+<td style="text-align:left">struct statfs64 __user *buf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/statfs.c:118</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fstatfs64</td>
+<td style="text-align:left">0x10d</td>
+<td style="text-align:left">unsigned int fd</td>
+<td style="text-align:left">size_t sz</td>
+<td style="text-align:left">struct statfs64 __user *buf</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/statfs.c:154</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_tgkill</td>
+<td style="text-align:left">0x10e</td>
+<td style="text-align:left">int tgid</td>
+<td style="text-align:left">int pid</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2383</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_utimes</td>
+<td style="text-align:left">0x10f</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct timeval __user *utimes</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/utimes.c:219</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fadvise64_64</td>
+<td style="text-align:left">0x110</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">loff_t offset</td>
+<td style="text-align:left">loff_t len</td>
+<td style="text-align:left">int advice</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x111</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mbind</td>
+<td style="text-align:left">0x112</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mempolicy.c:1232</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_get_mempolicy</td>
+<td style="text-align:left">0x113</td>
+<td style="text-align:left">int __user *policy</td>
+<td style="text-align:left">unsigned long __user *nmask</td>
+<td style="text-align:left">unsigned long maxnode</td>
+<td style="text-align:left">unsigned long addr</td>
+<td style="text-align:left">unsigned long flags</td>
+<td style="text-align:left">mm/mempolicy.c:1348</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_set_mempolicy</td>
+<td style="text-align:left">0x114</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">unsigned long __user *nmask</td>
+<td style="text-align:left">unsigned long maxnode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mempolicy.c:1254</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mq_open</td>
+<td style="text-align:left">0x115</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">int oflag</td>
+<td style="text-align:left">mode_t mode</td>
+<td style="text-align:left">struct mq_attr __user *attr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">ipc/mqueue.c:673</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mq_unlink</td>
+<td style="text-align:left">0x116</td>
+<td style="text-align:left">const char __user *name</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">ipc/mqueue.c:746</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mq_timedsend</td>
+<td style="text-align:left">0x117</td>
+<td style="text-align:left">mqd_t mqdes</td>
+<td style="text-align:left">const char __user *msg_ptr</td>
+<td style="text-align:left">size_t msg_len</td>
+<td style="text-align:left">unsigned int msg_prio</td>
+<td style="text-align:left">const struct timespec __user *abs_timeout</td>
+<td style="text-align:left">ipc/mqueue.c:840</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mq_timedreceive</td>
+<td style="text-align:left">0x118</td>
+<td style="text-align:left">mqd_t mqdes</td>
+<td style="text-align:left">char __user *msg_ptr</td>
+<td style="text-align:left">size_t msg_len</td>
+<td style="text-align:left">unsigned int __user *msg_prio</td>
+<td style="text-align:left">const struct timespec __user *abs_timeout</td>
+<td style="text-align:left">ipc/mqueue.c:934</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mq_notify</td>
+<td style="text-align:left">0x119</td>
+<td style="text-align:left">mqd_t mqdes</td>
+<td style="text-align:left">const struct sigevent __user *notification</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">ipc/mqueue.c:1023</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mq_getsetattr</td>
+<td style="text-align:left">0x11a</td>
+<td style="text-align:left">mqd_t mqdes</td>
+<td style="text-align:left">const struct mq_attr __user *mqstat</td>
+<td style="text-align:left">struct mq_attr __user *omqstat</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">ipc/mqueue.c:1154</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_kexec_load</td>
+<td style="text-align:left">0x11b</td>
+<td style="text-align:left">unsigned long entry</td>
+<td style="text-align:left">unsigned long nr_segments</td>
+<td style="text-align:left">struct kexec_segment __user *segments</td>
+<td style="text-align:left">unsigned long flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/kexec.c:939</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_waitid</td>
+<td style="text-align:left">0x11c</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">struct siginfo __user *infop</td>
+<td style="text-align:left">int options</td>
+<td style="text-align:left">struct rusage __user *ru</td>
+<td style="text-align:left">kernel/exit.c:1655</td>
+</tr>
+<tr>
+<td style="text-align:left">not implemented</td>
+<td style="text-align:left">0x11d</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">sys_add_key</td>
+<td style="text-align:left">0x11e</td>
+<td style="text-align:left">const char __user *_type</td>
+<td style="text-align:left">const char __user *_description</td>
+<td style="text-align:left">const void __user *_payload</td>
+<td style="text-align:left">size_t plen</td>
+<td style="text-align:left">key_serial_t destringid</td>
+<td style="text-align:left">security/keys/keyctl.c:57</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_request_key</td>
+<td style="text-align:left">0x11f</td>
+<td style="text-align:left">const char __user *_type</td>
+<td style="text-align:left">const char __user *_description</td>
+<td style="text-align:left">const char __user *_callout_info</td>
+<td style="text-align:left">key_serial_t destringid</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">security/keys/keyctl.c:149</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_keyctl</td>
+<td style="text-align:left">0x120</td>
+<td style="text-align:left">int cmd</td>
+<td style="text-align:left">unsigned long arg2</td>
+<td style="text-align:left">unsigned long arg3</td>
+<td style="text-align:left">unsigned long arg4</td>
+<td style="text-align:left">unsigned long arg5</td>
+<td style="text-align:left">security/keys/keyctl.c:1338</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ioprio_set</td>
+<td style="text-align:left">0x121</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">int who</td>
+<td style="text-align:left">int ioprio</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/ioprio.c:76</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ioprio_get</td>
+<td style="text-align:left">0x122</td>
+<td style="text-align:left">int which</td>
+<td style="text-align:left">int who</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/ioprio.c:192</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_inotify_init</td>
+<td style="text-align:left">0x123</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/notify/inotify/inotify_user.c:680</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_inotify_add_watch</td>
+<td style="text-align:left">0x124</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">u32 mask</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/notify/inotify/inotify_user.c:685</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_inotify_rm_watch</td>
+<td style="text-align:left">0x125</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">__s32 wd</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/notify/inotify/inotify_user.c:726</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_migrate_pages</td>
+<td style="text-align:left">0x126</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">unsigned long maxnode</td>
+<td style="text-align:left">const unsigned long __user *from</td>
+<td style="text-align:left">const unsigned long __user *to</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/mempolicy.c:1273</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_openat</td>
+<td style="text-align:left">0x127</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:913</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mkdirat</td>
+<td style="text-align:left">0x128</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user * pathname</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2093</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_mknodat</td>
+<td style="text-align:left">0x129</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user * filename</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">unsigned dev</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2012</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fchownat</td>
+<td style="text-align:left">0x12a</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">uid_t user</td>
+<td style="text-align:left">gid_t group</td>
+<td style="text-align:left">int flag</td>
+<td style="text-align:left">fs/open.c:558</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_futimesat</td>
+<td style="text-align:left">0x12b</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct timeval __user *utimes</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/utimes.c:191</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fstatat64</td>
+<td style="text-align:left">0x12c</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct stat64 __user *statbuf</td>
+<td style="text-align:left">int flag</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:391</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_unlinkat</td>
+<td style="text-align:left">0x12d</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user * pathname</td>
+<td style="text-align:left">int flag</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2341</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_renameat</td>
+<td style="text-align:left">0x12e</td>
+<td style="text-align:left">int olddfd</td>
+<td style="text-align:left">const char __user * oldname</td>
+<td style="text-align:left">int newdfd</td>
+<td style="text-align:left">const char __user * newname</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2671</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_linkat</td>
+<td style="text-align:left">0x12f</td>
+<td style="text-align:left">int olddfd</td>
+<td style="text-align:left">const char __user *oldname</td>
+<td style="text-align:left">int newdfd</td>
+<td style="text-align:left">const char __user *newname</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">fs/namei.c:2470</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_symlinkat</td>
+<td style="text-align:left">0x130</td>
+<td style="text-align:left">const char __user * oldname</td>
+<td style="text-align:left">int newdfd</td>
+<td style="text-align:left">const char __user * newname</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/namei.c:2377</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_readlinkat</td>
+<td style="text-align:left">0x131</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user *path</td>
+<td style="text-align:left">char __user *buf</td>
+<td style="text-align:left">int bufsiz</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/stat.c:284</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fchmodat</td>
+<td style="text-align:left">0x132</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user * filename</td>
+<td style="text-align:left">mode_t mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:474</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_faccessat</td>
+<td style="text-align:left">0x133</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">const char __user *filename</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/open.c:286</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pselect6</td>
+<td style="text-align:left">0x134</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/select.c:675</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_ppoll</td>
+<td style="text-align:left">0x135</td>
+<td style="text-align:left">struct pollfd __user *ufds</td>
+<td style="text-align:left">unsigned int nfds</td>
+<td style="text-align:left">struct timespec __user *tsp</td>
+<td style="text-align:left">const sigset_t __user *sigmask</td>
+<td style="text-align:left">size_t sigsetsize</td>
+<td style="text-align:left">fs/select.c:950</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_unshare</td>
+<td style="text-align:left">0x136</td>
+<td style="text-align:left">unsigned long unshare_flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/fork.c:1624</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_set_robust_list</td>
+<td style="text-align:left">0x137</td>
+<td style="text-align:left">struct robust_list_head __user *head</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/futex.c:2351</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_get_robust_list</td>
+<td style="text-align:left">0x138</td>
+<td style="text-align:left">int pid</td>
+<td style="text-align:left">struct robust_list_head <strong>user * \</strong>user *head_ptr</td>
+<td style="text-align:left">size_t __user *len_ptr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/futex.c:2373</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_splice</td>
+<td style="text-align:left">0x139</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/splice.c:1718</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_sync_file_range</td>
+<td style="text-align:left">0x13a</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">loff_t offset</td>
+<td style="text-align:left">loff_t nbytes</td>
+<td style="text-align:left">unsigned int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_tee</td>
+<td style="text-align:left">0x13b</td>
+<td style="text-align:left">int fdin</td>
+<td style="text-align:left">int fdout</td>
+<td style="text-align:left">size_t len</td>
+<td style="text-align:left">unsigned int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/splice.c:2061</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_vmsplice</td>
+<td style="text-align:left">0x13c</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">const struct iovec __user *iov</td>
+<td style="text-align:left">unsigned long nr_segs</td>
+<td style="text-align:left">unsigned int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/splice.c:1692</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_move_pages</td>
+<td style="text-align:left">0x13d</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">mm/migrate.c:1075</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_getcpu</td>
+<td style="text-align:left">0x13e</td>
+<td style="text-align:left">unsigned __user *cpu</td>
+<td style="text-align:left">unsigned __user *node</td>
+<td style="text-align:left">struct getcpu_cache __user *cache</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/sys.c:1621</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_epoll_pwait</td>
+<td style="text-align:left">0x13f</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventpoll.c:1373</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_utimensat</td>
+<td style="text-align:left">0x140</td>
+<td style="text-align:left">int dfd</td>
+<td style="text-align:left">char __user *filename</td>
+<td style="text-align:left">struct timespec __user *utimes</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/utimes.c:173</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_signalfd</td>
+<td style="text-align:left">0x141</td>
+<td style="text-align:left">int ufd</td>
+<td style="text-align:left">sigset_t __user *user_mask</td>
+<td style="text-align:left">size_t sizemask</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/signalfd.c:265</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timerfd_create</td>
+<td style="text-align:left">0x142</td>
+<td style="text-align:left">int clockid</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/timerfd.c:164</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_eventfd</td>
+<td style="text-align:left">0x143</td>
+<td style="text-align:left">unsigned int count</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventfd.c:434</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_fallocate</td>
+<td style="text-align:left">0x144</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">int mode</td>
+<td style="text-align:left">loff_t offset</td>
+<td style="text-align:left">loff_t len</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">not found:</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timerfd_settime</td>
+<td style="text-align:left">0x145</td>
+<td style="text-align:left">int ufd</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">const struct itimerspec __user *utmr</td>
+<td style="text-align:left">struct itimerspec __user *otmr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/timerfd.c:194</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_timerfd_gettime</td>
+<td style="text-align:left">0x146</td>
+<td style="text-align:left">int ufd</td>
+<td style="text-align:left">struct itimerspec __user *otmr</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/timerfd.c:252</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_signalfd4</td>
+<td style="text-align:left">0x147</td>
+<td style="text-align:left">int ufd</td>
+<td style="text-align:left">sigset_t __user *user_mask</td>
+<td style="text-align:left">size_t sizemask</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/signalfd.c:211</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_eventfd2</td>
+<td style="text-align:left">0x148</td>
+<td style="text-align:left">unsigned int count</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventfd.c:409</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_epoll_create1</td>
+<td style="text-align:left">0x149</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/eventpoll.c:1187</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_dup3</td>
+<td style="text-align:left">0x14a</td>
+<td style="text-align:left">unsigned int oldfd</td>
+<td style="text-align:left">unsigned int newfd</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/fcntl.c:53</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pipe2</td>
+<td style="text-align:left">0x14b</td>
+<td style="text-align:left">int __user *fildes</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/pipe.c:1101</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_inotify_init1</td>
+<td style="text-align:left">0x14c</td>
+<td style="text-align:left">int flags</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">fs/notify/inotify/inotify_user.c:640</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_preadv</td>
+<td style="text-align:left">0x14d</td>
+<td style="text-align:left">unsigned long fd</td>
+<td style="text-align:left">const struct iovec __user *vec</td>
+<td style="text-align:left">unsigned long vlen</td>
+<td style="text-align:left">unsigned long pos_l</td>
+<td style="text-align:left">unsigned long pos_h</td>
+<td style="text-align:left">fs/read_write.c:759</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_pwritev</td>
+<td style="text-align:left">0x14e</td>
+<td style="text-align:left">unsigned long fd</td>
+<td style="text-align:left">const struct iovec __user *vec</td>
+<td style="text-align:left">unsigned long vlen</td>
+<td style="text-align:left">unsigned long pos_l</td>
+<td style="text-align:left">unsigned long pos_h</td>
+<td style="text-align:left">fs/read_write.c:784</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_rt_tgsigqueueinfo</td>
+<td style="text-align:left">0x14f</td>
+<td style="text-align:left">pid_t tgid</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">int sig</td>
+<td style="text-align:left">siginfo_t __user *uinfo</td>
+<td style="text-align:left">-</td>
+<td style="text-align:left">kernel/signal.c:2437</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_perf_event_open</td>
+<td style="text-align:left">0x150</td>
+<td style="text-align:left">struct perf_event_attr __user *attr_uptr</td>
+<td style="text-align:left">pid_t pid</td>
+<td style="text-align:left">int cpu</td>
+<td style="text-align:left">int group_fd</td>
+<td style="text-align:left">unsigned long flags</td>
+<td style="text-align:left">kernel/perf_event.c:5065</td>
+</tr>
+<tr>
+<td style="text-align:left">sys_recvmmsg</td>
+<td style="text-align:left">0x151</td>
+<td style="text-align:left">int fd</td>
+<td style="text-align:left">struct mmsghdr __user *msg</td>
+<td style="text-align:left">unsigned int vlen</td>
+<td style="text-align:left">unsigned flags</td>
+<td style="text-align:left">struct timespec __user *timeout</td>
+<td style="text-align:left">net/socket.c:2168</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/04/23/Linux Syscall Reference x86/" title="Linux Syscall Reference x86">https://veritas501.github.io/2017/04/23/Linux Syscall Reference x86/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Syscall/" rel="tag"># Syscall</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/21/日常练习 - 汇编写base64加密函数/" rel="next" title="日常练习 - 汇编写base64加密函数">
+                <i class="fa fa-chevron-left"></i> 日常练习 - 汇编写base64加密函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/23/Linux Syscall Reference x64/" rel="prev" title="Linux Syscall Reference x64">
+                Linux Syscall Reference x64 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

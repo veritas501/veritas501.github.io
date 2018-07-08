@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本人小白，正在努力入门逆向，在此记录的是我一次次的逆向历程，而本文是一个开始。  引言 分析 追踪   引言 TraceMe来自《加密与解密》第三版p21 截图：  下载：链接：http://pan.baidu.com/s/1hr6isny 密码：0rdv  分析随意输入用户名和序列号点击check有错误弹窗。  追踪 OD载入后查找字符串，定位关键代码  12345678910111213141">
+<meta name="keywords" content="RE,加密与解密">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次简单的逆向">
+<meta property="og:url" content="https://veritas501.github.io/2017/02/17/记一次简单的逆向/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="本人小白，正在努力入门逆向，在此记录的是我一次次的逆向历程，而本文是一个开始。  引言 分析 追踪   引言 TraceMe来自《加密与解密》第三版p21 截图：  下载：链接：http://pan.baidu.com/s/1hr6isny 密码：0rdv  分析随意输入用户名和序列号点击check有错误弹窗。  追踪 OD载入后查找字符串，定位关键代码  12345678910111213141">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://img.blog.csdn.net/20170115193452236?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdmVyaXRhczUwMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20170115193936925?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdmVyaXRhczUwMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:updated_time" content="2017-06-05T03:39:39.869Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次简单的逆向">
+<meta name="twitter:description" content="本人小白，正在努力入门逆向，在此记录的是我一次次的逆向历程，而本文是一个开始。  引言 分析 追踪   引言 TraceMe来自《加密与解密》第三版p21 截图：  下载：链接：http://pan.baidu.com/s/1hr6isny 密码：0rdv  分析随意输入用户名和序列号点击check有错误弹窗。  追踪 OD载入后查找字符串，定位关键代码  12345678910111213141">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20170115193452236?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdmVyaXRhczUwMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/02/17/记一次简单的逆向/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>记一次简单的逆向 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/02/17/记一次简单的逆向/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记一次简单的逆向
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-02-17 00:00:00" itemprop="dateCreated datePublished" datetime="2017-02-17T00:00:00+08:00">2017-02-17</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-06-05 11:39:39" itemprop="dateModified" datetime="2017-06-05T11:39:39+08:00">2017-06-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/17/记一次简单的逆向/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/02/17/记一次简单的逆向/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/02/17/记一次简单的逆向/" class="leancloud_visitors" data-flag-title="记一次简单的逆向">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本人小白，正在努力入门逆向，在此记录的是我一次次的逆向历程，而本文是一个开始。</p>
+<ul>
+<li><strong>引言</strong></li>
+<li><strong>分析</strong></li>
+<li><strong>追踪</strong></li>
+</ul>
+<hr>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a><strong>引言</strong></h2><ul>
+<li>TraceMe来自《加密与解密》第三版p21</li>
+<li>截图：</li>
+<li><img src="http://img.blog.csdn.net/20170115193452236?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdmVyaXRhczUwMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></li>
+<li>下载：链接：<a href="http://pan.baidu.com/s/1hr6isny" target="_blank" rel="noopener">http://pan.baidu.com/s/1hr6isny</a> 密码：0rdv</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>随意输入用户名和序列号点击check有错误弹窗。</p>
+<p><img src="http://img.blog.csdn.net/20170115193936925?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdmVyaXRhczUwMQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="这里写图片描述"></p>
+<h2 id="追踪"><a href="#追踪" class="headerlink" title="追踪"></a><strong>追踪</strong></h2><ul>
+<li><strong>OD载入后查找字符串，定位关键代码</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line">004010D0   .  81EC F4000000 sub esp,0xF4</span><br><span class="line">004010D6   .  56            push esi                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">004010D7   .  57            push edi                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">004010D8   .  B9 05000000   mov ecx,0x5</span><br><span class="line">004010DD   .  BE 60504000   mov esi,TraceMe.00405060                 ;  你输入字符要大于四个！</span><br><span class="line">004010E2   .  8D7C24 18     lea edi,dword ptr ss:[esp+0x18]</span><br><span class="line">004010E6   .  A1 50504000   mov eax,dword ptr ds:[0x405050]          ;  恭喜你！成功！</span><br><span class="line">004010EB   .  F3:A5         rep movs dword ptr es:[edi],dword ptr ds&gt;</span><br><span class="line">004010ED   .  8B0D 54504000 mov ecx,dword ptr ds:[0x405054]          ;  你！成功！</span><br><span class="line">004010F3   .  8B15 58504000 mov edx,dword ptr ds:[0x405058]          ;  成功！</span><br><span class="line">004010F9   .  66:A5         movs word ptr es:[edi],word ptr ds:[esi]</span><br><span class="line">004010FB   .  894C24 0C     mov dword ptr ss:[esp+0xC],ecx           ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">004010FF   .  8A0D 5E504000 mov cl,byte ptr ds:[0x40505E]</span><br><span class="line">00401105   .  A4            movs byte ptr es:[edi],byte ptr ds:[esi]</span><br><span class="line">00401106   .  884C24 16     mov byte ptr ss:[esp+0x16],cl</span><br><span class="line">0040110A   .  B9 05000000   mov ecx,0x5</span><br><span class="line">0040110F   .  BE 38504000   mov esi,TraceMe.00405038                 ;  序列号错误，再来一次！</span><br><span class="line">00401114   .  8D7C24 30     lea edi,dword ptr ss:[esp+0x30]</span><br><span class="line">00401118   .  F3:A5         rep movs dword ptr es:[edi],dword ptr ds&gt;</span><br><span class="line">0040111A   .  894424 08     mov dword ptr ss:[esp+0x8],eax</span><br><span class="line">0040111E   .  66:A1 5C50400&gt;mov ax,word ptr ds:[0x40505C]            ;  ！</span><br><span class="line">00401124   .  66:A5         movs word ptr es:[edi],word ptr ds:[esi]</span><br><span class="line">00401126   .  66:894424 14  mov word ptr ss:[esp+0x14],ax</span><br><span class="line">0040112B   .  8B8424 040100&gt;mov eax,dword ptr ss:[esp+0x104]</span><br><span class="line">00401132   .  83E8 10       sub eax,0x10                             ;  Switch (cases 10..111)</span><br><span class="line">00401135   .  895424 10     mov dword ptr ss:[esp+0x10],edx          ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401139   .  A4            movs byte ptr es:[edi],byte ptr ds:[esi]</span><br><span class="line">0040113A   .  0F84 D4010000 je TraceMe.00401314</span><br><span class="line">00401140   .  2D 00010000   sub eax,0x100</span><br><span class="line">00401145   .  0F84 82010000 je TraceMe.004012CD</span><br><span class="line">0040114B   .  48            dec eax</span><br><span class="line">0040114C   .  0F85 6E010000 jnz TraceMe.004012C0</span><br><span class="line">00401152   .  8B8424 080100&gt;mov eax,dword ptr ss:[esp+0x108]         ;  Case 111 (WM_COMMAND) of switch 00401132</span><br><span class="line">00401159   .  25 FFFF0000   and eax,0xFFFF</span><br><span class="line">0040115E   .  3D F5030000   cmp eax,0x3F5                            ;  Switch (cases 2..9C42)</span><br><span class="line">00401163   .  0F8F 2C010000 jg TraceMe.00401295</span><br><span class="line">00401169   .  74 31         je short TraceMe.0040119C</span><br><span class="line">0040116B   .  83E8 02       sub eax,0x2</span><br><span class="line">0040116E   .  74 0B         je short TraceMe.0040117B</span><br><span class="line">00401170   .  2D E8030000   sub eax,0x3E8</span><br><span class="line">00401175   .  0F85 45010000 jnz TraceMe.004012C0</span><br><span class="line">0040117B   &gt;  8B9424 000100&gt;mov edx,dword ptr ss:[esp+0x100]         ;  Cases 2,3EA of switch 0040115E</span><br><span class="line">00401182   .  6A 00         push 0x0                                 ; /lParam = 0x0</span><br><span class="line">00401184   .  6A 00         push 0x0                                 ; |wParam = 0x0</span><br><span class="line">00401186   .  6A 10         push 0x10                                ; |Message = WM_CLOSE</span><br><span class="line">00401188   .  52            push edx                                 ; |hWnd = 0x4013A0</span><br><span class="line">00401189   .  FF15 C0404000 call dword ptr ds:[&lt;&amp;USER32.SendMessageA&gt;; \SendMessageA</span><br><span class="line">0040118F   .  5F            pop edi                                  ;  kernel32.773A62C4</span><br><span class="line">00401190   .  33C0          xor eax,eax</span><br><span class="line">00401192   .  5E            pop esi                                  ;  kernel32.773A62C4</span><br><span class="line">00401193   .  81C4 F4000000 add esp,0xF4</span><br><span class="line">00401199   .  C2 1000       retn 0x10</span><br><span class="line">0040119C   &gt;  8BB424 000100&gt;mov esi,dword ptr ss:[esp+0x100]         ;  Case 3F5 of switch 0040115E</span><br><span class="line">004011A3   .  8B3D A0404000 mov edi,dword ptr ds:[&lt;&amp;USER32.GetDlgIte&gt;;  勒_w</span><br><span class="line">004011A9   .  53            push ebx</span><br><span class="line">004011AA   .  8D4424 4C     lea eax,dword ptr ss:[esp+0x4C]</span><br><span class="line">004011AE   .  6A 51         push 0x51                                ; /Count = 51 (81.)</span><br><span class="line">004011B0   .  50            push eax                                 ; |Buffer = 19D1BC69</span><br><span class="line">004011B1   .  6A 6E         push 0x6E                                ; |ControlID = 6E (110.)</span><br><span class="line">004011B3   .  56            push esi                                 ; |hWnd = 004013A0</span><br><span class="line">004011B4   .  FFD7          call edi                                 ; \GetDlgItemTextA</span><br><span class="line">004011B6   .  8D8C24 9C0000&gt;lea ecx,dword ptr ss:[esp+0x9C]</span><br><span class="line">004011BD   .  6A 65         push 0x65                                ; /Count = 65 (101.)</span><br><span class="line">004011BF   .  51            push ecx                                 ; |Buffer = TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">004011C0   .  68 E8030000   push 0x3E8                               ; |ControlID = 3E8 (1000.)</span><br><span class="line">004011C5   .  56            push esi                                 ; |hWnd = 004013A0</span><br><span class="line">004011C6   .  8BD8          mov ebx,eax                              ; |</span><br><span class="line">004011C8   .  FFD7          call edi                                 ; \GetDlgItemTextA</span><br><span class="line">004011CA   .  8A4424 4C     mov al,byte ptr ss:[esp+0x4C]</span><br><span class="line">004011CE   .  84C0          test al,al</span><br><span class="line">004011D0   .  74 76         je short TraceMe.00401248</span><br><span class="line">004011D2   .  83FB 05       cmp ebx,0x5</span><br><span class="line">004011D5   .  7C 71         jl short TraceMe.00401248</span><br><span class="line">004011D7   .  8D5424 4C     lea edx,dword ptr ss:[esp+0x4C]</span><br><span class="line">004011DB   .  53            push ebx</span><br><span class="line">004011DC   .  8D8424 A00000&gt;lea eax,dword ptr ss:[esp+0xA0]</span><br><span class="line">004011E3   .  52            push edx                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">004011E4   .  50            push eax</span><br><span class="line">004011E5   .  E8 56010000   call TraceMe.00401340                    ;  关键CALL</span><br><span class="line">004011EA   .  8B3D BC404000 mov edi,dword ptr ds:[&lt;&amp;USER32.GetDlgIte&gt;;  user32.GetDlgItem</span><br><span class="line">004011F0   .  83C4 0C       add esp,0xC</span><br><span class="line">004011F3   .  85C0          test eax,eax</span><br><span class="line">004011F5   .  74 37         je short TraceMe.0040122E</span><br><span class="line">004011F7   .  8D4C24 0C     lea ecx,dword ptr ss:[esp+0xC]</span><br><span class="line">004011FB   .  51            push ecx                                 ; /String2 = &quot;U嬱jh蠤@&quot;</span><br><span class="line">004011FC   .  68 E4544000   push TraceMe.004054E4                    ; |String1 = TraceMe.004054E4</span><br><span class="line">00401201   .  FF15 60404000 call dword ptr ds:[&lt;&amp;KERNEL32.lstrcpyA&gt;] ; \lstrcpyA</span><br><span class="line">00401207   .  6A 00         push 0x0                                 ; /Enable = FALSE</span><br><span class="line">00401209   .  6A 6E         push 0x6E                                ; |/ControlID = 6E (110.)</span><br><span class="line">0040120B   .  56            push esi                                 ; ||hWnd = 004013A0</span><br><span class="line">0040120C   .  FFD7          call edi                                 ; |\GetDlgItem</span><br><span class="line">0040120E   .  8B1D A4404000 mov ebx,dword ptr ds:[&lt;&amp;USER32.EnableWin&gt;; |user32.EnableWindow</span><br><span class="line">00401214   .  50            push eax                                 ; |hWnd = 19D1BC69</span><br><span class="line">00401215   .  FFD3          call ebx                                 ; \EnableWindow</span><br><span class="line">00401217   .  6A 00         push 0x0                                 ; /Enable = FALSE</span><br><span class="line">00401219   .  68 E8030000   push 0x3E8                               ; |/ControlID = 3E8 (1000.)</span><br><span class="line">0040121E   .  56            push esi                                 ; ||hWnd = 004013A0</span><br><span class="line">0040121F   .  FFD7          call edi                                 ; |\GetDlgItem</span><br><span class="line">00401221   .  50            push eax                                 ; |hWnd = 19D1BC69</span><br><span class="line">00401222   .  FFD3          call ebx                                 ; \EnableWindow</span><br><span class="line">00401224   .  68 E8030000   push 0x3E8                               ; /ControlID = 3E8 (1000.)</span><br><span class="line">00401229   .  56            push esi                                 ; |hWnd = 004013A0</span><br><span class="line">0040122A   .  FFD7          call edi                                 ; \GetDlgItem</span><br><span class="line">0040122C   .  EB 33         jmp short TraceMe.00401261</span><br><span class="line">0040122E   &gt;  8D5424 34     lea edx,dword ptr ss:[esp+0x34]</span><br><span class="line">00401232   .  52            push edx                                 ; /String2 = &quot;U嬱jh蠤@&quot;</span><br><span class="line">00401233   .  68 E4544000   push TraceMe.004054E4                    ; |String1 = TraceMe.004054E4</span><br><span class="line">00401238   .  FF15 60404000 call dword ptr ds:[&lt;&amp;KERNEL32.lstrcpyA&gt;] ; \lstrcpyA</span><br><span class="line">0040123E   .  68 E8030000   push 0x3E8</span><br><span class="line">00401243   .  56            push esi                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401244   .  FFD7          call edi                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401246   .  EB 19         jmp short TraceMe.00401261</span><br><span class="line">00401248   &gt;  8D4424 1C     lea eax,dword ptr ss:[esp+0x1C]</span><br><span class="line">0040124C   .  50            push eax                                 ; /String2 = 19D1BC69 ???</span><br><span class="line">0040124D   .  68 E4544000   push TraceMe.004054E4                    ; |String1 = TraceMe.004054E4</span><br><span class="line">00401252   .  FF15 60404000 call dword ptr ds:[&lt;&amp;KERNEL32.lstrcpyA&gt;] ; \lstrcpyA</span><br><span class="line">00401258   .  6A 6E         push 0x6E                                ; /ControlID = 6E (110.)</span><br><span class="line">0040125A   .  56            push esi                                 ; |hWnd = 004013A0</span><br><span class="line">0040125B   .  FF15 BC404000 call dword ptr ds:[&lt;&amp;USER32.GetDlgItem&gt;] ; \GetDlgItem</span><br><span class="line">00401261   &gt;  50            push eax                                 ; /hWnd = 19D1BC69</span><br><span class="line">00401262   .  FF15 A8404000 call dword ptr ds:[&lt;&amp;USER32.SetFocus&gt;]   ; \SetFocus</span><br><span class="line">00401268   .  6A 00         push 0x0                                 ; /BeepType = MB_OK</span><br><span class="line">0040126A   .  FF15 AC404000 call dword ptr ds:[&lt;&amp;USER32.MessageBeep&gt;&gt;; \MessageBeep</span><br><span class="line">00401270   .  8B0D E0544000 mov ecx,dword ptr ds:[0x4054E0]</span><br><span class="line">00401276   .  6A 00         push 0x0                                 ; /lParam = NULL</span><br><span class="line">00401278   .  68 60104000   push TraceMe.00401060                    ; |DlgProc = TraceMe.00401060</span><br><span class="line">0040127D   .  56            push esi                                 ; |hOwner = 004013A0</span><br><span class="line">0040127E   .  6A 79         push 0x79                                ; |pTemplate = 0x79</span><br><span class="line">00401280   .  51            push ecx                                 ; |hInst = 004013A0</span><br><span class="line">00401281   .  FF15 C8404000 call dword ptr ds:[&lt;&amp;USER32.DialogBoxPar&gt;; \DialogBoxParamA</span><br><span class="line">00401287   .  5B            pop ebx                                  ;  kernel32.773A62C4</span><br><span class="line">00401288   .  5F            pop edi                                  ;  kernel32.773A62C4</span><br><span class="line">00401289   .  33C0          xor eax,eax</span><br><span class="line">0040128B   .  5E            pop esi                                  ;  kernel32.773A62C4</span><br><span class="line">0040128C   .  81C4 F4000000 add esp,0xF4</span><br><span class="line">00401292   .  C2 1000       retn 0x10</span><br></pre></td></tr></table></figure>
+<p>两个GetDlgItemTextA以后一个CALL(4011E5)，应该是把输入的用户名和注册码放到CALL中比较。<br>只是想知道注册码的话在4011EA处的堆栈窗口可以看到。以下分析算法。</p>
+<ul>
+<li><strong>进CALL看一下：</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">00401340  /$  55            push ebp                                 ;  EDX 账号</span><br><span class="line">00401341  |.  8B6C24 0C     mov ebp,dword ptr ss:[esp+0xC]           ;  EAX 输入的序列号</span><br><span class="line">00401345  |.  56            push esi                                 ;  EBX 账号长度</span><br><span class="line">00401346  |.  57            push edi                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401347  |.  8B7C24 18     mov edi,dword ptr ss:[esp+0x18]          ;  edi 为账号长度</span><br><span class="line">0040134B  |.  B9 03000000   mov ecx,0x3                              ;  i=3</span><br><span class="line">00401350  |.  33F6          xor esi,esi                              ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401352  |.  33C0          xor eax,eax</span><br><span class="line">00401354  |.  3BF9          cmp edi,ecx                              ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401356  |.  7E 21         jle short TraceMe.00401379</span><br><span class="line">00401358  |.  53            push ebx</span><br><span class="line">00401359  |&gt;  83F8 07       /cmp eax,0x7</span><br><span class="line">0040135C  |.  7E 02         |jle short TraceMe.00401360</span><br><span class="line">0040135E  |.  33C0          |xor eax,eax</span><br><span class="line">00401360  |&gt;  33D2          |xor edx,edx                             ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401362  |.  33DB          |xor ebx,ebx</span><br><span class="line">00401364  |.  8A1429        |mov dl,byte ptr ds:[ecx+ebp]            ;  第四位</span><br><span class="line">00401367  |.  8A98 30504000 |mov bl,byte ptr ds:[eax+0x405030]       ;  0C 0A 13 09 0C 0B 0A 08</span><br><span class="line">0040136D  |.  0FAFD3        |imul edx,ebx                            ;  ASCII(4)*BYTE</span><br><span class="line">00401370  |.  03F2          |add esi,edx                             ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401372  |.  41            |inc ecx                                 ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401373  |.  40            |inc eax</span><br><span class="line">00401374  |.  3BCF          |cmp ecx,edi                             ;  TraceMe.&lt;ModuleEntryPoint&gt;</span><br><span class="line">00401376  |.^ 7C E1         \jl short TraceMe.00401359</span><br><span class="line">00401378  |.  5B            pop ebx                                  ;  kernel32.773A62C4</span><br><span class="line">00401379  |&gt;  56            push esi                                 ; /&lt;%ld&gt; = 4013A0 (4199328.)</span><br><span class="line">0040137A  |.  68 78504000   push TraceMe.00405078                    ; |%ld</span><br><span class="line">0040137F  |.  55            push ebp                                 ; |s = 0019FF94</span><br><span class="line">00401380  |.  FF15 9C404000 call dword ptr ds:[&lt;&amp;USER32.wsprintfA&gt;]  ; \wsprintfA</span><br><span class="line">00401386  |.  8B4424 1C     mov eax,dword ptr ss:[esp+0x1C]</span><br><span class="line">0040138A  |.  83C4 0C       add esp,0xC</span><br><span class="line">0040138D  |.  55            push ebp                                 ; /String2 = &quot;?&quot;</span><br><span class="line">0040138E  |.  50            push eax                                 ; |String1 = 19D1BC69 ???</span><br><span class="line">0040138F  |.  FF15 04404000 call dword ptr ds:[&lt;&amp;KERNEL32.lstrcmpA&gt;] ; \lstrcmpA</span><br><span class="line">00401395  |.  F7D8          neg eax</span><br><span class="line">00401397  |.  1BC0          sbb eax,eax</span><br><span class="line">00401399  |.  5F            pop edi                                  ;  kernel32.773A62C4</span><br><span class="line">0040139A  |.  5E            pop esi                                  ;  kernel32.773A62C4</span><br><span class="line">0040139B  |.  40            inc eax</span><br><span class="line">0040139C  |.  5D            pop ebp                                  ;  kernel32.773A62C4</span><br><span class="line">0040139D  \.  C3            retn</span><br></pre></td></tr></table></figure>
+<p>整个算法都在这里了。<br>首先用户名长度要大于4，从第4位开始到第12位结束（不到12位就提前结束），每一位的acsii码和从0x405030处开始的byte字节码做乘法，然后把所得的乘积累加，所得即为注册码。</p>
+<ul>
+<li><strong>用python写个简单的注册机：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">keygen</span><span class="params">(username)</span>:</span></span><br><span class="line">    byte405030 = [<span class="number">0x0C</span>,<span class="number">0x0A</span>,<span class="number">0x13</span>,<span class="number">0x09</span>,<span class="number">0x0C</span>,<span class="number">0x0B</span>,<span class="number">0x0A</span>,<span class="number">0x08</span>]</span><br><span class="line">    <span class="keyword">if</span> len(username)&lt;<span class="number">4</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span></span><br><span class="line">    start = <span class="number">3</span></span><br><span class="line">    sum = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">7</span>):</span><br><span class="line">        sum += ord(username[start+i])*byte405030[i]</span><br><span class="line">    <span class="keyword">return</span> str(sum)</span><br><span class="line"></span><br><span class="line">print(keygen(<span class="string">"veritas501"</span>))</span><br></pre></td></tr></table></figure>
+<p>本人新手级水平，正在努力学习中，大神勿喷</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/02/17/记一次简单的逆向/" title="记一次简单的逆向">https://veritas501.github.io/2017/02/17/记一次简单的逆向/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RE/" rel="tag"># RE</a>
+          
+            <a href="/tags/加密与解密/" rel="tag"># 加密与解密</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/16/学长出的RE题/" rel="next" title="学长出的RE题">
+                <i class="fa fa-chevron-left"></i> 学长出的RE题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/20/记录《加密与解密》中一道很脑洞的RE题/" rel="prev" title="记录《加密与解密》中一道很脑洞的RE题">
+                记录《加密与解密》中一道很脑洞的RE题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#追踪"><span class="nav-number">3.</span> <span class="nav-text">追踪</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

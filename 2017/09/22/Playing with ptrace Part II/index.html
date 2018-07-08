@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Dec 01, 2002     By Pradeep Padalain SysAdmin In Part II of his series on ptrace, Pradeep tackles the more advanced topics of setting breakpoints and injecting code into running processes.">
+<meta name="keywords" content="Ptrace">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【搬运】 Playing with ptrace, Part II">
+<meta property="og:url" content="https://veritas501.github.io/2017/09/22/Playing with ptrace Part II/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="Dec 01, 2002     By Pradeep Padalain SysAdmin In Part II of his series on ptrace, Pradeep tackles the more advanced topics of setting breakpoints and injecting code into running processes.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/ptrace2_64cb8fef116b0e23124652b225f4b325.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/ptrace2_8a75fcfeb002a308fe8d8506c24f9ccf.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/ptrace2_c72f9a2b910d16dfeb03e899b10629e7.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/ptrace2_2cf0f7ffe86342619c4777cc0eeed195.png">
+<meta property="og:updated_time" content="2017-09-22T01:30:46.739Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【搬运】 Playing with ptrace, Part II">
+<meta name="twitter:description" content="Dec 01, 2002     By Pradeep Padalain SysAdmin In Part II of his series on ptrace, Pradeep tackles the more advanced topics of setting breakpoints and injecting code into running processes.">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/ptrace2_64cb8fef116b0e23124652b225f4b325.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/09/22/Playing with ptrace Part II/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>【搬运】 Playing with ptrace, Part II | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/09/22/Playing with ptrace Part II/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【搬运】 Playing with ptrace, Part II
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-09-22 00:00:00 / Modified: 09:30:46" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+08:00">2017-09-22</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/22/Playing with ptrace Part II/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/09/22/Playing with ptrace Part II/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/09/22/Playing with ptrace Part II/" class="leancloud_visitors" data-flag-title="【搬运】 Playing with ptrace, Part II">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Dec 01, 2002     By Pradeep Padala<br>in SysAdmin</p>
+<p><em>In Part II of his series on ptrace, Pradeep tackles the more advanced topics of setting breakpoints and injecting code into running processes.</em></p>
+<a id="more"></a>
+<p>In Part I of this article [LJ, November 2002], we saw how ptrace can be used to trace system calls and change system call arguments. In this article, we investigate advanced techniques like setting breakpoints and injecting code into running programs. Debuggers use these methods to set up breakpoints and execute debugging handlers. As with Part I, all code in this article is i386 architecture-specific.</p>
+<hr>
+<h2 id="Attaching-to-a-Running-Process"><a href="#Attaching-to-a-Running-Process" class="headerlink" title="Attaching to a Running Process"></a>Attaching to a Running Process</h2><p>In Part I, we ran the process to be traced as a child after calling ptrace(PTRACE_TRACEME, ..). If you simply wanted to see how the process is making system calls and trace the program, this would be sufficient. If you want to trace or debug a process already running, then ptrace(PTRACE_ATTACH, ..) should be used.</p>
+<p>When a ptrace(PTRACE_ATTACH, ..) is called with the pid to be traced, it is roughly equivalent to the process calling ptrace(PTRACE_TRACEME, ..) and becoming a child of the tracing process. The traced process is sent a SIGSTOP, so we can examine and modify the process as usual. After we are done with modifications or tracing, we can let the traced process continue on its own by calling ptrace(PTRACE_DETACH, ..).</p>
+<p>The following is the code for a small example tracing program:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"My counter: %d\n"</span>, i);</span><br><span class="line">        sleep(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Save the program as dummy2.c. Compile and run it:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -o dummy2 dummy2.c</span><br><span class="line">./dummy2 &amp;</span><br></pre></td></tr></table></figure>
+<p>Now, we can attach to dummy2 by using the code below:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/user.h&gt;   /* For user_regs_struct</span></span></span><br><span class="line">                             etc. */</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">pid_t</span> traced_process;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">user_regs_struct</span> <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> ins;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>,</span><br><span class="line">               argv[<span class="number">0</span>], argv[<span class="number">1</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    traced_process = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    ptrace(PTRACE_ATTACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    ptrace(PTRACE_GETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    ins = ptrace(PTRACE_PEEKTEXT, traced_process,</span><br><span class="line">                 regs.eip, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"EIP: %lx Instruction executed: %lx\n"</span>,</span><br><span class="line">           regs.eip, ins);</span><br><span class="line">    ptrace(PTRACE_DETACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The above program simply attaches to a process, waits for it to stop, examines its eip (instruction pointer) and detaches.<br>To inject code use ptrace(PTRACE_POKETEXT, ..) and ptrace(PTRACE_POKEDATA, ..) after the traced process has stopped.</p>
+<hr>
+<h2 id="Setting-Breakpoints"><a href="#Setting-Breakpoints" class="headerlink" title="Setting Breakpoints"></a>Setting Breakpoints</h2><p>How do debuggers set breakpoints? Generally, they replace the instruction to be executed with a trap instruction, so that when the traced program stops, the tracing program, the debugger, can examine it. It will replace the original instruction once the tracing program continues the traced process. Here’s an example:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ptrace.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/user.h&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> long_size = <span class="keyword">sizeof</span>(<span class="keyword">long</span>);</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getdata</span><span class="params">(<span class="keyword">pid_t</span> child, <span class="keyword">long</span> addr,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">char</span> *str, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">char</span> *laddr;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">union</span> u &#123;</span><br><span class="line">            <span class="keyword">long</span> val;</span><br><span class="line">            <span class="keyword">char</span> chars[long_size];</span><br><span class="line">    &#125;data;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    j = len / long_size;</span><br><span class="line">    laddr = str;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">        data.val = ptrace(PTRACE_PEEKDATA, child,</span><br><span class="line">                          addr + i * <span class="number">4</span>, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="built_in">memcpy</span>(laddr, data.chars, long_size);</span><br><span class="line">        ++i;</span><br><span class="line">        laddr += long_size;</span><br><span class="line">    &#125;</span><br><span class="line">    j = len % long_size;</span><br><span class="line">    <span class="keyword">if</span>(j != <span class="number">0</span>) &#123;</span><br><span class="line">        data.val = ptrace(PTRACE_PEEKDATA, child,</span><br><span class="line">                          addr + i * <span class="number">4</span>, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="built_in">memcpy</span>(laddr, data.chars, j);</span><br><span class="line">    &#125;</span><br><span class="line">    str[len] = <span class="string">'\0'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">putdata</span><span class="params">(<span class="keyword">pid_t</span> child, <span class="keyword">long</span> addr,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">char</span> *str, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">char</span> *laddr;</span><br><span class="line">    <span class="keyword">int</span> i, j;</span><br><span class="line">    <span class="keyword">union</span> u &#123;</span><br><span class="line">            <span class="keyword">long</span> val;</span><br><span class="line">            <span class="keyword">char</span> chars[long_size];</span><br><span class="line">    &#125;data;</span><br><span class="line">    i = <span class="number">0</span>;</span><br><span class="line">    j = len / long_size;</span><br><span class="line">    laddr = str;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, long_size);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">        ++i;</span><br><span class="line">        laddr += long_size;</span><br><span class="line">    &#125;</span><br><span class="line">    j = len % long_size;</span><br><span class="line">    <span class="keyword">if</span>(j != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(data.chars, laddr, j);</span><br><span class="line">        ptrace(PTRACE_POKEDATA, child,</span><br><span class="line">               addr + i * <span class="number">4</span>, data.val);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">pid_t</span> traced_process;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">user_regs_struct</span> <span class="title">regs</span>, <span class="title">newregs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> ins;</span><br><span class="line">    <span class="comment">/* int 0x80, int3 */</span></span><br><span class="line">    <span class="keyword">char</span> code[] = &#123;<span class="number">0xcd</span>,<span class="number">0x80</span>,<span class="number">0xcc</span>,<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">char</span> backup[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>,</span><br><span class="line">               argv[<span class="number">0</span>], argv[<span class="number">1</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    traced_process = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    ptrace(PTRACE_ATTACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    ptrace(PTRACE_GETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    <span class="comment">/* Copy instructions into a backup variable */</span></span><br><span class="line">    getdata(traced_process, regs.eip, backup, <span class="number">3</span>);</span><br><span class="line">    <span class="comment">/* Put the breakpoint */</span></span><br><span class="line">    putdata(traced_process, regs.eip, code, <span class="number">3</span>);</span><br><span class="line">    <span class="comment">/* Let the process continue and execute</span></span><br><span class="line"><span class="comment">       the int 3 instruction */</span></span><br><span class="line">    ptrace(PTRACE_CONT, traced_process, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"The process stopped, putting back "</span></span><br><span class="line">           <span class="string">"the original instructions\n"</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Press &lt;enter&gt; to continue\n"</span>);</span><br><span class="line">    getchar();</span><br><span class="line">    putdata(traced_process, regs.eip, backup, <span class="number">3</span>);</span><br><span class="line">    <span class="comment">/* Setting the eip back to the original</span></span><br><span class="line"><span class="comment">       instruction to let the process continue */</span></span><br><span class="line">    ptrace(PTRACE_SETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    ptrace(PTRACE_DETACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Here we replace the three bytes with the code for a trap instruction, and when the process stops, we replace the original instructions and reset the eip to original location. Figures 1-4 clarify how the instruction stream looks when above program is executed.</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/ptrace2_64cb8fef116b0e23124652b225f4b325.png" alt=""></p>
+<p>Figure 1. After the Process Is Stopped</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/ptrace2_8a75fcfeb002a308fe8d8506c24f9ccf.png" alt=""></p>
+<p>Figure 2. After the Trap Instruction Bytes Are Set</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/ptrace2_c72f9a2b910d16dfeb03e899b10629e7.png" alt=""></p>
+<p>Figure 3. Trap Is Hit and Control Is Given to the Tracing Program</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/ptrace2_2cf0f7ffe86342619c4777cc0eeed195.png" alt=""></p>
+<p>Figure 4. After the Original Instructions Are Replaced and eip Is Reset to the Original Location</p>
+<p>Now that we have a clear idea of how breakpoints are set, let’s inject some code bytes into a running program. These code bytes will print “hello world”.</p>
+<p>The following program is a simple “hello world” program with modifications to fit our needs. Compile the following program with:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o hello hello.c</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">__asm__(<span class="string">"</span></span><br><span class="line"><span class="string">         jmp forward</span></span><br><span class="line"><span class="string">backward:</span></span><br><span class="line"><span class="string">         popl   %esi      # Get the address of</span></span><br><span class="line"><span class="string">                          # hello world string</span></span><br><span class="line"><span class="string">         movl   $4, %eax  # Do write system call</span></span><br><span class="line"><span class="string">         movl   $2, %ebx</span></span><br><span class="line"><span class="string">         movl   %esi, %ecx</span></span><br><span class="line"><span class="string">         movl   $12, %edx</span></span><br><span class="line"><span class="string">         int    $0x80</span></span><br><span class="line"><span class="string">         int3             # Breakpoint. Here the</span></span><br><span class="line"><span class="string">                          # program will stop and</span></span><br><span class="line"><span class="string">                          # give control back to</span></span><br><span class="line"><span class="string">                          # the parent</span></span><br><span class="line"><span class="string">forward:</span></span><br><span class="line"><span class="string">         call   backward</span></span><br><span class="line"><span class="string">         .string \"Hello World\\n\""</span></span><br><span class="line">       );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The jumping backward and forward here is required to find the address of the “hello world” string.</p>
+<p>We can get the machine code for the above assembly from GDB. Fire up GDB and disassemble the program:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">(gdb) disassemble main</span><br><span class="line">Dump of assembler code for function main:</span><br><span class="line">0x80483e0 &lt;main&gt;:       push   %ebp</span><br><span class="line">0x80483e1 &lt;main+1&gt;:     mov    %esp,%ebp</span><br><span class="line">0x80483e3 &lt;main+3&gt;:     jmp    0x80483fa &lt;forward&gt;</span><br><span class="line">End of assembler dump.</span><br><span class="line">(gdb) disassemble forward</span><br><span class="line">Dump of assembler code for function forward:</span><br><span class="line">0x80483fa &lt;forward&gt;:    call   0x80483e5 &lt;backward&gt;</span><br><span class="line">0x80483ff &lt;forward+5&gt;:  dec    %eax</span><br><span class="line">0x8048400 &lt;forward+6&gt;:  gs</span><br><span class="line">0x8048401 &lt;forward+7&gt;:  insb   (%dx),%es:(%edi)</span><br><span class="line">0x8048402 &lt;forward+8&gt;:  insb   (%dx),%es:(%edi)</span><br><span class="line">0x8048403 &lt;forward+9&gt;:  outsl  %ds:(%esi),(%dx)</span><br><span class="line">0x8048404 &lt;forward+10&gt;: and    %dl,0x6f(%edi)</span><br><span class="line">0x8048407 &lt;forward+13&gt;: jb     0x8048475</span><br><span class="line">0x8048409 &lt;forward+15&gt;: or     %fs:(%eax),%al</span><br><span class="line">0x804840c &lt;forward+18&gt;: mov    %ebp,%esp</span><br><span class="line">0x804840e &lt;forward+20&gt;: pop    %ebp</span><br><span class="line">0x804840f &lt;forward+21&gt;: ret</span><br><span class="line">End of assembler dump.</span><br><span class="line">(gdb) disassemble backward</span><br><span class="line">Dump of assembler code for function backward:</span><br><span class="line">0x80483e5 &lt;backward&gt;:   pop    %esi</span><br><span class="line">0x80483e6 &lt;backward+1&gt;: mov    $0x4,%eax</span><br><span class="line">0x80483eb &lt;backward+6&gt;: mov    $0x2,%ebx</span><br><span class="line">0x80483f0 &lt;backward+11&gt;:        mov    %esi,%ecx</span><br><span class="line">0x80483f2 &lt;backward+13&gt;:        mov    $0xc,%edx</span><br><span class="line">0x80483f7 &lt;backward+18&gt;:        int    $0x80</span><br><span class="line">0x80483f9 &lt;backward+20&gt;:        int3</span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+<p>We need to take the machine code bytes from main+3 to backward+20, which is a total of 41 bytes. The machine code can be seen with the x command in GDB:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(gdb) x/40bx main+3</span><br><span class="line">&lt;main+3&gt;: eb 15 5e b8 04 00 00 00</span><br><span class="line">&lt;backward+6&gt;: bb 02 00 00 00 89 f1 ba</span><br><span class="line">&lt;backward+14&gt;: 0c 00 00 00 cd 80 cc</span><br><span class="line">&lt;forward+1&gt;: e6 ff ff ff 48 65 6c 6c</span><br><span class="line">&lt;forward+9&gt;: 6f 20 57 6f 72 6c 64 0a</span><br></pre></td></tr></table></figure>
+<p>Now we have the instruction bytes to be executed. Why wait? We can inject them using the same method as in the previous example. The following is the source code; only the main function is given here:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">pid_t</span> traced_process;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">user_regs_struct</span> <span class="title">regs</span>, <span class="title">newregs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> ins;</span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">41</span>;</span><br><span class="line">    <span class="keyword">char</span> insertcode[] =</span><br><span class="line"><span class="string">"\xeb\x15\x5e\xb8\x04\x00"</span></span><br><span class="line">        <span class="string">"\x00\x00\xbb\x02\x00\x00\x00\x89\xf1\xba"</span></span><br><span class="line">        <span class="string">"\x0c\x00\x00\x00\xcd\x80\xcc\xe8\xe6\xff"</span></span><br><span class="line">        <span class="string">"\xff\xff\x48\x65\x6c\x6c\x6f\x20\x57\x6f"</span></span><br><span class="line">        <span class="string">"\x72\x6c\x64\x0a\x00"</span>;</span><br><span class="line">    <span class="keyword">char</span> backup[len];</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>,</span><br><span class="line">               argv[<span class="number">0</span>], argv[<span class="number">1</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    traced_process = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    ptrace(PTRACE_ATTACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    ptrace(PTRACE_GETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    getdata(traced_process, regs.eip, backup, len);</span><br><span class="line">    putdata(traced_process, regs.eip,</span><br><span class="line">            insertcode, len);</span><br><span class="line">    ptrace(PTRACE_SETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    ptrace(PTRACE_CONT, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"The process stopped, Putting back "</span></span><br><span class="line">           <span class="string">"the original instructions\n"</span>);</span><br><span class="line">    putdata(traced_process, regs.eip, backup, len);</span><br><span class="line">    ptrace(PTRACE_SETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Letting it continue with "</span></span><br><span class="line">           <span class="string">"original flow\n"</span>);</span><br><span class="line">    ptrace(PTRACE_DETACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Injecting-the-Code-into-Free-Space"><a href="#Injecting-the-Code-into-Free-Space" class="headerlink" title="Injecting the Code into Free Space"></a>Injecting the Code into Free Space</h2><p>In the previous example we injected the code directly into the executing instruction stream. However, debuggers can get confused with this kind of behaviour, so let’s find the free space in the process and inject the code there. We can find free space by examining the /proc/pid/maps file of the traced process. The following function will find the starting address of this map:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">freespaceaddr</span><span class="params">(<span class="keyword">pid_t</span> pid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    FILE *fp;</span><br><span class="line">    <span class="keyword">char</span> filename[<span class="number">30</span>];</span><br><span class="line">    <span class="keyword">char</span> line[<span class="number">85</span>];</span><br><span class="line">    <span class="keyword">long</span> addr;</span><br><span class="line">    <span class="keyword">char</span> str[<span class="number">20</span>];</span><br><span class="line">    <span class="built_in">sprintf</span>(filename, <span class="string">"/proc/%d/maps"</span>, pid);</span><br><span class="line">    fp = fopen(filename, <span class="string">"r"</span>);</span><br><span class="line">    <span class="keyword">if</span>(fp == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">while</span>(fgets(line, <span class="number">85</span>, fp) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">sscanf</span>(line, <span class="string">"%lx-%*lx %*s %*s %s"</span>, &amp;addr,</span><br><span class="line">               str, str, str, str);</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">strcmp</span>(str, <span class="string">"00:00"</span>) == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fclose(fp);</span><br><span class="line">    <span class="keyword">return</span> addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Each line in /proc/pid/maps represents a mapped region of the process. An entry in /proc/pid/maps looks like this:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">map start-mapend    protection  offset     device</span><br><span class="line">inode      process file</span><br><span class="line">08048000-0804d000   r-xp        00000000   03:08</span><br><span class="line">66111      /opt/kde2/bin/kdeinit</span><br></pre></td></tr></table></figure>
+<p>The following program injects code into free space. It’s similar to the previous injection program except the free space address is used for keeping our new code. Here is the source code for the main function:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;   <span class="keyword">pid_t</span> traced_process;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">user_regs_struct</span> <span class="title">oldregs</span>, <span class="title">regs</span>;</span></span><br><span class="line">    <span class="keyword">long</span> ins;</span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">41</span>;</span><br><span class="line">    <span class="keyword">char</span> insertcode[] =</span><br><span class="line"><span class="string">"\xeb\x15\x5e\xb8\x04\x00"</span></span><br><span class="line">        <span class="string">"\x00\x00\xbb\x02\x00\x00\x00\x89\xf1\xba"</span></span><br><span class="line">        <span class="string">"\x0c\x00\x00\x00\xcd\x80\xcc\xe8\xe6\xff"</span></span><br><span class="line">        <span class="string">"\xff\xff\x48\x65\x6c\x6c\x6f\x20\x57\x6f"</span></span><br><span class="line">        <span class="string">"\x72\x6c\x64\x0a\x00"</span>;</span><br><span class="line">    <span class="keyword">char</span> backup[len];</span><br><span class="line">    <span class="keyword">long</span> addr;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: %s &lt;pid to be traced&gt;\n"</span>,</span><br><span class="line">               argv[<span class="number">0</span>], argv[<span class="number">1</span>]);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    traced_process = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    ptrace(PTRACE_ATTACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    ptrace(PTRACE_GETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    addr = freespaceaddr(traced_process);</span><br><span class="line">    getdata(traced_process, addr, backup, len);</span><br><span class="line">    putdata(traced_process, addr, insertcode, len);</span><br><span class="line">    <span class="built_in">memcpy</span>(&amp;oldregs, &amp;regs, <span class="keyword">sizeof</span>(regs));</span><br><span class="line">    regs.eip = addr;</span><br><span class="line">    ptrace(PTRACE_SETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;regs);</span><br><span class="line">    ptrace(PTRACE_CONT, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"The process stopped, Putting back "</span></span><br><span class="line">           <span class="string">"the original instructions\n"</span>);</span><br><span class="line">    putdata(traced_process, addr, backup, len);</span><br><span class="line">    ptrace(PTRACE_SETREGS, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, &amp;oldregs);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Letting it continue with "</span></span><br><span class="line">           <span class="string">"original flow\n"</span>);</span><br><span class="line">    ptrace(PTRACE_DETACH, traced_process,</span><br><span class="line">           <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Behind-the-Scenes"><a href="#Behind-the-Scenes" class="headerlink" title="Behind the Scenes"></a>Behind the Scenes</h2><p>So what happens within the kernel now? How is ptrace implemented? This section could be an article on its own; however, here’s a brief description of what happens.</p>
+<p>When a process calls ptrace with PTRACE_TRACEME, the kernel sets up the process flags to reflect that it is being traced:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Source: arch/i386/kernel/ptrace.c</span><br><span class="line"><span class="keyword">if</span> (request == PTRACE_TRACEME) &#123;</span><br><span class="line">    <span class="comment">/* are we already being traced? */</span></span><br><span class="line">    <span class="keyword">if</span> (current-&gt;ptrace &amp; PT_PTRACED)</span><br><span class="line">        <span class="keyword">goto</span> out;</span><br><span class="line">    <span class="comment">/* set the ptrace bit in the process flags. */</span></span><br><span class="line">    current-&gt;ptrace |= PT_PTRACED;</span><br><span class="line">    ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">goto</span> out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>When a system call entry is done, the kernel checks this flag and calls the trace system call if the process is being traced. The gory assembly details can be found in arch/i386/kernel/entry.S.</p>
+<p>Now, we are in the sys_trace() function as defined in arch/i386/kernel/ptrace.c. It stops the child and sends a signal to the parent notifying that the child is stopped. This wakes up the waiting parent, and it does the ptrace magic. Once the parent is done, and it calls ptrace(PTRACE_CONT, ..) or ptrace(PTRACE_SYSCALL, ..), it wakes up the child by calling the scheduler function wake_up_process(). Some other architectures can implement this by sending a SIGCHLD to child.</p>
+<hr>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>ptrace may appear to be magic to some people, because it can examine and modify a running program. It is generally used by debuggers and system call tracing programs, such as ptrace. It opens up interesting possibilities for doing user-mode extensions as well. There have been a lot of attempts to extend the operating system on the user level. See Resources to read about UFO, a user-level extension to filesystems. ptrace also is used to employ security mechanisms.</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/09/22/Playing with ptrace Part II/" title="【搬运】 Playing with ptrace, Part II">https://veritas501.github.io/2017/09/22/Playing with ptrace Part II/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Ptrace/" rel="tag"># Ptrace</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/21/Playing with ptrace Part I/" rel="next" title="【搬运】 Playing with ptrace, Part I">
+                <i class="fa fa-chevron-left"></i> 【搬运】 Playing with ptrace, Part I
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/05/注册机音乐随记/" rel="prev" title="注册机音乐随记">
+                注册机音乐随记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Attaching-to-a-Running-Process"><span class="nav-number">1.</span> <span class="nav-text">Attaching to a Running Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Setting-Breakpoints"><span class="nav-number">2.</span> <span class="nav-text">Setting Breakpoints</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Injecting-the-Code-into-Free-Space"><span class="nav-number">3.</span> <span class="nav-text">Injecting the Code into Free Space</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Behind-the-Scenes"><span class="nav-number">4.</span> <span class="nav-text">Behind the Scenes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">5.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

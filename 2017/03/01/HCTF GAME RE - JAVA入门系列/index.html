@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这次HCTF GAME一共有三道java的逆向，都是z神出的。题目还是很基础的，但我作为一个java零基础的菜鸡，这些题目是够我做了。  re?下载：http://pan.baidu.com/s/1kUZjUB1 密码：u4uw  hint:逆向不止是汇编  这其实就是一道代码审计题。 解压jar，得到图片ctf.jpg。用jd-gui.exe反编译，得到源码： 12345678910111213">
+<meta name="keywords" content="CTF,RE,HCTF GAME">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HCTF GAME RE - JAVA系列">
+<meta property="og:url" content="https://veritas501.github.io/2017/03/01/HCTF GAME RE - JAVA入门系列/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="这次HCTF GAME一共有三道java的逆向，都是z神出的。题目还是很基础的，但我作为一个java零基础的菜鸡，这些题目是够我做了。  re?下载：http://pan.baidu.com/s/1kUZjUB1 密码：u4uw  hint:逆向不止是汇编  这其实就是一道代码审计题。 解压jar，得到图片ctf.jpg。用jd-gui.exe反编译，得到源码： 12345678910111213">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-06-05T03:41:40.370Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HCTF GAME RE - JAVA系列">
+<meta name="twitter:description" content="这次HCTF GAME一共有三道java的逆向，都是z神出的。题目还是很基础的，但我作为一个java零基础的菜鸡，这些题目是够我做了。  re?下载：http://pan.baidu.com/s/1kUZjUB1 密码：u4uw  hint:逆向不止是汇编  这其实就是一道代码审计题。 解压jar，得到图片ctf.jpg。用jd-gui.exe反编译，得到源码： 12345678910111213">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/03/01/HCTF GAME RE - JAVA入门系列/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>HCTF GAME RE - JAVA系列 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/03/01/HCTF GAME RE - JAVA入门系列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HCTF GAME RE - JAVA系列
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-03-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-03-01T00:00:00+08:00">2017-03-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-06-05 11:41:40" itemprop="dateModified" datetime="2017-06-05T11:41:40+08:00">2017-06-05</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/01/HCTF GAME RE - JAVA入门系列/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/03/01/HCTF GAME RE - JAVA入门系列/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/03/01/HCTF GAME RE - JAVA入门系列/" class="leancloud_visitors" data-flag-title="HCTF GAME RE - JAVA系列">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这次HCTF GAME一共有三道java的逆向，都是z神出的。题目还是很基础的，但我作为一个java零基础的菜鸡，这些题目是够我做了。</p>
+<hr>
+<h2 id="re"><a href="#re" class="headerlink" title="re?"></a>re?</h2><p>下载：<a href="http://pan.baidu.com/s/1kUZjUB1" target="_blank" rel="noopener">http://pan.baidu.com/s/1kUZjUB1</a> 密码：u4uw</p>
+<blockquote>
+<p>hint:逆向不止是汇编</p>
+</blockquote>
+<p>这其实就是一道代码审计题。</p>
+<p>解压jar，得到图片<code>ctf.jpg</code>。用jd-gui.exe反编译，得到源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> game;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintStream;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.Cipher;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.IvParameterSpec;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.SecretKeySpec;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> Exception</span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> Main().m();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">m</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    System.out.print(<span class="string">"Now give me flag: "</span>);</span><br><span class="line">    BufferedReader strin = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">    String flag = strin.readLine();</span><br><span class="line">    InputStream is = getClass().getResourceAsStream(<span class="string">"/game/ctf.jpg"</span>);</span><br><span class="line">    <span class="keyword">int</span> len = is.available();</span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">20008</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"res error"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> r = <span class="number">10000L</span>;</span><br><span class="line">    <span class="keyword">while</span> (r != <span class="number">0L</span>) &#123;</span><br><span class="line">      r -= is.skip(r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">byte</span>[] key = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">16</span>];</span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (l != <span class="number">16</span>) &#123;</span><br><span class="line">      l += is.read(key, l, <span class="number">16</span> - l);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    r = <span class="number">10000L</span>;</span><br><span class="line">    <span class="keyword">while</span> (r != <span class="number">0L</span>) &#123;</span><br><span class="line">      r -= is.skip(r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">byte</span>[] iv = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">16</span>];</span><br><span class="line">    l = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (l != <span class="number">16</span>) &#123;</span><br><span class="line">      l += is.read(iv, l, <span class="number">16</span> - l);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Cipher cipher = Cipher.getInstance(<span class="string">"AES/CBC/PKCS5Padding"</span>);</span><br><span class="line">    SecretKeySpec skey = <span class="keyword">new</span> SecretKeySpec(key, <span class="string">"AES"</span>);</span><br><span class="line">    IvParameterSpec ivSpec = <span class="keyword">new</span> IvParameterSpec(iv);</span><br><span class="line">    cipher.init(<span class="number">1</span>, skey, ivSpec);</span><br><span class="line">    <span class="keyword">byte</span>[] en = cipher.doFinal(flag.getBytes());</span><br><span class="line">    <span class="keyword">byte</span>[] tFlag = &#123; <span class="number">69</span>, -<span class="number">101</span>, <span class="number">74</span>, -<span class="number">127</span>, -<span class="number">13</span>, <span class="number">110</span>, <span class="number">17</span>, -<span class="number">103</span>, <span class="number">112</span>, -<span class="number">111</span>, -<span class="number">87</span>, <span class="number">87</span>, <span class="number">45</span>, -<span class="number">110</span>, <span class="number">38</span>, -<span class="number">11</span> &#125;;</span><br><span class="line">    <span class="keyword">if</span> (Arrays.equals(en, tFlag))</span><br><span class="line">      System.out.println(<span class="string">"hctf&#123;"</span> + flag + <span class="string">"&#125;"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      System.out.println(<span class="string">"try again"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看一下代码，就是一个简单的AES解密，用python写出解密函数：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line">fp = open(<span class="string">"ctf.jpg"</span>,<span class="string">'rb'</span>)</span><br><span class="line">fp.read(<span class="number">10000</span>)</span><br><span class="line">key = fp.read(<span class="number">16</span>)</span><br><span class="line">fp.read(<span class="number">10000</span>)</span><br><span class="line">iv = fp.read(<span class="number">16</span>)</span><br><span class="line">fp.close()</span><br><span class="line"></span><br><span class="line">mode = AES.MODE_CBC</span><br><span class="line">aes_obj = AES.new(bytes(key),mode,bytes(iv))</span><br><span class="line"></span><br><span class="line">flag_enc = [<span class="number">69</span>, <span class="number">-101</span>, <span class="number">74</span>, <span class="number">-127</span>, <span class="number">-13</span>, <span class="number">110</span>, <span class="number">17</span>, <span class="number">-103</span>, <span class="number">112</span>, <span class="number">-111</span>, <span class="number">-87</span>, <span class="number">87</span>, <span class="number">45</span>, <span class="number">-110</span>, <span class="number">38</span>, <span class="number">-11</span>]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(flag_enc)):</span><br><span class="line">	<span class="keyword">if</span> flag_enc[i]&lt;<span class="number">0</span>:</span><br><span class="line">		flag_enc[i]+=<span class="number">256</span></span><br><span class="line">	flag_enc[i] = chr(flag_enc[i])</span><br><span class="line">flag_enc = <span class="string">''</span>.join(flag_enc)</span><br><span class="line"></span><br><span class="line">flag = aes_obj.decrypt(flag_enc)</span><br><span class="line"><span class="keyword">print</span> flag</span><br></pre></td></tr></table></figure></p>
+<p>得到：<code>AES_1s_b3TteR\0x03\0x03\0x03</code></p>
+<p>除去后面的padding并加上<code>hctf{}</code>得到flag：<code>hctf{AES_1s_b3TteR}</code></p>
+<hr>
+<h2 id="explorer的奇怪番外4"><a href="#explorer的奇怪番外4" class="headerlink" title="explorer的奇怪番外4"></a>explorer的奇怪番外4</h2><p>下载：<a href="http://pan.baidu.com/s/1eSh1HQE" target="_blank" rel="noopener">http://pan.baidu.com/s/1eSh1HQE</a> 密码：urap</p>
+<blockquote>
+<p>这次我们继续玩java逆向(审计)。<br>当然这次的逆向(审计)就没有上次的那么简单了。首先你需要对java的classloader有一个了解才行。<br>话不多说，jar在此<br>hint:好好学java </p>
+</blockquote>
+<p>老方法。先扔到jd-gui.exe里。</p>
+<p>发现4个class：<br><code>0CC175B9C0F1B6A831C399E269772661.class</code><br><code>B51E17DBDB36295E7AB7541157AE7480.class</code><br><code>Main.class</code><br><code>myClass.class</code></p>
+<p>jar里完整的源码我就不放了，看到两段：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">myClass mc = <span class="keyword">new</span> myClass();</span><br><span class="line">Class clazz = mc.loadClass(<span class="string">"hgame2.checkFlag"</span>);</span><br><span class="line">Method c = clazz.getMethod(<span class="string">"trueMain"</span>, (Class[])<span class="keyword">null</span>);</span><br><span class="line">c.invoke(<span class="keyword">null</span>, <span class="keyword">new</span> Object[<span class="number">0</span>]);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	res = res.substring(<span class="number">0</span>, l + <span class="number">1</span>) + md5(className.getBytes()) + <span class="string">".class"</span>;</span><br><span class="line">&#125; <span class="keyword">catch</span> (NoSuchAlgorithmException e) &#123;</span><br><span class="line">	e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>得知，以上加密的两个class的名字是原来名字的md5值，由代码知一个为 checkFlag ，MD5破解得另一<br>个为 a ，当然这不是重点。</p>
+<p>分析myClass知，class中的内容使用AES加密的。</p>
+<p>key的生成：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> String code = <span class="string">"explorer"</span>;</span><br><span class="line">...</span><br><span class="line">MessageDigest md = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	md = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (NoSuchAlgorithmException e) &#123;</span><br><span class="line">	e.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">assert</span> (md != <span class="keyword">null</span>);</span><br><span class="line">md.update(code.getBytes());</span><br><span class="line"><span class="keyword">byte</span>[] key = md.digest();</span><br></pre></td></tr></table></figure></p>
+<p>iv:<code>String ivStr = &quot;****************&quot;;</code></p>
+<p>python解密：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line">enc1 = open(<span class="string">"0CC175B9C0F1B6A831C399E269772661.class"</span>,<span class="string">'rb'</span>).read()</span><br><span class="line">enc2 = open(<span class="string">"B51E17DBDB36295E7AB7541157AE7480.class"</span>,<span class="string">'rb'</span>).read()</span><br><span class="line">key = hashlib.md5(<span class="string">'explorer'</span>).digest()</span><br><span class="line">iv = <span class="string">'****************'</span></span><br><span class="line"></span><br><span class="line">mode = AES.MODE_CBC</span><br><span class="line">obj1 = AES.new(key,mode,iv)</span><br><span class="line">obj2 = AES.new(key,mode,iv)</span><br><span class="line">dec1= obj1.decrypt(enc1)</span><br><span class="line">dec2= obj2.decrypt(enc2)</span><br><span class="line"></span><br><span class="line">fp = open(<span class="string">'dec_0CC175B9C0F1B6A831C399E269772661.class'</span>,<span class="string">'wb'</span>)</span><br><span class="line">fp.write(dec1)</span><br><span class="line">fp.close()</span><br><span class="line"></span><br><span class="line">fp = open(<span class="string">'dec_B51E17DBDB36295E7AB7541157AE7480.class'</span>,<span class="string">'wb'</span>)</span><br><span class="line">fp.write(dec2)</span><br><span class="line">fp.close()</span><br></pre></td></tr></table></figure></p>
+<p>此处提醒一下，key那里用的是digest()，我之前误把digest()写成了hexdigest()，结果解不出来。<br>举例：<br>md5 = hashlib.md5(‘adsf’)<br>md5.digest() //返回: ‘\x05\xc1*(s48l\x94\x13\x1a\xb8\xaa\x00\xd0\x8a’<br>md5.hexdigest() //返回: ‘05c12a287334386c94131ab8aa00d08a’ </p>
+<p>从而我们得到了两个解密后的class，把它们用压缩软件再塞回jar，再次用jd-gui打开jar，反编译出刚才解密的两个class的代码：</p>
+<p>dec_0CC175B9C0F1B6A831C399E269772661.class:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hgame2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">a</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">check</span><span class="params">(String flag)</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] var100 = flag.getBytes();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] var72 = <span class="keyword">new</span> <span class="keyword">byte</span>[var100.length + <span class="number">2</span>];</span><br><span class="line">    System.arraycopy(var100, <span class="number">0</span>, var72, <span class="number">0</span>, var100.length);</span><br><span class="line">    <span class="keyword">byte</span>[] var140 = <span class="keyword">new</span> <span class="keyword">byte</span>[var72.length / <span class="number">3</span> * <span class="number">4</span>];</span><br><span class="line">    <span class="keyword">byte</span>[] var82 = var140;</span><br><span class="line">    <span class="keyword">int</span> var17 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> var18 = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (var17 &lt; var100.length) &#123;</span><br><span class="line">      var82[var18] = (<span class="keyword">byte</span>)(var72[var17] &gt;&gt;&gt; <span class="number">2</span> &amp; <span class="number">0x3F</span>);</span><br><span class="line">      var82[(var18 + <span class="number">1</span>)] = (<span class="keyword">byte</span>)(var72[(var17 + <span class="number">1</span>)] &gt;&gt;&gt; <span class="number">4</span> &amp; <span class="number">0xF</span> | var72[var17] &lt;&lt; <span class="number">4</span> &amp; <span class="number">0x3F</span>);</span><br><span class="line">      var82[(var18 + <span class="number">2</span>)] = (<span class="keyword">byte</span>)(var72[(var17 + <span class="number">2</span>)] &gt;&gt;&gt; <span class="number">6</span> &amp; <span class="number">0x3</span> | var72[(var17 + <span class="number">1</span>)] &lt;&lt; <span class="number">2</span> &amp; <span class="number">0x3F</span>);</span><br><span class="line">      var82[(var18 + <span class="number">3</span>)] = (<span class="keyword">byte</span>)(var72[(var17 + <span class="number">2</span>)] &amp; <span class="number">0x3F</span>);</span><br><span class="line">      var17 += <span class="number">3</span>;</span><br><span class="line">      var18 += <span class="number">4</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    var17 = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (var17 &lt; var82.length) &#123;</span><br><span class="line">      <span class="keyword">int</span> var10000 = var82[var17];</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (var10000 &lt; <span class="number">26</span>) &#123;</span><br><span class="line">        var82[var17] = (<span class="keyword">byte</span>)(var82[var17] + <span class="number">65</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">        var10000 = var82[var17];</span><br><span class="line">        <span class="keyword">byte</span> var10001 = <span class="number">52</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (var10000 &lt; var10001) &#123;</span><br><span class="line">          var82[var17] = (<span class="keyword">byte</span>)(var82[var17] + <span class="number">97</span> - <span class="number">26</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">          var10000 = var82[var17];</span><br><span class="line">          var10001 = <span class="number">62</span>;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (var10000 &lt; var10001) &#123;</span><br><span class="line">            var82[var17] = (<span class="keyword">byte</span>)(var82[var17] + <span class="number">48</span> - <span class="number">52</span>);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span> &#123;</span><br><span class="line">            var10000 = var82[var17];</span><br><span class="line">            var10001 = <span class="number">63</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (var10000 &lt; var10001) &#123;</span><br><span class="line">              var82[var17] = <span class="number">43</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">              var140 = var82;</span><br><span class="line">              <span class="keyword">int</span> var136 = var17;</span><br><span class="line">              var140[var136] = <span class="number">47</span>;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      var17++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> var10000 = var82.length;</span><br><span class="line">    <span class="keyword">byte</span> var10001 = <span class="number">1</span>;</span><br><span class="line">    var17 = var10000 - var10001;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (var17 &gt; var100.length * <span class="number">4</span> / <span class="number">3</span>) &#123;</span><br><span class="line">      var82[var17] = <span class="number">61</span>;</span><br><span class="line">      var17--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; var82.length; i++) &#123;</span><br><span class="line">      var82[i] = (<span class="keyword">byte</span>)(var82[i] ^ <span class="number">0xCC</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] f = &#123; -<span class="number">107</span>, -<span class="number">74</span>, -<span class="number">118</span>, -<span class="number">92</span>, -<span class="number">81</span>, -<span class="number">1</span>, -<span class="number">126</span>, -<span class="number">127</span>, -<span class="number">127</span>, -<span class="number">117</span>, -<span class="number">118</span>, -<span class="number">89</span>, -<span class="number">106</span>, -<span class="number">108</span>, -<span class="number">122</span>, -<span class="number">86</span>, -<span class="number">127</span>, -<span class="number">102</span>, -<span class="number">126</span>, -<span class="number">86</span>, -<span class="number">127</span>, -<span class="number">101</span>, -<span class="number">7</span>, -<span class="number">4</span>, -<span class="number">106</span>, -<span class="number">108</span>, -<span class="number">123</span>, -<span class="number">74</span>, -<span class="number">81</span>, -<span class="number">1</span>, -<span class="number">98</span>, -<span class="number">122</span>, -<span class="number">82</span>, -<span class="number">95</span>, -<span class="number">81</span>, -<span class="number">15</span> &#125;;</span><br><span class="line">    <span class="keyword">return</span> Arrays.equals(var82, f);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>dec_B51E17DBDB36295E7AB7541157AE7480.class:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hgame2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">checkFlag</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">trueMain</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException</span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    System.out.print(<span class="string">"Now give me flag: "</span>);</span><br><span class="line">    BufferedReader strin = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(System.in));</span><br><span class="line">    String flag = strin.readLine();</span><br><span class="line">    <span class="keyword">if</span> (a.check(flag))</span><br><span class="line">      System.out.println(<span class="string">"hctf&#123;"</span> + flag + <span class="string">"&#125;"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      System.out.println(<span class="string">"try again"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要的算法在dec_0CC175B9C0F1B6A831C399E269772661.class中。首先是一个base64，应该能看出来，后边是一个简单的异或。</p>
+<p>python解密：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">c=[<span class="number">-107</span>, <span class="number">-74</span>, <span class="number">-118</span>, <span class="number">-92</span>, <span class="number">-81</span>, <span class="number">-1</span>, <span class="number">-126</span>, <span class="number">-127</span>, <span class="number">-127</span>, <span class="number">-117</span>, <span class="number">-118</span>, <span class="number">-89</span>, <span class="number">-106</span>, <span class="number">-108</span>, <span class="number">-122</span>, <span class="number">-86</span>, <span class="number">-127</span>, <span class="number">-102</span>, <span class="number">-126</span>, <span class="number">-86</span>, <span class="number">-127</span>, <span class="number">-101</span>, <span class="number">-7</span>, <span class="number">-4</span>, <span class="number">-106</span>, <span class="number">-108</span>, <span class="number">-123</span>, <span class="number">-74</span>, <span class="number">-81</span>, <span class="number">-1</span>, <span class="number">-98</span>, <span class="number">-122</span>, <span class="number">-82</span>, <span class="number">-95</span>, <span class="number">-81</span>, <span class="number">-15</span> ]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(c)):</span><br><span class="line">	<span class="keyword">if</span> c[i]&lt;<span class="number">0</span>:</span><br><span class="line">		c[i]+=<span class="number">256</span></span><br><span class="line">		c[i] ^= <span class="number">0xCC</span></span><br><span class="line">		c[i] = chr(c[i])</span><br><span class="line">c = <span class="string">''</span>.join(c)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'hctf&#123;'</span>+base64.b64decode(c)+<span class="string">'&#125;'</span></span><br></pre></td></tr></table></figure></p>
+<p>flag:<code>hctf{c1assL0ader_1S_1nter3stIng}</code></p>
+<hr>
+<h2 id="explorer的奇怪番外7"><a href="#explorer的奇怪番外7" class="headerlink" title="explorer的奇怪番外7"></a>explorer的奇怪番外7</h2><p>下载：<a href="http://pan.baidu.com/s/1gf7OdRP" target="_blank" rel="noopener">http://pan.baidu.com/s/1gf7OdRP</a> 密码：ma6u</p>
+<blockquote>
+<p>这次我们继续玩java手机apk逆向。<br>所有，到底有没有人会安卓开发呢Orz<br>话不多说，apk在此<br>hint:好好学java&amp;安卓代码 </p>
+</blockquote>
+<p>工具用的jeb。安卓逆向，首先想到的是找找有没有字符串做参考，来到<code>values\strings.xml</code>，发现字段：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"check_flag"</span>&gt;</span></span><br><span class="line">        check_flag<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">string</span> <span class="attr">name</span>=<span class="string">"enter_password"</span>&gt;</span></span><br><span class="line">        enter password<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>挺好的，再来到<code>values\public.xml</code>，找到字段：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">public</span> <span class="attr">id</span>=<span class="string">"0x7f04001a"</span> <span class="attr">name</span>=<span class="string">"check_flag"</span> <span class="attr">type</span>=<span class="string">"layout"</span> /&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">public</span> <span class="attr">id</span>=<span class="string">"0x7f060015"</span> <span class="attr">name</span>=<span class="string">"check_flag"</span> <span class="attr">type</span>=<span class="string">"string"</span> /&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">public</span> <span class="attr">id</span>=<span class="string">"0x7f0c0054"</span> <span class="attr">name</span>=<span class="string">"check_flag"</span> <span class="attr">type</span>=<span class="string">"id"</span> /&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>最后通过type为“id”的public id (2131492948)找到了相关的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle arg3)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(arg3);</span><br><span class="line">        <span class="keyword">this</span>.setContentView(<span class="number">2130968602</span>);</span><br><span class="line">        <span class="keyword">this</span>.editText = <span class="keyword">this</span>.findViewById(<span class="number">2131492949</span>);</span><br><span class="line">        <span class="keyword">this</span>.button = <span class="keyword">this</span>.findViewById(<span class="number">2131492948</span>);</span><br><span class="line">        <span class="keyword">this</span>.textView = <span class="keyword">this</span>.findViewById(<span class="number">2131492950</span>);</span><br><span class="line">        <span class="keyword">this</span>.button.setOnClickListener(<span class="keyword">new</span> View$OnClickListener() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View arg11)</span> </span>&#123;</span><br><span class="line">                String v6 = checkFlag.<span class="keyword">this</span>.editText.getText().toString();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    MessageDigest v4 = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line">                    v4.update(v6.getBytes());</span><br><span class="line">                    <span class="keyword">if</span>(!Arrays.equals(v4.digest(), <span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;-<span class="number">73</span>, <span class="number">14</span>, <span class="number">42</span>, <span class="number">13</span>, -<span class="number">123</span>, <span class="number">91</span>, <span class="number">77</span>, -<span class="number">57</span>, -<span class="number">79</span>, -<span class="number">22</span>, <span class="number">52</span>, -<span class="number">88</span>, -<span class="number">87</span>, -<span class="number">47</span>, <span class="number">3</span>, <span class="number">5</span>&#125;)) &#123;</span><br><span class="line">                        <span class="keyword">return</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    MessageDigest v7 = MessageDigest.getInstance(<span class="string">"sha-256"</span>);</span><br><span class="line">                    v7.update(v6.getBytes());</span><br><span class="line">                    checkFlag.<span class="keyword">this</span>.textView.setText(<span class="string">"hctf&#123;"</span> + checkFlag.bytes2Hex(v7.digest()) + <span class="string">"&#125;"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">catch</span>(NoSuchAlgorithmException v0) &#123;</span><br><span class="line">                    v0.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>代码的意思就是获取输入，对输入进行md5加密，加密结果和已知数据比较，如果想等，则对输入进行sha256加密，结果加上‘hctf{}’就是flag了。<br>得到flag_md5:<code>{-73, 14, 42, 13, -123, 91, 77, -57, -79, -22, 52, -88, -87, -47, 3, 5}</code><br>把signed转换成unsigned再hex：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">enc = [<span class="number">-73</span>, <span class="number">14</span>, <span class="number">42</span>, <span class="number">13</span>, <span class="number">-123</span>, <span class="number">91</span>, <span class="number">77</span>, <span class="number">-57</span>, <span class="number">-79</span>, <span class="number">-22</span>, <span class="number">52</span>, <span class="number">-88</span>, <span class="number">-87</span>, <span class="number">-47</span>, <span class="number">3</span>, <span class="number">5</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(enc)):</span><br><span class="line">	enc[i] = chr(enc[i] % <span class="number">256</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">''</span>.join(enc).encode(<span class="string">'hex'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>得到flag_md5:<code>b70e2a0d855b4dc7b1ea34a8a9d10305</code></p>
+<p>md5在线解密：<a href="http://www.md5online.org/" target="_blank" rel="noopener">http://www.md5online.org/</a></p>
+<p>结果为：<code>Gabriel</code></p>
+<p>sha256加密得：<code>0c030df5a4e7477d218012c0121ebce6d61bb8dc46e0a6c4f8e1cc8091b946a5</code></p>
+<p>最后flag：<code>hctf{0c030df5a4e7477d218012c0121ebce6d61bb8dc46e0a6c4f8e1cc8091b946a5}</code></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/03/01/HCTF GAME RE - JAVA入门系列/" title="HCTF GAME RE - JAVA系列">https://veritas501.github.io/2017/03/01/HCTF GAME RE - JAVA入门系列/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+            <a href="/tags/RE/" rel="tag"># RE</a>
+          
+            <a href="/tags/HCTF-GAME/" rel="tag"># HCTF GAME</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/01/密码学笔记/" rel="next" title="密码学笔记">
+                <i class="fa fa-chevron-left"></i> 密码学笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/01/HCTF GAME RE - 零碎的逆向/" rel="prev" title="HCTF GAME RE - 零碎的逆向">
+                HCTF GAME RE - 零碎的逆向 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#re"><span class="nav-number">1.</span> <span class="nav-text">re?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#explorer的奇怪番外4"><span class="nav-number">2.</span> <span class="nav-text">explorer的奇怪番外4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#explorer的奇怪番外7"><span class="nav-number">3.</span> <span class="nav-text">explorer的奇怪番外7</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

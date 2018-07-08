@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="这该死的出题人又只丢给我一个带密码的压缩包，他**的到底想干嘛？ CTF比赛中经常出现这样的问题，如果不能顺利解压真的是件很抓狂的事情。  这次就聊一聊加密的压缩包（内容真的很杂，很乱，很伤眼睛）。">
+<meta name="keywords" content="MISC,ZIP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="给你压缩包却不给你密码的人到底在想什么">
+<meta property="og:url" content="https://veritas501.github.io/2017/06/23/给你压缩包却不给你密码的人到底在想什么/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="这该死的出题人又只丢给我一个带密码的压缩包，他**的到底想干嘛？ CTF比赛中经常出现这样的问题，如果不能顺利解压真的是件很抓狂的事情。  这次就聊一聊加密的压缩包（内容真的很杂，很乱，很伤眼睛）。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_30a4c26219f53580d2e88d9d67889b73.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_a8479d554643c93c081d50c243e50840.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_aff27a2282e33f6ca3b203d5112668fb.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_8bd7bf086ca02b432d7c41be5bbc223d.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_205f9a34fff0d2ece97ea72dbc7ab2e7.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_301c8586172f4328b90a07bed6cbed03.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_695cbd932ba05299115712e26070ebc4.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_fae75a7e18c1cdc091ad3ceb15e15db9.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_a310b1790685cf9ed7e1733a7e48d873.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_46827a1424ae259016fb7ac20bc507d5.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_fecf29536650b0f37bec3ef0af443620.png">
+<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_b84f37a713fc521dcb500c488c29ba4c.png">
+<meta property="og:updated_time" content="2017-08-25T06:02:02.065Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="给你压缩包却不给你密码的人到底在想什么">
+<meta name="twitter:description" content="这该死的出题人又只丢给我一个带密码的压缩包，他**的到底想干嘛？ CTF比赛中经常出现这样的问题，如果不能顺利解压真的是件很抓狂的事情。  这次就聊一聊加密的压缩包（内容真的很杂，很乱，很伤眼睛）。">
+<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_30a4c26219f53580d2e88d9d67889b73.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2017/06/23/给你压缩包却不给你密码的人到底在想什么/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>给你压缩包却不给你密码的人到底在想什么 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/06/23/给你压缩包却不给你密码的人到底在想什么/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">给你压缩包却不给你密码的人到底在想什么
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-06-23 00:00:00" itemprop="dateCreated datePublished" datetime="2017-06-23T00:00:00+08:00">2017-06-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2017-08-25 14:02:02" itemprop="dateModified" datetime="2017-08-25T14:02:02+08:00">2017-08-25</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/23/给你压缩包却不给你密码的人到底在想什么/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/06/23/给你压缩包却不给你密码的人到底在想什么/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/23/给你压缩包却不给你密码的人到底在想什么/" class="leancloud_visitors" data-flag-title="给你压缩包却不给你密码的人到底在想什么">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这该死的出题人又只丢给我一个带密码的压缩包，他**的到底想干嘛？</p>
+<p>CTF比赛中经常出现这样的问题，如果不能顺利解压真的是件很抓狂的事情。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_30a4c26219f53580d2e88d9d67889b73.png" alt=""></p>
+<p>这次就聊一聊加密的压缩包（内容真的很杂，很乱，很伤眼睛）。</p>
+<a id="more"></a>
+<hr>
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>在这里，我建议大家装两个解压软件，一个随意（我用的7z），一个是<code>winrar</code>。</p>
+<p>嫌右键菜单挤你就装虚拟机里呗。</p>
+<p>因为这两个压缩软件压缩出来的zip总是有点不同，最明显的一点，就是在已知明文攻击（后面会说）的时候，两种软件压缩出来的压缩包在构造明文压缩包的时候不能互用。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_a8479d554643c93c081d50c243e50840.png" alt=""></p>
+<hr>
+<h1 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h1><p><strong>拿到压缩包上来一定要看有没有注释，一定要看有没有注释，一定要看有没有注释，重要的话说三遍。</strong></p>
+<p>有的时候他真的是想送你分，把密码或是hint写在注释里，但你就是不去看他一眼。</p>
+<p>用hex方式打开的打一般在末尾</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_aff27a2282e33f6ca3b203d5112668fb.png" alt=""></p>
+<p>中文注释的话这样可能会乱码。建议压缩软件打开</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_8bd7bf086ca02b432d7c41be5bbc223d.png" alt=""></p>
+<h1 id="弱密码"><a href="#弱密码" class="headerlink" title="弱密码"></a>弱密码</h1><p>这个其实真的没什么好说的，<strong>上来应该先试一试的</strong>，因为也不用动脑子，直接放后台跑就行了。</p>
+<p>首先先跑纯数字密码，1到9位直接跑一遍，也就1分钟左右的时间吧。</p>
+<p>不对的话可以上字典，或是短密码穷举一下，直接丢后台就行，人脑可以再做其他的方向的分析。</p>
+<p>另外，如果跑字典都跑不到的话，可以试试此次CTF的名字，或是这个题目的名字。</p>
+<p>软件用<code>archpr</code>，网上直接下就行，这里就不分享了。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_205f9a34fff0d2ece97ea72dbc7ab2e7.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_301c8586172f4328b90a07bed6cbed03.png" alt=""></p>
+<hr>
+<h1 id="压缩包伪加密"><a href="#压缩包伪加密" class="headerlink" title="压缩包伪加密"></a>压缩包伪加密</h1><p>一个伪加密的压缩包冒充加密压缩包，你要知道压缩软件是如何识别一个压缩包是否被加密的。</p>
+<p>软件主要是围绕<strong>frFlags</strong>和<strong>deFlags</strong>来判断的。</p>
+<p>我们用winrar创建一个加密的压缩包，可以看到加密的压缩包的frFlags和deFlags都为9。</p>
+<p>其中，deFlags是针对单个文件的，压缩包中的每个文件都有。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_695cbd932ba05299115712e26070ebc4.png" alt=""></p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_fae75a7e18c1cdc091ad3ceb15e15db9.png" alt=""></p>
+<p>而未加密的都为0。</p>
+<p>用7z创建一个加密的压缩包，frFlags和deFlags都为1。这里就不多放图了。</p>
+<p>而未加密的依然都为0。</p>
+<p>综上，大家应该已经知道怎么改标志位来构造伪加密以及如何搞定伪加密了。</p>
+<hr>
+<h1 id="已知明文攻击"><a href="#已知明文攻击" class="headerlink" title="已知明文攻击"></a>已知明文攻击</h1><p>一种比较巧妙的攻击方法，首先你需要一个压缩包中已知的文件(文件大小大于12bytes)，比如readme.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">├─enc.zip</span><br><span class="line">│  ├─flag.txt *</span><br><span class="line">│  └─readme.txt *</span><br><span class="line">│</span><br><span class="line">└─readme.txt</span><br></pre></td></tr></table></figure>
+<p>这样我们就可以构造明文zip</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">├─plaintext.zip</span><br><span class="line">│  └─readme.txt</span><br></pre></td></tr></table></figure>
+<p>原理大概是压缩包里的所有文件都是使用同一个加密密钥来加密的，所以可以用已知文件反推加密密钥，利用密钥来解密其他加密文件。</p>
+<p>划重点：<strong>构造明文压缩包时要选用与加密压缩包相同的压缩软件</strong>，如果他用winrar压的，你用7z构造出的压缩包来做明文压缩包，软件是会报错的。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_a310b1790685cf9ed7e1733a7e48d873.png" alt=""></p>
+<p>这样就是还原出密钥了，点OK后软件会叫你保存解密后的压缩包。</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_46827a1424ae259016fb7ac20bc507d5.png" alt=""></p>
+<hr>
+<h1 id="CRC碰撞"><a href="#CRC碰撞" class="headerlink" title="CRC碰撞"></a>CRC碰撞</h1><p>CRC32碰撞用于非常小的文件（6字节以上基本就别试了），就是通过CRC来反推文件内容。</p>
+<p>而且CRC32是很容易碰撞的，所以就6字节而言，同一个CRC32可能对应着十几个字符串（纯可视字符）。</p>
+<p>当文件刚好是6字节时，使用下面的crc32.py脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># CRC32 tools by Victor</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#usage: python crc32.py reverse 0xffffffff（the crc）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">permitted_characters = set(</span><br><span class="line">    map(ord, <span class="string">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_'</span>))  <span class="comment"># \w</span></span><br><span class="line"></span><br><span class="line">testing = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">args = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_poly</span><span class="params">()</span>:</span></span><br><span class="line">    poly = parse_dword(args.poly)</span><br><span class="line">    <span class="keyword">if</span> args.msb:</span><br><span class="line">        poly = reverseBits(poly)</span><br><span class="line">    check32(poly)</span><br><span class="line">    <span class="keyword">return</span> poly</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_input</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> args.instr:</span><br><span class="line">        <span class="keyword">return</span> tuple(map(ord, args.instr))</span><br><span class="line">    <span class="keyword">with</span> args.infile <span class="keyword">as</span> f:  <span class="comment"># pragma: no cover</span></span><br><span class="line">        <span class="keyword">return</span> tuple(map(ord, f.read()))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(msg)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> testing:  <span class="comment"># pragma: no cover</span></span><br><span class="line">        args.outfile.write(msg)</span><br><span class="line">        args.outfile.write(os.linesep)</span><br><span class="line"></span><br><span class="line">table = []</span><br><span class="line">table_reverse = []</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_tables</span><span class="params">(poly, reverse=True)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> table, table_reverse</span><br><span class="line">    table = []</span><br><span class="line">    <span class="comment"># build CRC32 table</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">8</span>):</span><br><span class="line">            <span class="keyword">if</span> i &amp; <span class="number">1</span>:</span><br><span class="line">                i &gt;&gt;= <span class="number">1</span></span><br><span class="line">                i ^= poly</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                i &gt;&gt;= <span class="number">1</span></span><br><span class="line">        table.append(i)</span><br><span class="line">    <span class="keyword">assert</span> len(table) == <span class="number">256</span>, <span class="string">"table is wrong size"</span></span><br><span class="line">    <span class="comment"># build reverse table</span></span><br><span class="line">    <span class="keyword">if</span> reverse:</span><br><span class="line">        table_reverse = []</span><br><span class="line">        found_none = set()</span><br><span class="line">        found_multiple = set()</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">            found = []</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">256</span>):</span><br><span class="line">                <span class="keyword">if</span> table[j] &gt;&gt; <span class="number">24</span> == i:</span><br><span class="line">                    found.append(j)</span><br><span class="line">            table_reverse.append(tuple(found))</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> found:</span><br><span class="line">                found_none.add(i)</span><br><span class="line">            <span class="keyword">elif</span> len(found) &gt; <span class="number">1</span>:</span><br><span class="line">                found_multiple.add(i)</span><br><span class="line">        <span class="keyword">assert</span> len(table_reverse) == <span class="number">256</span>, <span class="string">"reverse table is wrong size"</span></span><br><span class="line">        <span class="keyword">if</span> found_multiple:</span><br><span class="line">            out(<span class="string">'WARNING: Multiple table entries have an MSB in &#123;0&#125;'</span>.format(</span><br><span class="line">                rangess(found_multiple)))</span><br><span class="line">        <span class="keyword">if</span> found_none:</span><br><span class="line">            out(<span class="string">'ERROR: no MSB in the table equals bytes in &#123;0&#125;'</span>.format(</span><br><span class="line">                rangess(found_none)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc</span><span class="params">(data, accum=<span class="number">0</span>)</span>:</span></span><br><span class="line">    accum = ~accum</span><br><span class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> data:</span><br><span class="line">        accum = table[(accum ^ b) &amp; <span class="number">0xFF</span>] ^ ((accum &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0x00FFFFFF</span>)</span><br><span class="line">    accum = ~accum</span><br><span class="line">    <span class="keyword">return</span> accum &amp; <span class="number">0xFFFFFFFF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rewind</span><span class="params">(accum, data)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">        <span class="keyword">return</span> (accum,)</span><br><span class="line">    stack = [(len(data), ~accum)]</span><br><span class="line">    solutions = set()</span><br><span class="line">    <span class="keyword">while</span> stack:</span><br><span class="line">        node = stack.pop()</span><br><span class="line">        prev_offset = node[<span class="number">0</span>] - <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> table_reverse[(node[<span class="number">1</span>] &gt;&gt; <span class="number">24</span>) &amp; <span class="number">0xFF</span>]:</span><br><span class="line">            prevCRC = (((node[<span class="number">1</span>] ^ table[i]) &lt;&lt; <span class="number">8</span>) |</span><br><span class="line">                       (i ^ data[prev_offset])) &amp; <span class="number">0xFFFFFFFF</span></span><br><span class="line">            <span class="keyword">if</span> prev_offset:</span><br><span class="line">                stack.append((prev_offset, prevCRC))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                solutions.add((~prevCRC) &amp; <span class="number">0xFFFFFFFF</span>)</span><br><span class="line">    <span class="keyword">return</span> solutions</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findReverse</span><span class="params">(desired, accum)</span>:</span></span><br><span class="line">    solutions = set()</span><br><span class="line">    accum = ~accum</span><br><span class="line">    stack = [(~desired,)]</span><br><span class="line">    <span class="keyword">while</span> stack:</span><br><span class="line">        node = stack.pop()</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> table_reverse[(node[<span class="number">0</span>] &gt;&gt; <span class="number">24</span>) &amp; <span class="number">0xFF</span>]:</span><br><span class="line">            <span class="keyword">if</span> len(node) == <span class="number">4</span>:</span><br><span class="line">                a = accum</span><br><span class="line">                data = []</span><br><span class="line">                node = node[<span class="number">1</span>:] + (j,)</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>, <span class="number">-1</span>, <span class="number">-1</span>):</span><br><span class="line">                    data.append((a ^ node[i]) &amp; <span class="number">0xFF</span>)</span><br><span class="line">                    a &gt;&gt;= <span class="number">8</span></span><br><span class="line">                    a ^= table[node[i]]</span><br><span class="line">                solutions.add(tuple(data))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                stack.append(((node[<span class="number">0</span>] ^ table[j]) &lt;&lt; <span class="number">8</span>,) + node[<span class="number">1</span>:] + (j,))</span><br><span class="line">    <span class="keyword">return</span> solutions</span><br><span class="line"></span><br><span class="line"><span class="comment"># Tools</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_dword</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> int(x, <span class="number">0</span>) &amp; <span class="number">0xFFFFFFFF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverseBits</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="comment"># http://graphics.stanford.edu/~seander/bithacks.html#ReverseParallel</span></span><br><span class="line">    <span class="comment"># http://stackoverflow.com/a/20918545</span></span><br><span class="line">    x = ((x &amp; <span class="number">0x55555555</span>) &lt;&lt; <span class="number">1</span>) | ((x &amp; <span class="number">0xAAAAAAAA</span>) &gt;&gt; <span class="number">1</span>)</span><br><span class="line">    x = ((x &amp; <span class="number">0x33333333</span>) &lt;&lt; <span class="number">2</span>) | ((x &amp; <span class="number">0xCCCCCCCC</span>) &gt;&gt; <span class="number">2</span>)</span><br><span class="line">    x = ((x &amp; <span class="number">0x0F0F0F0F</span>) &lt;&lt; <span class="number">4</span>) | ((x &amp; <span class="number">0xF0F0F0F0</span>) &gt;&gt; <span class="number">4</span>)</span><br><span class="line">    x = ((x &amp; <span class="number">0x00FF00FF</span>) &lt;&lt; <span class="number">8</span>) | ((x &amp; <span class="number">0xFF00FF00</span>) &gt;&gt; <span class="number">8</span>)</span><br><span class="line">    x = ((x &amp; <span class="number">0x0000FFFF</span>) &lt;&lt; <span class="number">16</span>) | ((x &amp; <span class="number">0xFFFF0000</span>) &gt;&gt; <span class="number">16</span>)</span><br><span class="line">    <span class="keyword">return</span> x &amp; <span class="number">0xFFFFFFFF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Compatibility with Python 2.6 and earlier.</span></span><br><span class="line"><span class="keyword">if</span> hasattr(int, <span class="string">"bit_length"</span>):</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">bit_length</span><span class="params">(num)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> num.bit_length()</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">bit_length</span><span class="params">(n)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        bits = <span class="number">-32</span></span><br><span class="line">        m = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> n:</span><br><span class="line">            m = n</span><br><span class="line">            n &gt;&gt;= <span class="number">32</span></span><br><span class="line">            bits += <span class="number">32</span></span><br><span class="line">        <span class="keyword">while</span> m:</span><br><span class="line">            m &gt;&gt;= <span class="number">1</span></span><br><span class="line">            bits += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> bits</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check32</span><span class="params">(poly)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> poly &amp; <span class="number">0x80000000</span> == <span class="number">0</span>:</span><br><span class="line">        out(<span class="string">'WARNING: polynomial degree (&#123;0&#125;) != 32'</span>.format(bit_length(poly)))</span><br><span class="line">        out(<span class="string">'         instead, try'</span>)</span><br><span class="line">        out(<span class="string">'         0x&#123;0:08x&#125; (reversed/lsbit-first)'</span>.format(poly | <span class="number">0x80000000</span>))</span><br><span class="line">        out(<span class="string">'         0x&#123;0:08x&#125; (normal/msbit-first)'</span>.format(reverseBits(poly | <span class="number">0x80000000</span>)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reciprocal</span><span class="params">(poly)</span>:</span></span><br><span class="line">    <span class="string">''' Return the reversed reciprocal (Koopman notatation) polynomial of a</span></span><br><span class="line"><span class="string">        reversed (lsbit-first) polynomial '''</span></span><br><span class="line">    <span class="keyword">return</span> reverseBits((poly &lt;&lt; <span class="number">1</span>) | <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_num</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="string">''' Write a numeric result in various forms '''</span></span><br><span class="line">    out(<span class="string">'hex: 0x&#123;0:08x&#125;'</span>.format(num))</span><br><span class="line">    out(<span class="string">'dec:   &#123;0:d&#125;'</span>.format(num))</span><br><span class="line">    out(<span class="string">'oct: 0o&#123;0:011o&#125;'</span>.format(num))</span><br><span class="line">    out(<span class="string">'bin: 0b&#123;0:032b&#125;'</span>.format(num))</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ranges</span><span class="params">(i)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> kg <span class="keyword">in</span> itertools.groupby(enumerate(i), <span class="keyword">lambda</span> x: x[<span class="number">1</span>] - x[<span class="number">0</span>]):</span><br><span class="line">        g = list(kg[<span class="number">1</span>])</span><br><span class="line">        <span class="keyword">yield</span> g[<span class="number">0</span>][<span class="number">1</span>], g[<span class="number">-1</span>][<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rangess</span><span class="params">(i)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">', '</span>.join(map(<span class="keyword">lambda</span> x: <span class="string">'[&#123;0&#125;,&#123;1&#125;]'</span>.format(*x), ranges(i)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Parsers</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_parser</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">''' Return the command-line parser '''</span></span><br><span class="line">    parser = argparse.ArgumentParser(</span><br><span class="line">        description=<span class="string">"Reverse, undo, and calculate CRC32 checksums"</span>)</span><br><span class="line">    subparsers = parser.add_subparsers(metavar=<span class="string">'action'</span>)</span><br><span class="line"></span><br><span class="line">    poly_flip_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    subparser_group = poly_flip_parser.add_mutually_exclusive_group()</span><br><span class="line">    subparser_group.add_argument(</span><br><span class="line">        <span class="string">'-m'</span>, <span class="string">'--msbit'</span>, dest=<span class="string">"msb"</span>, action=<span class="string">'store_true'</span>,</span><br><span class="line">        help=<span class="string">'treat the polynomial as normal (msbit-first)'</span>)</span><br><span class="line">    subparser_group.add_argument(<span class="string">'-l'</span>, <span class="string">'--lsbit'</span>, action=<span class="string">'store_false'</span>,</span><br><span class="line">                                 help=<span class="string">'treat the polynomial as reversed (lsbit-first) [default]'</span>)</span><br><span class="line"></span><br><span class="line">    desired_poly_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    desired_poly_parser.add_argument(</span><br><span class="line">        <span class="string">'desired'</span>, type=str, help=<span class="string">'[int] desired checksum'</span>)</span><br><span class="line"></span><br><span class="line">    default_poly_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    default_poly_parser.add_argument(</span><br><span class="line">        <span class="string">'poly'</span>, default=<span class="string">'0xEDB88320'</span>, type=str, nargs=<span class="string">'?'</span>,</span><br><span class="line">        help=<span class="string">'[int] polynomial [default: 0xEDB88320]'</span>)</span><br><span class="line"></span><br><span class="line">    accum_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    accum_parser.add_argument(</span><br><span class="line">        <span class="string">'accum'</span>, type=str, help=<span class="string">'[int] accumulator (final checksum)'</span>)</span><br><span class="line"></span><br><span class="line">    default_accum_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    default_accum_parser.add_argument(</span><br><span class="line">        <span class="string">'accum'</span>, default=<span class="string">'0'</span>, type=str, nargs=<span class="string">'?'</span>,</span><br><span class="line">        help=<span class="string">'[int] starting accumulator [default: 0]'</span>)</span><br><span class="line"></span><br><span class="line">    outfile_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    outfile_parser.add_argument(<span class="string">'-o'</span>, <span class="string">'--outfile'</span>,</span><br><span class="line">                                metavar=<span class="string">"f"</span>,</span><br><span class="line">                                type=argparse.FileType(<span class="string">'w'</span>),</span><br><span class="line">                                default=sys.stdout,</span><br><span class="line">                                help=<span class="string">"Output to a file instead of stdout"</span>)</span><br><span class="line"></span><br><span class="line">    infile_parser = argparse.ArgumentParser(add_help=<span class="keyword">False</span>)</span><br><span class="line">    subparser_group = infile_parser.add_mutually_exclusive_group()</span><br><span class="line">    subparser_group.add_argument(<span class="string">'-i'</span>, <span class="string">'--infile'</span>,</span><br><span class="line">                                 metavar=<span class="string">"f"</span>,</span><br><span class="line">                                 type=argparse.FileType(<span class="string">'rb'</span>),</span><br><span class="line">                                 default=sys.stdin,</span><br><span class="line">                                 help=<span class="string">"Input from a file instead of stdin"</span>)</span><br><span class="line">    subparser_group.add_argument(<span class="string">'-s'</span>, <span class="string">'--str'</span>,</span><br><span class="line">                                 metavar=<span class="string">"s"</span>,</span><br><span class="line">                                 type=str,</span><br><span class="line">                                 default=<span class="string">''</span>,</span><br><span class="line">                                 dest=<span class="string">'instr'</span>,</span><br><span class="line">                                 help=<span class="string">"Use a string as input"</span>)</span><br><span class="line"></span><br><span class="line">    subparser = subparsers.add_parser(<span class="string">'flip'</span>, parents=[outfile_parser],</span><br><span class="line">                                      help=<span class="string">"flip the bits to convert normal(msbit-first) polynomials to reversed (lsbit-first) and vice versa"</span>)</span><br><span class="line">    subparser.add_argument(<span class="string">'poly'</span>, type=str, help=<span class="string">'[int] polynomial'</span>)</span><br><span class="line">    subparser.set_defaults(</span><br><span class="line">        func=<span class="keyword">lambda</span>: print_num(reverseBits(parse_dword(args.poly))))</span><br><span class="line"></span><br><span class="line">    subparser = subparsers.add_parser(<span class="string">'reciprocal'</span>, parents=[outfile_parser],</span><br><span class="line">                                      help=<span class="string">"find the reciprocal (Koopman notation) of a reversed (lsbit-first) polynomial and vice versa"</span>)</span><br><span class="line">    subparser.add_argument(<span class="string">'poly'</span>, type=str, help=<span class="string">'[int] polynomial'</span>)</span><br><span class="line">    subparser.set_defaults(func=reciprocal_callback)</span><br><span class="line"></span><br><span class="line">    subparser = subparsers.add_parser(<span class="string">'table'</span>, parents=[outfile_parser,</span><br><span class="line">                                                        poly_flip_parser,</span><br><span class="line">                                                        default_poly_parser],</span><br><span class="line">                                      help=<span class="string">"generate a lookup table for a polynomial"</span>)</span><br><span class="line">    subparser.set_defaults(func=table_callback)</span><br><span class="line"></span><br><span class="line">    subparser = subparsers.add_parser(<span class="string">'reverse'</span>, parents=[</span><br><span class="line">        outfile_parser,</span><br><span class="line">        poly_flip_parser,</span><br><span class="line">        desired_poly_parser,</span><br><span class="line">        default_accum_parser,</span><br><span class="line">        default_poly_parser],</span><br><span class="line">        help=<span class="string">"find a patch that causes the CRC32 checksum to become a desired value"</span>)</span><br><span class="line">    subparser.set_defaults(func=reverse_callback)</span><br><span class="line"></span><br><span class="line">    subparser = subparsers.add_parser(<span class="string">'undo'</span>, parents=[</span><br><span class="line">        outfile_parser,</span><br><span class="line">        poly_flip_parser,</span><br><span class="line">        accum_parser,</span><br><span class="line">        default_poly_parser,</span><br><span class="line">        infile_parser],</span><br><span class="line">        help=<span class="string">"rewind a CRC32 checksum"</span>)</span><br><span class="line">    subparser.add_argument(<span class="string">'-n'</span>, <span class="string">'--len'</span>, metavar=<span class="string">'l'</span>, type=str,</span><br><span class="line">                           default=<span class="string">'0'</span>, help=<span class="string">'[int] number of bytes to rewind [default: 0]'</span>)</span><br><span class="line">    subparser.set_defaults(func=undo_callback)</span><br><span class="line"></span><br><span class="line">    subparser = subparsers.add_parser(<span class="string">'calc'</span>, parents=[</span><br><span class="line">        outfile_parser,</span><br><span class="line">        poly_flip_parser,</span><br><span class="line">        default_accum_parser,</span><br><span class="line">        default_poly_parser,</span><br><span class="line">        infile_parser],</span><br><span class="line">        help=<span class="string">"calculate the CRC32 checksum"</span>)</span><br><span class="line">    subparser.set_defaults(func=calc_callback)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> parser</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reciprocal_callback</span><span class="params">()</span>:</span></span><br><span class="line">    poly = parse_dword(args.poly)</span><br><span class="line">    check32(poly)</span><br><span class="line">    print_num(reciprocal(poly))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">table_callback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># initialize tables</span></span><br><span class="line">    init_tables(get_poly(), <span class="keyword">False</span>)</span><br><span class="line">    <span class="comment"># print table</span></span><br><span class="line">    out(<span class="string">'[&#123;0&#125;]'</span>.format(<span class="string">', '</span>.join(map(<span class="string">'0x&#123;0:08x&#125;'</span>.format, table))))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse_callback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># initialize tables</span></span><br><span class="line">    init_tables(get_poly())</span><br><span class="line">    <span class="comment"># find reverse bytes</span></span><br><span class="line">    desired = parse_dword(args.desired)</span><br><span class="line">    accum = parse_dword(args.accum)</span><br><span class="line">    <span class="comment"># 4-byte patch</span></span><br><span class="line">    patches = findReverse(desired, accum)</span><br><span class="line">    <span class="keyword">for</span> patch <span class="keyword">in</span> patches:</span><br><span class="line">        out(<span class="string">'4 bytes: &#123;&#123;0x&#123;0:02x&#125;, 0x&#123;1:02x&#125;, 0x&#123;2:02x&#125;, 0x&#123;3:02x&#125;&#125;&#125;'</span>.format(*patch))</span><br><span class="line">        checksum = calc(patch, accum)</span><br><span class="line">        out(<span class="string">'verification checksum: 0x&#123;0:08x&#125; (&#123;1&#125;)'</span>.format(</span><br><span class="line">            checksum, <span class="string">'OK'</span> <span class="keyword">if</span> checksum == desired <span class="keyword">else</span> <span class="string">'ERROR'</span>))</span><br><span class="line">    <span class="comment"># 6-byte alphanumeric patches</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> permitted_characters:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> permitted_characters:</span><br><span class="line">            patch = [i, j]</span><br><span class="line">            patches = findReverse(desired, calc(patch, accum))</span><br><span class="line">            <span class="keyword">for</span> last_4_bytes <span class="keyword">in</span> patches:</span><br><span class="line">                <span class="keyword">if</span> all(p <span class="keyword">in</span> permitted_characters <span class="keyword">for</span> p <span class="keyword">in</span> last_4_bytes):</span><br><span class="line">                    patch.extend(last_4_bytes)</span><br><span class="line">                    out(<span class="string">'alternative: &#123;1&#125;&#123;2&#125;&#123;3&#125;&#123;4&#125;&#123;5&#125;&#123;6&#125; (&#123;0&#125;)'</span>.format(</span><br><span class="line">                        <span class="string">'OK'</span> <span class="keyword">if</span> calc(patch, accum) == desired <span class="keyword">else</span> <span class="string">'ERROR'</span>, *map(chr, patch)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">undo_callback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># initialize tables</span></span><br><span class="line">    init_tables(get_poly())</span><br><span class="line">    <span class="comment"># calculate checksum</span></span><br><span class="line">    accum = parse_dword(args.accum)</span><br><span class="line">    maxlen = int(args.len, <span class="number">0</span>)</span><br><span class="line">    data = get_input()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="number">0</span> &lt; maxlen &lt;= len(data):</span><br><span class="line">        maxlen = len(data)</span><br><span class="line">    out(<span class="string">'rewinded &#123;0&#125;/&#123;1&#125; (&#123;2:.2f&#125;%)'</span>.format(maxlen, len(data),</span><br><span class="line">        maxlen * <span class="number">100.0</span> / len(data) <span class="keyword">if</span> len(data) <span class="keyword">else</span> <span class="number">100</span>))</span><br><span class="line">    <span class="keyword">for</span> solution <span class="keyword">in</span> rewind(accum, data[-maxlen:]):</span><br><span class="line">        out(<span class="string">''</span>)</span><br><span class="line">        print_num(solution)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_callback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># initialize tables</span></span><br><span class="line">    init_tables(get_poly(), <span class="keyword">False</span>)</span><br><span class="line">    <span class="comment"># calculate checksum</span></span><br><span class="line">    accum = parse_dword(args.accum)</span><br><span class="line">    data = get_input()</span><br><span class="line">    out(<span class="string">'data len: &#123;0&#125;'</span>.format(len(data)))</span><br><span class="line">    out(<span class="string">''</span>)</span><br><span class="line">    print_num(calc(data, accum))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(argv=None)</span>:</span></span><br><span class="line">    <span class="string">''' Runs the program and handles command line options '''</span></span><br><span class="line">    parser = get_parser()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Parse arguments and run the function</span></span><br><span class="line">    <span class="keyword">global</span> args</span><br><span class="line">    args = parser.parse_args(argv)</span><br><span class="line">    args.func()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()  <span class="comment"># pragma: no cover</span></span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_fecf29536650b0f37bec3ef0af443620.png" alt=""></p>
+<p>当字节数小于6时，用下面的crack.py脚本（用python3）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(<span class="string">'file'</span>, nargs=<span class="string">'*'</span>)</span><br><span class="line">parser.add_argument(<span class="string">'--hex'</span>, action=<span class="string">'append'</span>)</span><br><span class="line">parser.add_argument(<span class="string">'--dec'</span>, action=<span class="string">'append'</span>)</span><br><span class="line">parser.add_argument(<span class="string">'--limit'</span>, type=int)</span><br><span class="line">parser.add_argument(<span class="string">'--compiler'</span>, default=<span class="string">'g++'</span>)</span><br><span class="line">parser.add_argument(<span class="string">'--alphabet'</span>, type=os.fsencode, default=string.printable.encode())</span><br><span class="line">args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">targets = collections.OrderedDict()</span><br><span class="line">limit = <span class="number">0</span></span><br><span class="line">crcs = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> args.limit:</span><br><span class="line">    limit = max(limit, args.limit)</span><br><span class="line"><span class="keyword">if</span> args.hex <span class="keyword">or</span> args.dec:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> args.limit:</span><br><span class="line">        parser.error(<span class="string">'Limit of length not specified'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> args.hex:</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> args.hex:</span><br><span class="line">        crc = int(s, <span class="number">16</span>)</span><br><span class="line">        targets[s] = crc</span><br><span class="line">        <span class="keyword">for</span> l <span class="keyword">in</span> range(args.limit + <span class="number">1</span>):</span><br><span class="line">            crcs += [( crc, l )]</span><br><span class="line"><span class="keyword">if</span> args.dec:</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> args.dec:</span><br><span class="line">        crc = int(s)</span><br><span class="line">        targets[s] = crc</span><br><span class="line">        <span class="keyword">for</span> l <span class="keyword">in</span> range(args.limit + <span class="number">1</span>):</span><br><span class="line">            crcs += [( crc, l )]</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> args.file:</span><br><span class="line">    print(<span class="string">'reading zip files...'</span>, file=sys.stderr)</span><br><span class="line">    <span class="keyword">import</span> zipfile</span><br><span class="line">    <span class="keyword">for</span> zipname <span class="keyword">in</span> args.file:</span><br><span class="line">        fh = zipfile.ZipFile(zipname)</span><br><span class="line">        <span class="keyword">for</span> info <span class="keyword">in</span> fh.infolist():</span><br><span class="line">            targets[<span class="string">'%s / %s'</span> % ( zipname, info.filename )] = ( info.CRC, info.file_size )</span><br><span class="line">            crcs += [( info.CRC, info.file_size )]</span><br><span class="line">            limit = max(limit, info.file_size)</span><br><span class="line">            print(<span class="string">'file found: %s / %s: crc = 0x%08x, size = %d'</span> % (zipname, info.filename, info.CRC, info.file_size), file=sys.stderr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> crcs:</span><br><span class="line">    parser.error(<span class="string">'No CRCs given'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># compiling c++ in python script is the easy way to have the both a good interface and better speed</span></span><br><span class="line">code = <span class="string">''</span></span><br><span class="line">code += <span class="string">r'''</span></span><br><span class="line"><span class="string">#include &lt;cstdio&gt;</span></span><br><span class="line"><span class="string">#include &lt;vector&gt;</span></span><br><span class="line"><span class="string">#include &lt;array&gt;</span></span><br><span class="line"><span class="string">#include &lt;string&gt;</span></span><br><span class="line"><span class="string">#include &lt;set&gt;</span></span><br><span class="line"><span class="string">#include &lt;cstdint&gt;</span></span><br><span class="line"><span class="string">#include &lt;cctype&gt;</span></span><br><span class="line"><span class="string">#define repeat(i,n) for (int i = 0; (i) &lt; (n); ++(i))</span></span><br><span class="line"><span class="string">using namespace std;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">uint32_t crc_table[256];</span></span><br><span class="line"><span class="string">void make_crc_table() &#123;</span></span><br><span class="line"><span class="string">    repeat (i, 256) &#123;</span></span><br><span class="line"><span class="string">        uint32_t c = i;</span></span><br><span class="line"><span class="string">        repeat (j, 8) &#123;</span></span><br><span class="line"><span class="string">            c = (c &amp; 1) ? (0xedb88320 ^ (c &gt;&gt; 1)) : (c &gt;&gt; 1);</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        crc_table[i] = c;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">const uint32_t initial_crc32 = 0xffffffff;</span></span><br><span class="line"><span class="string">uint32_t next_crc32(uint32_t c, char b) &#123;</span></span><br><span class="line"><span class="string">    return crc_table[(c ^ b) &amp; 0xff] ^ (c &gt;&gt; 8);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">const uint32_t mask_crc32 = 0xffffffff;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">const char alphabet[] = &#123; '''</span> + <span class="string">', '</span>.join(map(str, args.alphabet)) + <span class="string">r''' &#125;;</span></span><br><span class="line"><span class="string">const int limit = '''</span> + str(limit) + <span class="string">r''';</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">array&lt;set&lt;uint32_t&gt;, limit+1&gt; crcs;</span></span><br><span class="line"><span class="string">string stk;</span></span><br><span class="line"><span class="string">void dfs(uint32_t crc) &#123;</span></span><br><span class="line"><span class="string">    if (crcs[stk.length()].count(crc ^ mask_crc32)) &#123;</span></span><br><span class="line"><span class="string">        fprintf(stderr, "crc found: 0x%08x: \"", crc ^ mask_crc32);</span></span><br><span class="line"><span class="string">        for (char c : stk) fprintf(stderr, isprint(c) &amp;&amp; (c != '\\') ? "%c" : "\\x%02x", c);</span></span><br><span class="line"><span class="string">        fprintf(stderr, "\"\n");</span></span><br><span class="line"><span class="string">        printf("%08x ", crc ^ mask_crc32);</span></span><br><span class="line"><span class="string">        for (char c : stk) printf(" %02x", c);</span></span><br><span class="line"><span class="string">        printf("\n");</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    if (stk.length() &lt; limit) &#123;</span></span><br><span class="line"><span class="string">        for (char c : alphabet) &#123;</span></span><br><span class="line"><span class="string">            stk.push_back(c);</span></span><br><span class="line"><span class="string">            dfs(next_crc32(crc, c));</span></span><br><span class="line"><span class="string">            stk.pop_back();</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">int main() &#123;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="keyword">for</span> crc, size <span class="keyword">in</span> crcs:</span><br><span class="line">    code += <span class="string">'    crcs['</span> + str(size) + <span class="string">'].insert('</span> + hex(crc) + <span class="string">');\n'</span></span><br><span class="line">code += <span class="string">r'''</span></span><br><span class="line"><span class="string">    make_crc_table();</span></span><br><span class="line"><span class="string">    dfs(initial_crc32);</span></span><br><span class="line"><span class="string">    return 0;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tempfile</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">with</span> tempfile.TemporaryDirectory() <span class="keyword">as</span> tmpdir:</span><br><span class="line">    cppname = os.path.join(tmpdir, <span class="string">'a.cpp'</span>)</span><br><span class="line">    <span class="keyword">with</span> open(cppname, <span class="string">'w'</span>) <span class="keyword">as</span> fh:</span><br><span class="line">        fh.write(code)</span><br><span class="line">    binname = os.path.join(tmpdir, <span class="string">'a.out'</span>)</span><br><span class="line">    print(<span class="string">'compiling...'</span>, file=sys.stderr)</span><br><span class="line">    p = subprocess.check_call([args.compiler, <span class="string">'-std=c++11'</span>, <span class="string">'-O3'</span>, <span class="string">'-o'</span>, binname, cppname])</span><br><span class="line">    print(<span class="string">'searching...'</span>, file=sys.stderr)</span><br><span class="line">    p = subprocess.Popen([binname], stdout=subprocess.PIPE)</span><br><span class="line">    output, _ = p.communicate()</span><br><span class="line"></span><br><span class="line">print(<span class="string">'done'</span>, file=sys.stderr)</span><br><span class="line">print(file=sys.stderr)</span><br><span class="line">result = collections.defaultdict(list)</span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> output.decode().strip().split(<span class="string">'\n'</span>):</span><br><span class="line">    crc, *val = map(<span class="keyword">lambda</span> x: int(x, <span class="number">16</span>), line.split())</span><br><span class="line">    result[( crc, len(val) )] += [ bytes(val) ]</span><br><span class="line"><span class="keyword">for</span> key, crc <span class="keyword">in</span> targets.items():</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> result[crc]:</span><br><span class="line">        print(<span class="string">'%s : %s'</span> % (key, repr(s)[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<p><img src="http://ordvwjm69.bkt.clouddn.com/zip_decrypt_b84f37a713fc521dcb500c488c29ba4c.png" alt=""></p>
+<hr>
+<h1 id="MORE"><a href="#MORE" class="headerlink" title="MORE"></a>MORE</h1><p>还有很多压缩包的密码需要联系题中的其他文件来解，这个就不在本篇的讨论范围内了，故不再讨论。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2017/06/23/给你压缩包却不给你密码的人到底在想什么/" title="给你压缩包却不给你密码的人到底在想什么">https://veritas501.github.io/2017/06/23/给你压缩包却不给你密码的人到底在想什么/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MISC/" rel="tag"># MISC</a>
+          
+            <a href="/tags/ZIP/" rel="tag"># ZIP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/13/记录一次安卓动态调试dex/" rel="next" title="记录一次安卓动态调试dex">
+                <i class="fa fa-chevron-left"></i> 记录一次安卓动态调试dex
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/05/一些牢骚/" rel="prev" title="一些牢骚">
+                一些牢骚 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注释"><span class="nav-number">2.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#弱密码"><span class="nav-number">3.</span> <span class="nav-text">弱密码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#压缩包伪加密"><span class="nav-number">4.</span> <span class="nav-text">压缩包伪加密</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#已知明文攻击"><span class="nav-number">5.</span> <span class="nav-text">已知明文攻击</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CRC碰撞"><span class="nav-number">6.</span> <span class="nav-text">CRC碰撞</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MORE"><span class="nav-number">7.</span> <span class="nav-text">MORE</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

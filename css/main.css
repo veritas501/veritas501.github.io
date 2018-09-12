@@ -189,7 +189,7 @@ body {
   font-size: 14px;
   line-height: 2;
   color: #555;
-  background: #eee;
+  background: url("http://ordvwjm69.bkt.clouddn.com/texture_1f371d549d1b54859e322356da0bc805.png");
 }
 @media (max-width: 767px) {
   body {
@@ -528,7 +528,7 @@ pre code {
   text-shadow: none;
 }
 .highlight {
-  border-radius: 15px;
+  border-radius: 10px;
 }
 .highlight pre {
   border: none;
@@ -1068,7 +1068,7 @@ pre .javascript .function {
 .back-to-top {
   display: none;
   margin: 20px -10px -20px;
-  background: #eee;
+  background: url("http://ordvwjm69.bkt.clouddn.com/texture_1f371d549d1b54859e322356da0bc805.png");
   font-size: 12px;
   opacity: 0.6;
   cursor: pointer;
@@ -1857,7 +1857,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #865c4f;
+  background: #ffff0a;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2632,7 +2632,7 @@ ul.breadcrumb li+li:last-child {
   float: left;
   margin-top: 300px;
   width: 240px;
-  background: #eee;
+  background: url("http://ordvwjm69.bkt.clouddn.com/texture_1f371d549d1b54859e322356da0bc805.png");
   box-shadow: none;
 }
 @media (min-width: 768px) and (max-width: 991px) {
@@ -3059,15 +3059,15 @@ ul.breadcrumb li+li:last-child {
 }
 .post-body h1 {
   font-size: 1.6em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid url("http://ordvwjm69.bkt.clouddn.com/texture_1f371d549d1b54859e322356da0bc805.png");
 }
 .post-body h2 {
   font-size: 1.45em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid url("http://ordvwjm69.bkt.clouddn.com/texture_1f371d549d1b54859e322356da0bc805.png");
 }
 .post-body h3 {
   font-size: 1.3em;
-  border-bottom: 1px dotted #eee;
+  border-bottom: 1px dotted url("http://ordvwjm69.bkt.clouddn.com/texture_1f371d549d1b54859e322356da0bc805.png");
 }
 .post-body h4 {
   font-size: 1.2em;

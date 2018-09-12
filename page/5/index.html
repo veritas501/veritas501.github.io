@@ -1926,7 +1926,7 @@ flag是动态图最后一句话的拼音首字母加上nctf{}
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/03/01/密码学笔记/">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2017/03/01/HCTF GAME PWN题 WP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Veritas501">
@@ -1945,8 +1945,8 @@ flag是动态图最后一句话的拼音首字母加上nctf{}
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/03/01/密码学笔记/" itemprop="url">
-                  密码学笔记
+                <a class="post-title-link" href="/2017/03/01/HCTF GAME PWN题 WP/" itemprop="url">
+                  HCTF GAME PWN题 WP
                 </a>
               
             
@@ -1989,7 +1989,7 @@ flag是动态图最后一句话的拼音首字母加上nctf{}
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 13:37:27" itemprop="dateModified" datetime="2017-08-25T13:37:27+08:00">2017-08-25</time>
+                <time title="Modified: 2017-06-05 11:41:33" itemprop="dateModified" datetime="2017-06-05T11:41:33+08:00">2017-06-05</time>
               
             
           </span>
@@ -2003,8 +2003,8 @@ flag是动态图最后一句话的拼音首字母加上nctf{}
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/03/01/密码学笔记/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/03/01/密码学笔记/" itemprop="commentCount"></span>
+                <a href="/2017/03/01/HCTF GAME PWN题 WP/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2017/03/01/HCTF GAME PWN题 WP/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2012,7 +2012,7 @@ flag是动态图最后一句话的拼音首字母加上nctf{}
 
           
           
-             <span id="/2017/03/01/密码学笔记/" class="leancloud_visitors" data-flag-title="密码学笔记">
+             <span id="/2017/03/01/HCTF GAME PWN题 WP/" class="leancloud_visitors" data-flag-title="HCTF GAME PWN题 WP">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -2044,15 +2044,17 @@ flag是动态图最后一句话的拼音首字母加上nctf{}
 
       
         
-          <p>此处会长期更新我做过的一些密码学题目。</p>
-<hr>
-<h1 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a><strong>RSA</strong></h1><p>一些基本知识：</p>
-<p><strong>RSA中几个用到的字母：</strong><br>P : 大质数p<br>Q : 大质数q<br>N :  n=p*q<br>φ(n) = φ(p) * φ(q) = (p − 1)(q − 1) = n − (p + q − 1)<br>e : encryption key (public key) (又称加密指数)<br>d : decryption key (private key)  e对于φ(n)的模反元素<br>c : ciphertext<br>m：message（m &lt; n）</p>
-<p><strong>主要公式：</strong><br>$c ≡ m^e \pmod{n}$<br>$m ≡ c^d \pmod{n}$</p>
-<p><strong>欧拉函数</strong>：φ(n)是小于等于n的数中与n互质的数的数目。<br>欧拉函数是积性函数——若p,q互质，φ(p<em>q)= φ(p) </em>φ(q)<br>若p为质数，则φ(p)=p-1<br>
+          
+          pwn step0比较简单，看ida的代码，直接用超长的字符串覆盖变量即可。
+pwn step1比较简单，看ida的代码，直接覆盖返回值即可。
+pwn step2比较简单，看ida的代码，直接在栈上执行shellcode就行。
+pwn step3:Baka Server题目描述：
+
+会放嘲讽的bak
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/03/01/密码学笔记/#more" rel="contents">
+            <a class="btn" href="/2017/03/01/HCTF GAME PWN题 WP/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>

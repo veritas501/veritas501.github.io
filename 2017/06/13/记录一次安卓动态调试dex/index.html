@@ -114,20 +114,20 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="这次我们来调试dex，题目是GCTF 2017中的一道安卓水题，算法一望而知，但我们换一种方法做做看。 题目附件：com.example.crackme.apk 你大概需要：1.一部手机，已root，有ro.debuggable=1，安卓4.4.4（非必须），cpu架构32位（非必须,但这题我在64位机子上调试失败）2.IDA3.JEB2（此处非必须）">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_4c037905308d23890d1eee9508a6c714.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_3ac13a280460df19d0069ddf3f8663bb.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_36c306d7ab3b8a2bfa6ffb5744b44394.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_303ca5bbf62225a3784f809e7268f807.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_6a3a7d98518f9ec1f5d660276695b863.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_eee4722ce93f7f3e7cf5cd5f5f36eed1.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_84992a9ae2dc56548af59ca705eb86dc.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_23f91dbc651c150261c3e5e954981f95.png">
-<meta property="og:updated_time" content="2017-08-25T05:55:35.258Z">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_4c037905308d23890d1eee9508a6c714.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_3ac13a280460df19d0069ddf3f8663bb.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_36c306d7ab3b8a2bfa6ffb5744b44394.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_303ca5bbf62225a3784f809e7268f807.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_6a3a7d98518f9ec1f5d660276695b863.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_eee4722ce93f7f3e7cf5cd5f5f36eed1.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_84992a9ae2dc56548af59ca705eb86dc.png">
+<meta property="og:image" content="http://img2.tan90.me/dex_debug_note_23f91dbc651c150261c3e5e954981f95.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.458Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录一次安卓动态调试dex">
 <meta name="twitter:description" content="这次我们来调试dex，题目是GCTF 2017中的一道安卓水题，算法一望而知，但我们换一种方法做做看。 题目附件：com.example.crackme.apk 你大概需要：1.一部手机，已root，有ro.debuggable=1，安卓4.4.4（非必须），cpu架构32位（非必须,但这题我在64位机子上调试失败）2.IDA3.JEB2（此处非必须）">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png">
+<meta name="twitter:image" content="http://img2.tan90.me/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png">
 
 
 
@@ -372,7 +372,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 13:55:35" itemprop="dateModified" datetime="2017-08-25T13:55:35+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -432,25 +432,25 @@
 <a id="more"></a>
 <p>参照前一篇文章，手机连电脑，adb连shell以root启动android_server，adb再转发端口，这里不再多说。</p>
 <p>apk文件拖到IDA里，选择dex文件。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png" alt=""></p>
 <p>根据JEB2中的反汇编结果，我们找到关键的函数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle arg3)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(arg3);</span><br><span class="line">        <span class="keyword">this</span>.setContentView(<span class="number">2130968601</span>);</span><br><span class="line">        <span class="keyword">this</span>.setTitle(<span class="number">2131099677</span>);</span><br><span class="line">        <span class="keyword">this</span>.edit_userName = <span class="string">"Tenshine"</span>;</span><br><span class="line">        <span class="keyword">this</span>.edit_sn = <span class="keyword">this</span>.findViewById(<span class="number">2131492945</span>);</span><br><span class="line">        <span class="keyword">this</span>.btn_register = <span class="keyword">this</span>.findViewById(<span class="number">2131492946</span>);</span><br><span class="line">        <span class="keyword">this</span>.btn_register.setOnClickListener(<span class="keyword">new</span> View$OnClickListener() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View arg5)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(!MainActivity.<span class="keyword">this</span>.checkSN(MainActivity.<span class="keyword">this</span>.edit_userName.trim(), MainActivity.<span class="keyword">this</span>.edit_sn.getText().toString().trim())) &#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="number">2131099678</span>, <span class="number">0</span>).show();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="number">2131099675</span>, <span class="number">0</span>).show();</span><br><span class="line">                    MainActivity.<span class="keyword">this</span>.btn_register.setEnabled(<span class="keyword">false</span>);</span><br><span class="line">                    MainActivity.<span class="keyword">this</span>.setTitle(<span class="number">2131099673</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">checkSN</span><span class="params">(String name, String sn)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> v7 = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(name != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(name.length() == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(sn == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(sn.length() != <span class="number">22</span>) &#123;  <span class="comment">// sn长度必须为22</span></span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                MessageDigest v1 = MessageDigest.getInstance(<span class="string">"MD5"</span>);  <span class="comment">// MD5加密name</span></span><br><span class="line">                v1.reset();</span><br><span class="line">                v1.update(name.getBytes());</span><br><span class="line">                String enc1 = MainActivity.toHexString(v1.digest(), <span class="string">""</span>);</span><br><span class="line">                StringBuilder ecn2 = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">                <span class="keyword">int</span> v4;</span><br><span class="line">                <span class="keyword">for</span>(v4 = <span class="number">0</span>; v4 &lt; enc1.length(); v4 += <span class="number">2</span>) &#123;</span><br><span class="line">                    ecn2.append(enc1.charAt(v4));  <span class="comment">// 取md5后的奇数位</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(!<span class="string">"flag&#123;"</span> + ecn2.toString() + <span class="string">"&#125;"</span>.equalsIgnoreCase(sn)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span>(NoSuchAlgorithmException v2) &#123;</span><br><span class="line">                goto label_40;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            v7 = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> v7;</span><br><span class="line">    label_40:</span><br><span class="line">        v2.printStackTrace();</span><br><span class="line">        <span class="keyword">return</span> v7;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>如果是静态分析的话，这样也就分析出来了，很简单，但现在我们假设中间是一坨很复杂的算法，那么动态分析就方便的多了。</p>
 <p>IDA中找到关键代码下好断点。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_4c037905308d23890d1eee9508a6c714.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_4c037905308d23890d1eee9508a6c714.png" alt=""></p>
 <p>手机端打开crackme到主界面，IDA选择attach to process</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_3ac13a280460df19d0069ddf3f8663bb.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_36c306d7ab3b8a2bfa6ffb5744b44394.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_3ac13a280460df19d0069ddf3f8663bb.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_36c306d7ab3b8a2bfa6ffb5744b44394.png" alt=""></p>
 <p>成功后会显示如下，点一下运行。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_303ca5bbf62225a3784f809e7268f807.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_303ca5bbf62225a3784f809e7268f807.png" alt=""></p>
 <p>输入长度22位的假flag后成功断下</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_6a3a7d98518f9ec1f5d660276695b863.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_6a3a7d98518f9ec1f5d660276695b863.png" alt=""></p>
 <p>打开local窗口</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_eee4722ce93f7f3e7cf5cd5f5f36eed1.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_eee4722ce93f7f3e7cf5cd5f5f36eed1.png" alt=""></p>
 <p>单步f8，</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_84992a9ae2dc56548af59ca705eb86dc.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_84992a9ae2dc56548af59ca705eb86dc.png" alt=""></p>
 <p>切换到local窗口</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/dex_debug_note_23f91dbc651c150261c3e5e954981f95.png" alt=""></p>
+<p><img src="http://img2.tan90.me/dex_debug_note_23f91dbc651c150261c3e5e954981f95.png" alt=""></p>
 <p>可以看到，flag直接通过动态跟踪的方式出来了。</p>
 
       

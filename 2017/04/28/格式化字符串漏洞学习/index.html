@@ -114,16 +114,16 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="格式化字符串真的不是什么新鲜的事物，但现在在一些基础的CTF的PWN题中还是有出现，故打算总结一篇，也当时系统的学习一遍了。  什么是格式化字符串学过c语言的都知道printf，fprintf，sprintf,snprintf等这一类类printf函数中经常会用到“%”后面加一个或多个字符做说明符，例如 12345#include &amp;lt;stdio.h&amp;gt;int main(void)&amp;#12">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/fmt_25972122d772639e8366f946e4e2c8f4.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/fmt_c29273e995e8aaa2c9cc4ae15abd779b.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/fmt_c46b7c13523766ac5bc9c78599d3aba4.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/fmt_eaebe9ee0e63783ba190b6af20da7f03.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/fmt_d928423855be1ec06fca199ca7e9ba9a.png">
-<meta property="og:updated_time" content="2017-08-25T06:17:45.408Z">
+<meta property="og:image" content="http://img2.tan90.me/fmt_25972122d772639e8366f946e4e2c8f4.png">
+<meta property="og:image" content="http://img2.tan90.me/fmt_c29273e995e8aaa2c9cc4ae15abd779b.png">
+<meta property="og:image" content="http://img2.tan90.me/fmt_c46b7c13523766ac5bc9c78599d3aba4.png">
+<meta property="og:image" content="http://img2.tan90.me/fmt_eaebe9ee0e63783ba190b6af20da7f03.png">
+<meta property="og:image" content="http://img2.tan90.me/fmt_d928423855be1ec06fca199ca7e9ba9a.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.384Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="格式化字符串漏洞学习">
 <meta name="twitter:description" content="格式化字符串真的不是什么新鲜的事物，但现在在一些基础的CTF的PWN题中还是有出现，故打算总结一篇，也当时系统的学习一遍了。  什么是格式化字符串学过c语言的都知道printf，fprintf，sprintf,snprintf等这一类类printf函数中经常会用到“%”后面加一个或多个字符做说明符，例如 12345#include &amp;lt;stdio.h&amp;gt;int main(void)&amp;#12">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/fmt_25972122d772639e8366f946e4e2c8f4.png">
+<meta name="twitter:image" content="http://img2.tan90.me/fmt_25972122d772639e8366f946e4e2c8f4.png">
 
 
 
@@ -368,7 +368,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 14:17:45" itemprop="dateModified" datetime="2017-08-25T14:17:45+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -474,16 +474,16 @@
 <p>然后我们用pwntools编写如下脚本</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'str'</span>)</span><br><span class="line">cn.sendline(p32(<span class="number">0x08048000</span>)+<span class="string">"%6$s"</span>)</span><br><span class="line"><span class="comment">#cn.sendline("%7$s"+p32(0x08048000))</span></span><br><span class="line"><span class="keyword">print</span> cn.recv()</span><br></pre></td></tr></table></figure>
 <p>执行脚本以后发现 EOFError</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/fmt_25972122d772639e8366f946e4e2c8f4.png" alt=""></p>
+<p><img src="http://img2.tan90.me/fmt_25972122d772639e8366f946e4e2c8f4.png" alt=""></p>
 <p>因为我们想要读取的地址是0x08048000，根据little-endian，所以我们发送过去的数据包的第一字节是地址的最后一字节，即0x00，所以发送失败。我们可以对payload做如下调整</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cn.sendline(<span class="string">"%7$s"</span>+p32(<span class="number">0x08048000</span>))</span><br></pre></td></tr></table></figure>
 <p>把6改成7是有原因的，调整前：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/fmt_c29273e995e8aaa2c9cc4ae15abd779b.png" alt=""></p>
+<p><img src="http://img2.tan90.me/fmt_c29273e995e8aaa2c9cc4ae15abd779b.png" alt=""></p>
 <p>调整后：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/fmt_c46b7c13523766ac5bc9c78599d3aba4.png" alt=""></p>
+<p><img src="http://img2.tan90.me/fmt_c46b7c13523766ac5bc9c78599d3aba4.png" alt=""></p>
 <p>通过改进的payload我们成功获取到了elf文件的前几字节。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/fmt_eaebe9ee0e63783ba190b6af20da7f03.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/fmt_d928423855be1ec06fca199ca7e9ba9a.png" alt=""></p>
+<p><img src="http://img2.tan90.me/fmt_eaebe9ee0e63783ba190b6af20da7f03.png" alt=""></p>
+<p><img src="http://img2.tan90.me/fmt_d928423855be1ec06fca199ca7e9ba9a.png" alt=""></p>
 <p>如果这个程序中含有其他漏洞能够是我们控制eip来反复调用printf函数，把整个elf或是libc拖下来都是可以做到的。</p>
 <hr>
 <h2 id="实现任意地址写"><a href="#实现任意地址写" class="headerlink" title="实现任意地址写"></a>实现任意地址写</h2><p>看了任意地址写，肯定感觉不过瘾，毕竟这样我们是能看，不能写入一些非法数据来控制eip。下面就来介绍任意地址写，用到的就是我们上面提到的<code>%n</code>格式符。</p>
@@ -564,8 +564,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/28/论canary的几种玩法/" rel="next" title="论canary的几种玩法">
-                <i class="fa fa-chevron-left"></i> 论canary的几种玩法
+              <a href="/2017/04/23/Linux Syscall Reference x86/" rel="next" title="Linux Syscall Reference x86">
+                <i class="fa fa-chevron-left"></i> Linux Syscall Reference x86
               </a>
             
           </div>
@@ -574,8 +574,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/30/pwnable.kr_writeup/" rel="prev" title="pwnable.kr writeup">
-                pwnable.kr writeup <i class="fa fa-chevron-right"></i>
+              <a href="/2017/04/28/论canary的几种玩法/" rel="prev" title="论canary的几种玩法">
+                论canary的几种玩法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

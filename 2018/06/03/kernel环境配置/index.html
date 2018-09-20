@@ -114,16 +114,16 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="入门写的一些笔记，此文绝对会有很多问题（希望大佬指出 :V">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/kernel_e7b7d18553ec39f39d6df3a34a097766.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/kernel_4dcc40329917d3142fc20020283571b7.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/kernel_98fe63a73cb5ab8c092ec01cc5bf99e1.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/kernel_a48559c219f8a660b972260cac6ea4ed.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/kernel_b6f48569ab35b5af103db7e4975c3bfc.png">
-<meta property="og:updated_time" content="2018-06-05T06:50:36.448Z">
+<meta property="og:image" content="http://img2.tan90.me/kernel_e7b7d18553ec39f39d6df3a34a097766.png">
+<meta property="og:image" content="http://img2.tan90.me/kernel_4dcc40329917d3142fc20020283571b7.png">
+<meta property="og:image" content="http://img2.tan90.me/kernel_98fe63a73cb5ab8c092ec01cc5bf99e1.png">
+<meta property="og:image" content="http://img2.tan90.me/kernel_a48559c219f8a660b972260cac6ea4ed.png">
+<meta property="og:image" content="http://img2.tan90.me/kernel_b6f48569ab35b5af103db7e4975c3bfc.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.145Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kernel环境配置">
 <meta name="twitter:description" content="入门写的一些笔记，此文绝对会有很多问题（希望大佬指出 :V">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/kernel_e7b7d18553ec39f39d6df3a34a097766.png">
+<meta name="twitter:image" content="http://img2.tan90.me/kernel_e7b7d18553ec39f39d6df3a34a097766.png">
 
 
 
@@ -368,7 +368,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-06-05 14:50:36" itemprop="dateModified" datetime="2018-06-05T14:50:36+08:00">2018-06-05</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -442,12 +442,12 @@
 <p>源码根目录创建<code>helloworld</code>目录</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># veritas @ ubuntu in ~/sources/linux-mod-4.15/helloworld [13:56:08] </span><br><span class="line">$ tree          </span><br><span class="line">.</span><br><span class="line">├── helloworld.c</span><br><span class="line">└── Makefile</span><br><span class="line"></span><br><span class="line">0 directories, 2 files</span><br><span class="line"></span><br><span class="line"># veritas @ ubuntu in ~/sources/linux-mod-4.15/helloworld [13:56:14] </span><br><span class="line">$ cat helloworld.c    </span><br><span class="line">#include &lt;linux/kernel.h&gt;</span><br><span class="line"></span><br><span class="line">asmlinkage long sys_helloworld(void)&#123;</span><br><span class="line">	printk(&quot;&#123;==kernel==&#125; hello world\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;                                                                                                  </span><br><span class="line"># veritas @ ubuntu in ~/sources/linux-mod-4.15/helloworld [13:56:19] </span><br><span class="line">$ cat Makefile    </span><br><span class="line">obj-y=helloworld.o</span><br></pre></td></tr></table></figure>
 <p>编辑源码根目录下的<code>Makefile</code>，添加<code>helloworld/</code></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/kernel_e7b7d18553ec39f39d6df3a34a097766.png" alt=""></p>
+<p><img src="http://img2.tan90.me/kernel_e7b7d18553ec39f39d6df3a34a097766.png" alt=""></p>
 <p>编辑<code>include/linux/syscalls.h</code>，添加函数原型</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/kernel_4dcc40329917d3142fc20020283571b7.png" alt=""></p>
+<p><img src="http://img2.tan90.me/kernel_4dcc40329917d3142fc20020283571b7.png" alt=""></p>
 <p>编辑<code>arch/x86/entry/syscalls/syscall_32.tbl</code>和<code>arch/x86/entry/syscalls/syscall_64.tbl</code>，添加系统调用号</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/kernel_98fe63a73cb5ab8c092ec01cc5bf99e1.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/kernel_a48559c219f8a660b972260cac6ea4ed.png" alt=""></p>
+<p><img src="http://img2.tan90.me/kernel_98fe63a73cb5ab8c092ec01cc5bf99e1.png" alt=""></p>
+<p><img src="http://img2.tan90.me/kernel_a48559c219f8a660b972260cac6ea4ed.png" alt=""></p>
 <p>然后编译kernel。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make bzImage</span><br></pre></td></tr></table></figure>
 <p>从<code>./arch/x86/boot/</code>拿到<code>bzImage</code>。</p>
@@ -479,7 +479,7 @@
 <p>例如0CTF final的baby kernel，他要求的kernel版本为<code>4.15.0-22-generic SMP mod_unload</code></p>
 <p>可以使用apt download 相应内核的deb包，然后解包得到bzImage。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt download linux-image-4.15.0-22-generic</span><br></pre></td></tr></table></figure>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/kernel_b6f48569ab35b5af103db7e4975c3bfc.png" alt=""></p>
+<p><img src="http://img2.tan90.me/kernel_b6f48569ab35b5af103db7e4975c3bfc.png" alt=""></p>
 <p>修改fs的init脚本，加入<code>insmod xxxx.ko</code>即可。</p>
 <p>载入系统后可以使用<code>lsmod</code>来查看载入的ko以及他的所在的内核地址</p>
 <p>##调试ko</p>

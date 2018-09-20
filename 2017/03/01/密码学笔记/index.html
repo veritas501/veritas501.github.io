@@ -114,17 +114,17 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="此处会长期更新我做过的一些密码学题目。  RSA一些基本知识： RSA中几个用到的字母：P : 大质数pQ : 大质数qN :  n=p*qφ(n) = φ(p) * φ(q) = (p − 1)(q − 1) = n − (p + q − 1)e : encryption key (public key) (又称加密指数)d : decryption key (private key)  e对于">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_26e429e1b846088e78be9866e092a6cc.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_3c9f2e327f7c112f0b150a042abd3d1a.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_d7e8092b0a64fb46291630b009191b40.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_a5e3b41452ee888931dcc59f4fafa9ba.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_f979ce71270ca29da35f4d5f20a755e6.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_a814f664d8bc605fe2a1a8b2f29e5570.png">
-<meta property="og:updated_time" content="2017-08-25T05:37:27.254Z">
+<meta property="og:image" content="http://img2.tan90.me/crypto_note_26e429e1b846088e78be9866e092a6cc.png">
+<meta property="og:image" content="http://img2.tan90.me/crypto_note_3c9f2e327f7c112f0b150a042abd3d1a.png">
+<meta property="og:image" content="http://img2.tan90.me/crypto_note_d7e8092b0a64fb46291630b009191b40.png">
+<meta property="og:image" content="http://img2.tan90.me/crypto_note_a5e3b41452ee888931dcc59f4fafa9ba.png">
+<meta property="og:image" content="http://img2.tan90.me/crypto_note_f979ce71270ca29da35f4d5f20a755e6.png">
+<meta property="og:image" content="http://img2.tan90.me/crypto_note_a814f664d8bc605fe2a1a8b2f29e5570.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.362Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="密码学笔记">
 <meta name="twitter:description" content="此处会长期更新我做过的一些密码学题目。  RSA一些基本知识： RSA中几个用到的字母：P : 大质数pQ : 大质数qN :  n=p*qφ(n) = φ(p) * φ(q) = (p − 1)(q − 1) = n − (p + q − 1)e : encryption key (public key) (又称加密指数)d : decryption key (private key)  e对于">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/crypto_note_26e429e1b846088e78be9866e092a6cc.png">
+<meta name="twitter:image" content="http://img2.tan90.me/crypto_note_26e429e1b846088e78be9866e092a6cc.png">
 
 
 
@@ -369,7 +369,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 13:37:27" itemprop="dateModified" datetime="2017-08-25T13:37:27+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -478,15 +478,15 @@
 <p>题目：<a href="http://pan.baidu.com/s/1kVwkEmb" target="_blank" rel="noopener">http://pan.baidu.com/s/1kVwkEmb</a> 密码：snl4</p>
 <p>题目描述：flag.enc，pubkey.pem</p>
 <p>linux下敲命令：<code>openssl rsa -pubin -text -modulus -in warmup -in pubkey.pem</code></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/crypto_note_26e429e1b846088e78be9866e092a6cc.png" alt=""></p>
+<p><img src="http://img2.tan90.me/crypto_note_26e429e1b846088e78be9866e092a6cc.png" alt=""></p>
 <p>得到：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">e=<span class="number">65537</span></span><br><span class="line">n=<span class="number">0xC2636AE5C3D8E43FFB97AB09028F1AAC6C0BF6CD3D70EBCA281BFFE97FBE30DD</span></span><br></pre></td></tr></table></figure></p>
 <p>factordb分解n：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">q=<span class="number">275127860351348928173285174381581152299</span></span><br><span class="line">p=<span class="number">319576316814478949870590164193048041239</span></span><br></pre></td></tr></table></figure></p>
 <p>模反（方法见前）得d:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d=<span class="number">10866948760844599168252082612378495977388271279679231539839049698621994994673</span></span><br></pre></td></tr></table></figure></p>
 <p>此时不能使用之前的方法解密，是解不出来的，还是需要用openssl，不过在这之前，需要用rsatool.py（在文章最前面，建议ctrl+F搜索）生成私钥。</p>
 <p>linux下敲入（先把rsatool.py放在当前目录）：<code>python rsatool.py -o private.pem -e 65537 -p 275127860351348928173285174381581152299 -q 319576316814478949870590164193048041239</code></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/crypto_note_3c9f2e327f7c112f0b150a042abd3d1a.png" alt=""></p>
+<p><img src="http://img2.tan90.me/crypto_note_3c9f2e327f7c112f0b150a042abd3d1a.png" alt=""></p>
 <p>得到私钥以后用openssl解密：<code>openssl rsautl -decrypt -in flag.enc -inkey private.pem -out flag.dec</code></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/crypto_note_d7e8092b0a64fb46291630b009191b40.png" alt=""></p>
+<p><img src="http://img2.tan90.me/crypto_note_d7e8092b0a64fb46291630b009191b40.png" alt=""></p>
 <p>flag:<code>PCTF{256b_i5_m3dium}</code></p>
 <h2 id="Rabin-密码类"><a href="#Rabin-密码类" class="headerlink" title="Rabin 密码类"></a>Rabin 密码类</h2><p>具体的看wiki吧：<a href="https://en.wikipedia.org/wiki/Rabin_cryptosystem" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Rabin_cryptosystem</a></p>
 <p>这个我也是第一次接触，慢慢啃下来的，应该会写的很唠叨（可能还有错误），也算是自己的笔记吧。</p>
@@ -563,7 +563,7 @@
 </blockquote>
 <p>代码在此：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> Crypto <span class="keyword">import</span> Random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkPad</span><span class="params">(data)</span>:</span></span><br><span class="line">    num = ord(data[<span class="number">-1</span>])</span><br><span class="line">    <span class="keyword">if</span> num &lt; <span class="number">1</span> <span class="keyword">or</span> num &gt; <span class="number">16</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"decrypt error"</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"null:null"</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>,num+<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> data[-i] != chr(num):</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"decrypt error"</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">"null:null"</span></span><br><span class="line">    <span class="keyword">return</span> data[:-num]</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">signin</span><span class="params">()</span>:</span></span><br><span class="line">    token = raw_input(<span class="string">"give me you token:"</span>)</span><br><span class="line">    iv = token[:<span class="number">32</span>].decode(<span class="string">'hex'</span>)</span><br><span class="line">    cipherText = token[<span class="number">32</span>:].decode(<span class="string">'hex'</span>)</span><br><span class="line">    aes = AES.new(key,AES.MODE_CBC,iv)</span><br><span class="line">    plainText = aes.decrypt(cipherText)</span><br><span class="line">    t = checkPad(plainText).split(<span class="string">':'</span>)</span><br><span class="line">    <span class="keyword">if</span> len(t) != <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"you are not admin"</span></span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line">    name,passwd = t</span><br><span class="line">    <span class="keyword">if</span> name == <span class="string">'admin'</span> <span class="keyword">and</span> passwd == <span class="string">'alvndasjncakslbdvlaksdn'</span>:</span><br><span class="line">        <span class="keyword">print</span> flag</span><br><span class="line">    <span class="keyword">elif</span> name == <span class="string">'null'</span> <span class="keyword">and</span> passwd == <span class="string">'null'</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"you are not admin"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">signup</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"sorry singup is close"</span></span><br><span class="line">    </span><br><span class="line">rand = Random.new() <span class="comment">#use crypto safe random</span></span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> os.listdir(<span class="string">'.'</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="string">'flag'</span> <span class="keyword">in</span> name:</span><br><span class="line">        fp = open(name)</span><br><span class="line">        flag,key = fp.readlines()</span><br><span class="line">        fp.close()</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">flag = flag.strip()</span><br><span class="line">key = key.strip().decode(<span class="string">'hex'</span>)</span><br><span class="line">welcome = <span class="string">'''</span></span><br><span class="line"><span class="string">+++++++++++++++++++++++++++++++++++++++++++++++++++++++</span></span><br><span class="line"><span class="string">         welcome to explorer's strange crypto</span></span><br><span class="line"><span class="string">+++++++++++++++++++++++++++++++++++++++++++++++++++++++</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">menu = <span class="string">'''</span></span><br><span class="line"><span class="string">what do you want to do?</span></span><br><span class="line"><span class="string">1.sign in </span></span><br><span class="line"><span class="string">2.sing up</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> welcome</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    <span class="keyword">print</span> menu,</span><br><span class="line">    choose = raw_input(<span class="string">'enter you choose:'</span>)</span><br><span class="line">    <span class="keyword">if</span> choose == <span class="string">'1'</span>:</span><br><span class="line">        signin()</span><br><span class="line">    <span class="keyword">elif</span> choose == <span class="string">'2'</span>:</span><br><span class="line">        signup()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"invalid choose"</span></span><br></pre></td></tr></table></figure></p>
 <p>因为网上大多是 Web 应用中的已知密文的攻击，而这道题是已知明文的攻击。不过大同小异。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/crypto_note_a5e3b41452ee888931dcc59f4fafa9ba.png" alt=""></p>
+<p><img src="http://img2.tan90.me/crypto_note_a5e3b41452ee888931dcc59f4fafa9ba.png" alt=""></p>
 <p>如果我们先随便选取一段密文，根据这种攻击的思想跑出相应的 IV，但是问题在于此时的明文不一定是我们想要的。我们知道 AES 解密后的中间值(即上图中的 Intermidiary Value)是不变的，对于同一段密文和 key 来说。假设我们之前跑出来的明文及 IV 分别为 m1、IV1，要求的明文及 IV 为 m2、IV2</p>
 <p>$\begin{matrix} m1\ xor\ IV1 = Intermidiary\ Value \ m2\ xor\ IV2 = Intermidiary\ Value \ IV2 = Intermidiary\ Value\ xor\ m2 \end{matrix}$</p>
 <p>也就是说我们用跑出来的 Intermidiary Value 和 想要的明文进行异或，就得得到符合要求的 IV，然后我们从最后一组 token 往前跑，因为这样就可以异或得到的 IV 作为前一组的密文</p>
@@ -703,7 +703,7 @@
 <p>总之扔进去就好了…</p>
 <p>flag：<code>hgame{haohaoxuexiandainihuiqiuniyuanma}</code></p>
 <h2 id="猪圈密码"><a href="#猪圈密码" class="headerlink" title="猪圈密码"></a>猪圈密码</h2><p>是一种简单的替换密码。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/crypto_note_f979ce71270ca29da35f4d5f20a755e6.png" alt=""></p>
+<p><img src="http://img2.tan90.me/crypto_note_f979ce71270ca29da35f4d5f20a755e6.png" alt=""></p>
 <p>应该都看得懂，不解释了。</p>
 <h2 id="栅栏密码"><a href="#栅栏密码" class="headerlink" title="栅栏密码"></a>栅栏密码</h2><p>栅栏密码(Rail-fence Cipher)就是把要加密的明文分成N个一组，然后把每组的第1个字符组合，每组第2个字符组合…每组的第N(最后一个分组可能不足N个)个字符组合，最后把他们全部连接起来就是密文，这里以2栏栅栏加密为例。</p>
 <p>例题：IDF 聪明的小羊</p>
@@ -1254,7 +1254,7 @@
 <h2 id="一次性密码本（OTP）"><a href="#一次性密码本（OTP）" class="headerlink" title="一次性密码本（OTP）"></a>一次性密码本（OTP）</h2><p>例题：HCTF GAME 进击的 Crypto [1] - 神秘的加密系统</p>
 <p>题目描述：<a href="http://119.29.138.57:23333/crypto/encode_system/" target="_blank" rel="noopener">http://119.29.138.57:23333/crypto/encode_system/</a>（题目源地址，看运气还能不能打开）</p>
 <p>我们随便输入，发现每次加密的结果都不一样，猜测加密的key不可能无限长，所以输入了非常长的一串‘1’，试出来key的长度为128bytes。然后观察加密后网页的源码，可以发现下面有flag_enc：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/crypto_note_a814f664d8bc605fe2a1a8b2f29e5570.png" alt=""></p>
+<p><img src="http://img2.tan90.me/crypto_note_a814f664d8bc605fe2a1a8b2f29e5570.png" alt=""></p>
 <p>加密的方法是K xor M_input = C_input ，K xor Flag = Flag_enc。<br>而我们现在知道了M_input，C_input，Flag_enc。</p>
 <p>所以Flag = K xor Flag_enc = (M_input xor  C_input)  xor  Flag_enc。</p>
 <p>先写个python脚本获取Flag_enc(此处吐槽一下为什么Flag_enc不base64或hex显示)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line">req = urllib2.Request( url = <span class="string">'http://119.29.138.57:23333/crypto/encode_system/index.php'</span>, data = <span class="string">'message=11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'</span>)</span><br><span class="line">response = urllib2.urlopen(req).read()</span><br><span class="line"><span class="keyword">print</span> response</span><br><span class="line"><span class="keyword">print</span> response[<span class="number">-131</span>:<span class="number">-3</span>].encode(<span class="string">'hex'</span>)</span><br></pre></td></tr></table></figure></p>
@@ -1309,8 +1309,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/01/HCTF GAME PWN题 WP/" rel="next" title="HCTF GAME PWN题 WP">
-                <i class="fa fa-chevron-left"></i> HCTF GAME PWN题 WP
+              <a href="/2017/03/01/HCTF GAME RE - Windows礼包/" rel="next" title="HCTF GAME RE - Windows礼包">
+                <i class="fa fa-chevron-left"></i> HCTF GAME RE - Windows礼包
               </a>
             
           </div>
@@ -1319,8 +1319,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/02/南邮CTF平台解题writeup/" rel="prev" title="南邮CTF平台 部分writeup">
-                南邮CTF平台 部分writeup <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/01/HCTF GAME PWN题 WP/" rel="prev" title="HCTF GAME PWN题 WP">
+                HCTF GAME PWN题 WP <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

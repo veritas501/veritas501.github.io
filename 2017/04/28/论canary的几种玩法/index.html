@@ -114,20 +114,20 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="此文讨论我目前所知的几种关于canary的玩法，我目前不知道的就等我以后什么时候知道了再补充吧。  先说说canarycanary直译就是金丝雀，为什么是叫金丝雀？ 17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_1122569b3258873874d61fd5bfc62fba.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_1d676e1ed18ade8675f112f61e39ab74.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_1acfdb1810a2876c78383f4a3a66a515.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_b151b13af2155fff6a842855cbbd4d07.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_0037817e6e24d51983d3575e02fc398d.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_7a0eddd01d532e95ac8a905e617c70b4.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_c0f71a7d08460009b1ff313dcdbf0294.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_a768142147ca3976598941b5c6c67161.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/canary_b17d7868f95d135b35908e74805b7282.png">
-<meta property="og:updated_time" content="2017-08-25T06:16:24.052Z">
+<meta property="og:image" content="http://img2.tan90.me/canary_1122569b3258873874d61fd5bfc62fba.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_1d676e1ed18ade8675f112f61e39ab74.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_1acfdb1810a2876c78383f4a3a66a515.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_b151b13af2155fff6a842855cbbd4d07.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_0037817e6e24d51983d3575e02fc398d.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_7a0eddd01d532e95ac8a905e617c70b4.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_c0f71a7d08460009b1ff313dcdbf0294.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_a768142147ca3976598941b5c6c67161.png">
+<meta property="og:image" content="http://img2.tan90.me/canary_b17d7868f95d135b35908e74805b7282.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.479Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论canary的几种玩法">
 <meta name="twitter:description" content="此文讨论我目前所知的几种关于canary的玩法，我目前不知道的就等我以后什么时候知道了再补充吧。  先说说canarycanary直译就是金丝雀，为什么是叫金丝雀？ 17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/canary_1122569b3258873874d61fd5bfc62fba.png">
+<meta name="twitter:image" content="http://img2.tan90.me/canary_1122569b3258873874d61fd5bfc62fba.png">
 
 
 
@@ -372,7 +372,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 14:16:24" itemprop="dateModified" datetime="2017-08-25T14:16:24+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -433,15 +433,15 @@
 <p>而程序里的canary就是来检测栈溢出的。</p>
 <p>检测的机制是这样的：</p>
 <p>1.程序从一个神奇的地方取出一个4（eax）或8（rax）节的值，在32位程序上，你可能会看到：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_1122569b3258873874d61fd5bfc62fba.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_1122569b3258873874d61fd5bfc62fba.png" alt=""></p>
 <p>在64位上，你可能会看到：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_1d676e1ed18ade8675f112f61e39ab74.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_1d676e1ed18ade8675f112f61e39ab74.png" alt=""></p>
 <p>总之，这个值你不能实现得到或预测，放到站上以后，eax中的副本也会被清空（xor eax,eax）</p>
 <p>2.程序正常的走完了流程，到函数执行完的时候，程序会再次从那个神奇的地方把canary的值取出来，和之前放在栈上的canary进行比较，如果因为栈溢出什么的原因覆盖到了canary而导致canary发生了变化则直接终止程序。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_1acfdb1810a2876c78383f4a3a66a515.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_b151b13af2155fff6a842855cbbd4d07.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_1acfdb1810a2876c78383f4a3a66a515.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_b151b13af2155fff6a842855cbbd4d07.png" alt=""></p>
 <p>在栈中大致是这样一个画风：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_0037817e6e24d51983d3575e02fc398d.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_0037817e6e24d51983d3575e02fc398d.png" alt=""></p>
 <hr>
 <h2 id="绕过canary-格式化字符串"><a href="#绕过canary-格式化字符串" class="headerlink" title="绕过canary - 格式化字符串"></a>绕过canary - 格式化字符串</h2><p>格式化字符串能够实现任意地址读写，具体的实现可以参考我blog中关于格式化字符串的总结，格式化字符串的细节不是本文讨论的重点。</p>
 <p>大体思路就是通过格式化字符串读取canary的值，然后在栈溢出的padding块把canary所在位置的值用正确的canary替换，从而绕过canary的检测。</p>
@@ -480,13 +480,13 @@
 <p>事实上，就有一种攻击方法叫做<code>SSP（Stack Smashing Protector ） leak</code>。</p>
 <hr>
 <p>如果canary被我们的值覆盖而发生了变化，程序会执行函数<code>___stack_chk_fail()</code></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_7a0eddd01d532e95ac8a905e617c70b4.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_7a0eddd01d532e95ac8a905e617c70b4.png" alt=""></p>
 <p>一般情况下，我们执行了这个函数，输出是这样的：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_c0f71a7d08460009b1ff313dcdbf0294.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_c0f71a7d08460009b1ff313dcdbf0294.png" alt=""></p>
 <p>我们来看一下源码<br>__stack_chk_fail :<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> </span><br><span class="line">__attribute__ ((noreturn)) </span><br><span class="line">__stack_chk_fail (<span class="keyword">void</span>) &#123;   </span><br><span class="line">	__fortify_fail (<span class="string">"stack smashing detected"</span>); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>fortify_fail<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> </span><br><span class="line">__attribute__ ((noreturn)) </span><br><span class="line">__fortify_fail (msg)</span><br><span class="line">   <span class="keyword">const</span> <span class="keyword">char</span> *msg; &#123;</span><br><span class="line">      <span class="comment">/* The loop is added only to keep gcc happy. */</span></span><br><span class="line">         <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">              __libc_message (<span class="number">2</span>, <span class="string">"*** %s ***: %s terminated\n"</span>, msg, __libc_argv[<span class="number">0</span>] ?: <span class="string">"&lt;unknown&gt;"</span>) </span><br><span class="line">&#125; </span><br><span class="line">libc_hidden_def (__fortify_fail)</span><br></pre></td></tr></table></figure></p>
 <p>可见，__libc_message 的第二个<code>%s</code>输出的是argv[0]，argv[0]是指向第一个启动参数字符串的指针，而在栈中，大概是这样一个画风</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_a768142147ca3976598941b5c6c67161.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_a768142147ca3976598941b5c6c67161.png" alt=""></p>
 <p>所以，只要我们能够输入足够长的字符串覆盖掉argv[0]，我们就能让canary保护输出我们想要地址上的值。</p>
 <p>听起来很美妙，我们可以试试看。</p>
 <p>先写如下poc:</p>
@@ -496,7 +496,7 @@
 <p>但是，当我们把地址换成flag的地址时，却可以发现flag并没有被打印出来，那是因为在func_1函数的结尾处有这样一句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">memset((void *)((signed int)v1 + 0x600D20LL), 0, (unsigned int)(32 - v1));</span><br></pre></td></tr></table></figure></p>
 <p>所以，无论如何，等我们利用canary打印flag的时候，0x600D20上的值已经被完全覆盖了，因此我们无法从0x600D20处得到flag。</p>
 <p>这就是这道题的第二个考点，ELF的重映射。当可执行文件足够小的时候，他的不同区段可能会被多次映射。这道题就是这样。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/canary_b17d7868f95d135b35908e74805b7282.png" alt=""></p>
+<p><img src="http://img2.tan90.me/canary_b17d7868f95d135b35908e74805b7282.png" alt=""></p>
 <p>可见，其实在0x400d20处存在flag的备份。</p>
 <p>因此，最终的poc为：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">'debug'</span></span><br><span class="line"></span><br><span class="line">cn = remote(<span class="string">'pwn.jarvisoj.com'</span>, <span class="number">9877</span>)</span><br><span class="line"><span class="comment">#cn = process('pwn_smashes')</span></span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(p64(<span class="number">0x0400d20</span>)*<span class="number">200</span>)</span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline()</span><br><span class="line">cn.recv()</span><br></pre></td></tr></table></figure>
@@ -551,8 +551,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/23/Linux Syscall Reference x64/" rel="next" title="Linux Syscall Reference x64">
-                <i class="fa fa-chevron-left"></i> Linux Syscall Reference x64
+              <a href="/2017/04/28/格式化字符串漏洞学习/" rel="next" title="格式化字符串漏洞学习">
+                <i class="fa fa-chevron-left"></i> 格式化字符串漏洞学习
               </a>
             
           </div>
@@ -561,8 +561,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/28/格式化字符串漏洞学习/" rel="prev" title="格式化字符串漏洞学习">
-                格式化字符串漏洞学习 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/04/30/pwnable.kr_writeup/" rel="prev" title="pwnable.kr writeup">
+                pwnable.kr writeup <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

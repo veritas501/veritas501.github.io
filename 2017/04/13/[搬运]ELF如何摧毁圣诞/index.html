@@ -114,21 +114,21 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="以下全部为搬运 原文标题: ELF如何摧毁圣诞 ——通过ELF动态装载机制进行漏洞利用 作者：Alessandro Di Federico, Amat Cama, Yan Shoshitaishvili, Christopher Kruegel and Giovanni Vigna(UCSB,CA, USA; Politecnico di Milano, Milan, Italy) 原文出自：US">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_e97906ecd5c82443533850659d255cd5.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_de8cc9f8fafa387c994cfcbcbbdee8fa.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_cd3bff372ee002886bfdbf2a452b0b6d.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_16192bc027ad32d45ed689a21d337cb2.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_b952a63472293df649fe04aeb79ea941.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_5e19b11ce5e8e059d9360009fece71ee.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_f0698f3357829730a872aa4eb582e82c.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_b180cc2532d30328cab51b6928da64b4.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_a1afd32b7dae42bec326de71303e58c9.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_25409d7e3b718516747d6eeac00fe681.png">
-<meta property="og:updated_time" content="2017-08-25T06:25:02.078Z">
+<meta property="og:image" content="http://img2.tan90.me/hgame_e97906ecd5c82443533850659d255cd5.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_de8cc9f8fafa387c994cfcbcbbdee8fa.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_cd3bff372ee002886bfdbf2a452b0b6d.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_16192bc027ad32d45ed689a21d337cb2.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_b952a63472293df649fe04aeb79ea941.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_5e19b11ce5e8e059d9360009fece71ee.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_f0698f3357829730a872aa4eb582e82c.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_b180cc2532d30328cab51b6928da64b4.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_a1afd32b7dae42bec326de71303e58c9.png">
+<meta property="og:image" content="http://img2.tan90.me/hgame_25409d7e3b718516747d6eeac00fe681.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.285Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【搬运】ELF如何摧毁圣诞">
 <meta name="twitter:description" content="以下全部为搬运 原文标题: ELF如何摧毁圣诞 ——通过ELF动态装载机制进行漏洞利用 作者：Alessandro Di Federico, Amat Cama, Yan Shoshitaishvili, Christopher Kruegel and Giovanni Vigna(UCSB,CA, USA; Politecnico di Milano, Milan, Italy) 原文出自：US">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/hgame_e97906ecd5c82443533850659d255cd5.png">
+<meta name="twitter:image" content="http://img2.tan90.me/hgame_e97906ecd5c82443533850659d255cd5.png">
 
 
 
@@ -373,7 +373,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 14:25:02" itemprop="dateModified" datetime="2017-08-25T14:25:02+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -467,7 +467,7 @@
 <p>每个段都有约定的含义。举个例子，.text段包含着程序的代码，.data段包含着它可写的数据(例如全局变量)，而.rodata段则包含着只读的数据(例如常量和字符串)。段的列表以数组的形式存于ELF文件的Elf_Shdr结构体中。</p>
 <p>注意这里有两种ELF结构体的版本: 一种是32位的(例如Elf32_Rel)，一种是64位的(例如Elf64_Rel).为了简化起见，除了在相关讨论的特定案例中，一般情况我们将忽略这些细节。</p>
 <h5 id="动态符号与重定位"><a href="#动态符号与重定位" class="headerlink" title="动态符号与重定位"></a>动态符号与重定位</h5><p>在这一节中，我们将对ELF符号解析过程相关的数据结构进行一个总结。图1总体展示了这些数据结构以及它们之间的关系。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_e97906ecd5c82443533850659d255cd5.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_e97906ecd5c82443533850659d255cd5.png" alt=""></p>
 <p>figure 1: 在符号解析过程中相关数据结构的关系(除去符号版本)。阴影背景部分表示只读内存。</p>
 <p>一个ELF对象可以向其它ELF对象导出符号或导入符号。一个符号表示一个具有名称标识的函数或者全局变量。</p>
 <p>每个符号都使用Elf_Sym结构体来描述。这个结构体的实例是ELF中.dynsym段的组成部分，它包含以下相关的域:</p>
@@ -486,14 +486,14 @@
 <p>总的来说，PLT条目只是进行了以下函数调用:</p>
 <p>_dl_runtime_resolve(link_map_obj, reloc_index)</p>
 <p>这个函数使用link_map_obj参数来取得解析导入函数(使用reloc_index参数标识)需要的信息，并将结果写到正确的GOT条目中。在_dl_runtime_resolve解析完成导入符号中，控制流就交到了那个函数手中，使得解析的过程对调用者来说完全透明。下次PLT代码调用时则会直接进入目标函数执行。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_de8cc9f8fafa387c994cfcbcbbdee8fa.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_de8cc9f8fafa387c994cfcbcbbdee8fa.png" alt=""></p>
 <p>Listing 1: PLT与GOT的例子</p>
 <p>link_map结构体包含了动态装载器加载ELF对象需要的全部信息。每个link_map实例都是一条双向链表的一个节点，而这个链表保存了所有加载的ELF对象的信息。</p>
 <h5 id="符号版本"><a href="#符号版本" class="headerlink" title="符号版本"></a>符号版本</h5><p>ELF标准提供了一个可以导入一个特定版本符号的机能。这个特性被用于从一个特定的库中导入函数。例如，使用版本标识GLIBC_2.2.5，就可以从2.2.5版本的GNU C标准库中导入fopen这个C标准库函数。.gnu.version_r段保存了版本的定义，形式是Elf_Verdef结构体。</p>
 <p>一个动态符号与指向它的Elf_Verdef的关联保存在.gnu.version段中，其中有一个Elf_Verneed结构体组成的数组，每个元素对应动态符号表中的一项。这个结构体只有一个域: 一个16位的整数，表示.gnu.version_r段中的下标。</p>
 <p>得益于这样的布局，动态连接器使用Elf_Rel结构体成员r_info中的下标同时作为.dynsym段和.gnu.version段的下标。理解这一过程非常重要，因为Leakless之后将被它所扰。</p>
 <h5 id="dynamic段和RELRO"><a href="#dynamic段和RELRO" class="headerlink" title="dynamic段和RELRO"></a>dynamic段和RELRO</h5><p>动态装载器从.dynamic段收集所有它需要的关于ELF对象的信息。.dynamic段由Elf_Dyn结构组成，一个Elf_Dyn是一个键值对，其中存储了不同类型的信息。相关的条目已经在表1中展示，它们保存着特定段的绝对地址。有一个例外是DT_DEBUG条目，它保存的动态装载器内部数据结构的指针。这个条目是为了调试的需要由动态装载器初始化的。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_cd3bff372ee002886bfdbf2a452b0b6d.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_cd3bff372ee002886bfdbf2a452b0b6d.png" alt=""></p>
 <p>Table 1: .dynamic段的条目，d_tag是键，d_value是值。</p>
 <p>一个攻击者如果能干扰这些值，那将会造成安全威胁。为此，一种称作RELRO(重定位只读 RELocation Read Only)保护机制被引入了动态装载器。RELRO有2种形式：部分和完全。</p>
 <p>[部分RELRO] 在这种模式下，一些段(包括.dynamic)在初始化后将会被标识为只读。</p>
@@ -505,7 +505,7 @@
 <p>动态装载器认为它接收到的参数都是值得信任的，因为它假设这些都是直接由ELF文件提供的或者是它自己在开始时初始化的。然而，当一个攻击者能够修改这些数据时，这个假设就不成立了。一些动态装载器(FreeBSD)会验证自己接收到的输入。然而，他们还是完全地信任控制结构，但这些也会被Leakless轻易地破坏。</p>
 <p>Leakless被设计用于利用一个存在的漏洞(指缓冲区溢出等)。Leakless的输入包括可执行ELF文件，一组ROP Gadgets的集合，和攻击者希望调用的库函数名称(典型的例子就是execve())。有了这些信息，Leakless输出一段ROP的攻击载荷(payload)能够执行需要的库函数，且能够绕过多种应用在二进制文件上的加固技术。这段ROP链通常来说非常短: 依赖于二进制文件中的减缓技术，需要3到12次不等的写操作。一些Leakless产生的输出的例子能够在Leakless代码库的文档里找到 [17].</p>
 <p>Leakless不需要任何关于库地址和内容的信息; 我们假设ASLR在所有的动态库上启用且不能获得关于它们的任何知识。然而，我们需要假设可执行文件不是“位置无关的”，所以它们会被加载到内存中的特定位置。我们在7.2节中讨论了这个限制，并且在6.2节中展示了位置无关可执行(Position Independent Executables, PIE)文件在现代操作系统中的分布情况。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_16192bc027ad32d45ed689a21d337cb2.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_16192bc027ad32d45ed689a21d337cb2.png" alt=""></p>
 <p>Figure 2: 攻击图示。阴影背景表示只读的内存，白色背景表示可写的内存，红色或加粗的部分表示攻击者伪造的数据</p>
 <p>a) 4.1节中攻击的例子。攻击者能够改写DT_STRTAB条目的内容，欺骗动态装载器使其认为.dynstr段在.bss段中，并在那里伪造一个假的字符串表。当动态装载器尝试解析printf时将会使用不同的基地址来寻找函数的名称，最终实际会解析并执行execve.</p>
 <p>b) 4.2节中攻击的例子。传递给_dl_runtime_resolve的参数reloc_index超出了.rel.plt段并最终落在.bss段，在那里攻击者伪造了Elf_Rel结构。这个重定位项指向一个就位于其后的Elf_Sym结构，而Elf_Sym结构中的index同样超出了.dynsym段。这样这个符号就会包含一个相对.dynstr地址足够大的偏移使其能够达到这个符号之后的一段内存，那里保存着这个将要调用的函数的名称。</p>
@@ -522,12 +522,12 @@
 <h5 id="破坏动态装载数据"><a href="#破坏动态装载数据" class="headerlink" title="破坏动态装载数据"></a>破坏动态装载数据</h5><p>我们回想起_dl_runtime_resolve的第一个参数是一个指向link_map数据类型的指针。这个结构体，包含了ELF可执行文件的信息，而且这些内容会被动态装载器完全地信任。此外，Leakless可以获得有漏洞程序的GOT表的第二个条目，它的位置是确定已知的。</p>
 <p>回想3.5节中link_map的结构，在l_info域中，包含着.dynamic段所有条目指针构成的一个数组。这些指针就是动态链接器拿来定位符号解析过程中使用的对象的。就像图3中显示的那样，通过覆盖这个数据结构的一部分，Leakless能够将l_info域中的DT_STRTAB条目指向一个特意制造的动态条目，那里指向一个假的动态字符串表。结果，攻击者就可以将攻击简化为4.1节中的基础情形了。</p>
 <p>这个技术较上一节中的技术而言有着更加广泛的适用性，因为它没有特定的限制。特别的，它对于使用huge pages的小型64位ELF同样适用。然而，相比于之前只依赖于标准ELF的特性的攻击，在这种情况(和下一节要叙述的情况)下，我们需要假设特定glibc的结构(link_map)布局是已知的。每个动态装载器有它自己的结构实现，故当面对不同的动态装载器时就需要做一些小的改动。需要注意的是link_map的布局在同一种动态装载器的不同版本之间也可能不同。然而，他们显得非常稳定，尤其是glibc中的相关结构从2004年起就没变过。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_b952a63472293df649fe04aeb79ea941.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_b952a63472293df649fe04aeb79ea941.png" alt=""></p>
 <p>Figure 3: 4.3节中攻击的例子。攻击者通过解引用GOT的第二项来取得link_map结构。在这个结构中破坏保存DT_STRTAB指针的l_info域。它的值被设成一个伪造的动态条目的地址，那里指向了一个位于.bss段中的假的动态字符串表。</p>
 <h5 id="完全RELRO的情形"><a href="#完全RELRO的情形" class="headerlink" title="完全RELRO的情形"></a>完全RELRO的情形</h5><p>Leakless可以绕过完全RELRO的保护。</p>
 <p>当完全RELRO应用时，所有的重定位将在加载时完成，不会有惰性解析的过程，并且link_map结构的地址和在GOT中的_dl_runtime_resolve也不会被初始化。所以，像普通技术绕过部分RELRO那样直接获得它们的地址是不可能的。然而，从动态表的DT_DEBUG条目中间接恢复这两个值仍然是可能的。DT_DEBUG条目的值是动态装载器在加载时设置好的，它指向一个r_debug类型的数据结构。这个数据结构保存着调试器用来标识动态装载器的基地址并拦截相应事件需要的信息。此外，这个结构的r_map域保存着一个指向link_map链表头部的指针。</p>
 <p>Leakless破坏了这个链表中描述ELF可执行文件的第一个节点，使得用于保存DT_STRTAB的l_info条目指向一个假的动态字符串表的指针。具体情形如图4所示。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_5e19b11ce5e8e059d9360009fece71ee.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_5e19b11ce5e8e059d9360009fece71ee.png" alt=""></p>
 <p>Figure 4: 4.4节中的攻击图示。阴影背景表示只读的内存，白色的背景表示可写的内存，红色与加粗的部分表示攻击者伪造的数据。攻击者使用DT_DEBUG这个动态条目来获取r_debug结构，接着，解引用r_map域从而得到主程序的link_map结构，然后像第3节中展示的那样破坏l_info[DT_STRTAB]。</p>
 <p>因为完全RELRO的缘故.got.plt是只读的，攻击者需要伪造一个重定位项。为此，他破坏l_info[DT_JMPREL]使其指向一个假的动态条目，而这个动态条目则指向一个重定位项。这个重定位项引用了已经存在的printf符号，但r_offset则指向一块可写的内存区域。</p>
 <p>接着攻击者同样需要恢复_dl_runtime_resolve函数的指针，因为完全RELRO现在它在主程序的GOT中已经不存在了，所以他解引用l_info域中的第一个link_map结构取得描述第一个共享库的link_map，而这个共享库是不被完全RELRO保护的。攻击者通过l_info[DT_PLTGOT]域来得到对应的动态条目(右侧的.dynamic)，接着是.plt.got段(总是在右侧)，其中的第二个条目里就有_dl_runtime_resolve的地址。</p>
@@ -537,7 +537,7 @@
 <h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>Leakless将会分析二进制文件以确定它的技术是否适用，接着制造必要的数据，然后生成一段ROP链来实现所选技术。至于发现最初始的漏洞以及自动提取有用的gadgets那并非我们的工作，它们已经在很多著作中被很好地研究和实现过了 [6,16,19,20,34,38].我们将Leakless设计成与多种gadget发现技术兼容，并实现了一个手动的后端(用户可以给程序提供gadgets)，另外还有一个使用ROPC [22] 的后端。ROPC是一个以Q [34] 提出的方法为基础实现的一个自动化ROP编译器的原型。</p>
 <p>我们还开发了一个小型的测试套件，由一个具有基于栈的缓冲区溢出的C程序组成，同时提供无保护，部分RELRO和完全RELRO的版本。这个测试套件可以在x86, x86-64, arm架构的GNU/Linux系统和x86-64架构的FreeBSD系统上运行。</p>
 <h5 id="需要的Gadgets"><a href="#需要的Gadgets" class="headerlink" title="需要的Gadgets"></a>需要的Gadgets</h5><p>Leakless包含了4种用于不同加固措施的利用技术。应用这些不同的技术需要提供不同的gadgets。表2是对这些gadgets类型的一个总结。write_memory gadget主要用于在已知地址伪造数据结构，deref_write gadget用于遍历和破坏数据结构(尤其是link_map).deref_save和copy_to_stack gadgets是用在完全RELRO的情况中的。前者的目的是将link_map和_dl_runtime_resolve的地址保存在一个已知位置，而后者的则是用来将link_map和重定位项的下标放到栈上然后调用_dl_runtime_resolve，因为使用PLT0已经不可行。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_f0698f3357829730a872aa4eb582e82c.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_f0698f3357829730a872aa4eb582e82c.png" alt=""></p>
 <p>Table 2: 多种方法需要的Gadgets。”Signature”列代表gadget的名字和它接受的参数，”Implementation”代表gadget行为的类C伪代码。最后四列指示了某个gadget是否在第4节里对应的方法中需要。”N”表示没有RELRO，”P”表示部分RELRO，”H”表示部分RELRO且为使用huge pages的小型64位程序，”F”则表示完全RELRO。</p>
 <p>对于感兴趣的读者，我们提供了Leakless在两组不同的缓解技术保护下进行利用的深度样例，放在Leakless代码库的文档中 [17].</p>
 <hr>
@@ -553,7 +553,7 @@
 <p>[不受影响] 最后是使用PIE的程序，它们不受Leakless的影响(更多的讨论将在7.2中进行)</p>
 <p>这项调研的结果在进行归一化后，如图5所示。我们能够确定，在Ubuntu中，84%的程序受到至少一项技术的影响，另有16%被PIE技术保护。在Debian中，Leakless可以应用在86%的程序中。Fedora则含有76%的易受影响程序。有趣的是，FreeBSD没有程序开启RELRO和PIE，所以100%的程序都会受到Leakless影响。</p>
 <p>另外，我们还针对这些系统中的共享库进行了一次调研。我们发现，平均来说，只有11%的库启用了完全RELRO的保护。这对Leakless来说是个好消息: 对于一个给定的程序，能够找到加载的没有完全RELRO保护的库的概率极其地高，并且即使一个漏洞程序使用了RELRO，Leakless可以应用它的完全RELRO攻击来绕过。这样一来，RELRO作为一项缓解措施的作用基本已经微乎其微，除非它在系统中大范围使用。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_b180cc2532d30328cab51b6928da64b4.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_b180cc2532d30328cab51b6928da64b4.png" alt=""></p>
 <p>Figure 5: 目标发行版中默认安装程序的分类。被标识为未保护，部分RELRO，部分RELRO HP和完全RELRO分别需要应用4.1, 4.2, 4.3, 4.4节中的攻击技术。而对于不受影响的程序，Leakless的方法不适用。</p>
 <h5 id="案例研究-Wireshark"><a href="#案例研究-Wireshark" class="headerlink" title="案例研究: Wireshark"></a>案例研究: Wireshark</h5><p>我们进行了一项将Leakless应用在一个不会与攻击者有直接联系的程序上的案例研究。换句话说，利用必须一击完成，并且没有地址布局信息以及库的内容信息。</p>
 <p>我们选择了一个近期(2014年4月)的漏洞 [7]，一个在Wireshark 1.8.0到1.8.13以及1.10.0到1.10.6中MPEG协议解析器的栈缓冲区溢出漏洞。我们在用部分RELRO与完全RELRO编译的Wireshark 1.8.2上进行这项实验。二者都是在x86-64的Debian Wheezy系统上编译，使用GNU C语言库，并且没有其它类似PIE和stack canaries的防护。</p>
@@ -562,14 +562,14 @@
 <h5 id="案例研究-Pidgin"><a href="#案例研究-Pidgin" class="headerlink" title="案例研究: Pidgin"></a>案例研究: Pidgin</h5><p>我们同样将Leakless应用在Pidgin上来实行更加复杂的利用，这是一个流行的多协议即时消息客户端。而且，我们想在不进行任何异常系统调用(例如 execve(“/bin/sh”)，这可能触发入侵检测系统报警)的情况下进行一次恶意操作。我们使用了x86架构下开启RELRO编译的Pidgin 2.10.7版本。</p>
 <p>为了达到这个目的，我们进行了一个特殊设计的利用，使其假装自己进入应用逻辑里合法的函数中: 通过一个代理打开隧道连接。这种攻击的思想是一个即时通讯服务的提供者利用像CVE-2013-6487 [14] 这样的漏洞来获得代码执行，并且使用Pidgin的全局代理设置，将所有的即时通讯流量重定向到一个第三方的服务器上，从而造成聊天窃听。</p>
 <p>一旦我们确定了必要的gadgets来使用Leakless对抗完全RELRO保护，调用libpurple.so(应用程序核心逻辑所在)中的函数就非常容易了，接着进行下面列表2中的C代码的等价操作</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_a1afd32b7dae42bec326de71303e58c9.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_a1afd32b7dae42bec326de71303e58c9.png" alt=""></p>
 <p>Listing 2: Pidgin攻击</p>
 <p>有趣的是，有些库提供的函数没有被导入到Pidgin程序中，这样在没有Leakless的情况下仅使用一个阶段的载荷完成攻击将非常具有挑战性。</p>
 <h5 id="ROP链的长度比较"><a href="#ROP链的长度比较" class="headerlink" title="ROP链的长度比较"></a>ROP链的长度比较</h5><p>为了证明Leakless方法的效率，我们将其与现有的允许攻击者调用任意库函数的两项技术进行了比较。第一项技术首先从.plt.got段向后扫描库，直到发现ELF的头部，随后向前扫描发现攻击者想要调用的函数的特征。这种方法是可行的，但并不十分可靠，因为一个库的不同版本(或实现)可能无法通过单一的特征就确定。第二项技术要可靠一些，因为它实现了一个完整的符号解析的过程，就像动态装载器一样。</p>
 <p>我们实现了这两种方法，使用一种x86架构上基于Q [34]的图灵完全ROP编译器，称为ROPC [22]。我们在部分RELRO与完全RELRO两种情况下与Leakless的ROPC后端进行了比较。为了完整起见，我们同样包括了Leakless的手动后端，使用用户指定的gadgets.</p>
 <p>事实上，ROP链长度是十分重要的，一个漏洞往往伴随着固定长度的载荷限制。为了测量Leakless的ROP链长度的影响，我们收集了Metasploit Framework [31] (一个可以自动进行多种软件已知漏洞利用的工具)中所有漏洞的载荷长度限制。我们发现1303个漏洞中的946个有最大载荷长度限制，它们的平均最大载荷长度为1332字节。为了展示自动生成复杂利用的可行性的增长，我们在图中增加了每种技术能够自动生成足够短的ROP链来利用的Metasploit漏洞占其总漏洞的百分比。</p>
 <p>结果，在为ROPC的测试程序生成的ROP链长度方面和对Metasploit的漏洞利用的可行性方面，这些技术的表现如表3所示。Leakless全面超过了现有的技术，不仅是在进行初始调用的ROP链绝对长度上，在每次额外调用上的开销也更小。这使它在进行像6.4节中的复杂攻击中更加有效。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/hgame_25409d7e3b718516747d6eeac00fe681.png" alt=""></p>
+<p><img src="http://img2.tan90.me/hgame_25409d7e3b718516747d6eeac00fe681.png" alt=""></p>
 <p>Table 3: ROPC为6.5节中的每种技术生成的ROP链的长度，以及Leakless手动后端生成的结果(*)。第2列代表从攻击准备到第一次调用需要的字节数，第3列则表示后来的调用每次需要的字节数。最后，第4列显示了按照其第一次调用的大小生成的ROP链能够利用的Metasploit中的漏洞比率。</p>
 <hr>
 <h4 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h4><p>在这节中，我们将讨论与Leakless有关的几个方面: 为什么它提供给攻击者的能力很有价值，在什么情况下它最适合，它的局限性在哪里，以及如何缓解其带来的影响。</p>

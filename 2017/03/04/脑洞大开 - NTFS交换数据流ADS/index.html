@@ -114,16 +114,16 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png">
-<meta property="og:updated_time" content="2017-08-25T06:12:50.908Z">
+<meta property="og:image" content="http://img2.tan90.me/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
+<meta property="og:image" content="http://img2.tan90.me/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png">
+<meta property="og:image" content="http://img2.tan90.me/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png">
+<meta property="og:image" content="http://img2.tan90.me/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png">
+<meta property="og:image" content="http://img2.tan90.me/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.429Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="脑洞大开 - NTFS交换数据流ADS">
 <meta name="twitter:description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
+<meta name="twitter:image" content="http://img2.tan90.me/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
 
 
 
@@ -368,7 +368,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 14:12:50" itemprop="dateModified" datetime="2017-08-25T14:12:50+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -427,12 +427,12 @@
 <h2 id="什么是NTFS交换数据流（ADS）"><a href="#什么是NTFS交换数据流（ADS）" class="headerlink" title="什么是NTFS交换数据流（ADS）"></a>什么是NTFS交换数据流（ADS）</h2><p>NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无法看到数据流文件，但是它却是真实存在于我们的系统中的。创建一个数据交换流文件的方法很简单，命令为”宿主文件:准备与宿主文件关联的数据流文件”。</p>
 <p><strong>以下一段摘自FreeBuf：</strong></p>
 <p>举个例子，我现在有一个文本文件，名称为test.txt，文本内容为”Hello, world!”。其MFT记录结构如图：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png" alt=""></p>
+<p><img src="http://img2.tan90.me/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png" alt=""></p>
 <p>\$FILE_NAME属性包含了该文件名test.txt。 \$DATA属性则包含了内容 “Hello, world!”。这里说个题外话，由于该内容长度小于1kb，所以文件的内容就直接存储在MFT记录里面了（称为resident）。如果内容长度大于1kb，文件内容会被存储在别的地方 （称为non-resident），在这种情况下$DATA属性只包含其存储地址。这里“Hello, world!”很短，所以直接保存在了MFT记录里面。</p>
 <p>很多人想当然的认为一个文件只能有一个\$DATA属性，这是错误的。在NTFS中，一个文件可以有多个\$DATA属性。比如我现在想给test.txt加入一个名为ThisIsAnADS的$DATA属性：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> Hello, freebuf! &gt; test.txt:ThisIsAnADS</span><br></pre></td></tr></table></figure>
 <p>那么，该文件的MFT记录就变成了下图所示:</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png" alt=""></p>
+<p><img src="http://img2.tan90.me/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png" alt=""></p>
 <p>你可能发现了这两个\$DATA属性还是略有不同的，第一个没有名称，而第二个有名称（ThisIsAnADS）！通常人们称第一个为主数据流（primary data stream ）。主数据流在文件创建的同时就被创建了，并且默认没有名称，所以也叫做未名数据流 （unnamed data stream）。第二个是我们后来创建的，并且赋予了名称（ThisIsAnADS）。这个就是供选数据流 （alternate data stream，ADS）。绝大多数用户只会和主数据流打交道，从某种意义上来说，ADS对用户是隐藏的。用常规的dir命令和windows文件管理器都没法发现ADS。而当我们查看文件内容的时候也仅仅显示主数据流的内容。</p>
 <h2 id="NTFS交换数据流隐藏文件实例"><a href="#NTFS交换数据流隐藏文件实例" class="headerlink" title="NTFS交换数据流隐藏文件实例"></a>NTFS交换数据流隐藏文件实例</h2><h3 id="隐藏文本"><a href="#隐藏文本" class="headerlink" title="隐藏文本"></a>隐藏文本</h3><p>在命令行下，我们敲：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 666666&gt;&gt;suzhu.txt:stream.txt</span><br></pre></td></tr></table></figure></p>
 <p>这里的<code>suzhu.txt</code>可以是目前不存在的文件，也可以是现有的文件。如果我们敲命令之前没有<code>suzhu.txt</code>，那么我们的文件夹下就多出了一个叫<code>suzhu.txt</code>的空白文件。</p>
@@ -450,7 +450,7 @@
 <p>可以写入，没有问题。试着执行之:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c:\<span class="built_in">test</span>&gt;start test.txt:nc.exe</span><br><span class="line">Access is denied.</span><br></pre></td></tr></table></figure></p>
 <p>但是执行不成功。。。因为从windows xp以后微软就禁止用户从ADS里执行程序了。写入，读出操作都可以，但是不允许执行。</p>
 <p>换一个思路，既然允许写和读，那么我们可以在ADS里面写入脚本，然后用脚本解释器(Wscript.exe)来运行该脚本。Wscript.exe默认支持js, vbs等，但是我更偏爱powershell的简单高效。所以准备在一个文件中写入2个ADS，一个包含powershell脚本后门，用于从网上下载和执行恶意脚本。一个包含VBS脚本，用于触发powershell脚本。具体设计如下图，包括3部分:</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png" alt=""></p>
+<p><img src="http://img2.tan90.me/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png" alt=""></p>
 <ol>
 <li><p>恶意脚本：一个提供真正的恶意功能的powershell脚本，比如反弹cmd shell等等，具体如何用powershell实现远控功能，请参照<a href="https://github.com/mattifestation/PowerSploit。" target="_blank" rel="noopener">https://github.com/mattifestation/PowerSploit。</a> 这里为了演示的目的，我们的”恶意脚本”只会弹出一个对话框，显示”Infected”。该文件名为malware.ps1，存放于 <a href="http://127.0.0.1:8123/malware.ps1" target="_blank" rel="noopener">http://127.0.0.1:8123/malware.ps1</a></p>
 </li>
@@ -459,9 +459,9 @@
 <li><p>触发器：该触发器是一段VB脚本，会开一个cmd运行test.txt:1 里的脚本。由于我们要用wscript.exe 来运行这个ADS, 而wscript.exe会检查脚本文件的后缀名，所以这个ADS的命名必须以.vbs结尾。 具体内容为 Dim objShell:Set objShell = WScript.CreateObject(“WScript.Shell”):command = “cmd /C for /f “”delims=,”” %i in (C:\test\test.txt:1) do %i”:objShell.Run command, 0:Set objShell = Nothing，将其写入test.txt:2.vbs</p>
 </li>
 </ol>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png" alt=""></p>
+<p><img src="http://img2.tan90.me/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png" alt=""></p>
 <p>用wscript.exe运行一下，成功！进程管理器显示该进程名为powershell.exe</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png" alt=""></p>
+<p><img src="http://img2.tan90.me/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png" alt=""></p>
 <p>当然，还可以把wscript.exe test.txt:2.vbs 放在注册表与自动启动相关的键值里，比如HKCU\Software\Microsoft\Windows\CurrentVersion\Run 等，以实现开机自启动。</p>
 <h2 id="如何检测和清除NTFS-ADS隐藏的文件"><a href="#如何检测和清除NTFS-ADS隐藏的文件" class="headerlink" title="如何检测和清除NTFS-ADS隐藏的文件"></a>如何检测和清除NTFS-ADS隐藏的文件</h2><p>简而言之，用软件。</p>
 <p>下载: <a href="https://pan.baidu.com/s/1qYnTbIW" target="_blank" rel="noopener">https://pan.baidu.com/s/1qYnTbIW</a> 密码: v2bq</p>
@@ -516,8 +516,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/04/Reversing.kr writeup/" rel="next" title="Reversing.kr writeup">
-                <i class="fa fa-chevron-left"></i> Reversing.kr writeup
+              <a href="/2017/03/02/南邮CTF平台解题writeup/" rel="next" title="南邮CTF平台 部分writeup">
+                <i class="fa fa-chevron-left"></i> 南邮CTF平台 部分writeup
               </a>
             
           </div>
@@ -526,8 +526,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/10/JarvisOJ_WP/" rel="prev" title="Jarvis OJ平台 WP">
-                Jarvis OJ平台 WP <i class="fa fa-chevron-right"></i>
+              <a href="/2017/03/04/Reversing.kr writeup/" rel="prev" title="Reversing.kr writeup">
+                Reversing.kr writeup <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

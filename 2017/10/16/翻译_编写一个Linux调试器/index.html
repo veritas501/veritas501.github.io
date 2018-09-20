@@ -114,13 +114,13 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="emmmm,本来想发bobao360上的，后来他说这文章之前已经有人翻译过几篇了，就不能发布。（摊手¯\(ツ)/¯那我就发在博客上好了。 当学习一波ptrace也是极好的。 一口气直接1~10发完（｀Δ´）！ （一）：准备工作（二）：断点（三）：内存和寄存器（四）：Elves 和 dwarves（五）：源码和信号（六）：源码级单步执行（七）：源码级断点（八）：栈卷回（九）：处理变量（十）：进阶话题">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/debugger_2_c1d8a1307d84d0de293a90b678d7f0ee.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/ptrace_10_260e0e6cc5e29daf92c63851d919e8c2.png">
-<meta property="og:updated_time" content="2017-10-16T09:14:30.355Z">
+<meta property="og:image" content="http://img2.tan90.me/debugger_2_c1d8a1307d84d0de293a90b678d7f0ee.png">
+<meta property="og:image" content="http://img2.tan90.me/ptrace_10_260e0e6cc5e29daf92c63851d919e8c2.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.422Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【翻译】编写一个Linux 调试器 （一）~（十）">
 <meta name="twitter:description" content="emmmm,本来想发bobao360上的，后来他说这文章之前已经有人翻译过几篇了，就不能发布。（摊手¯\(ツ)/¯那我就发在博客上好了。 当学习一波ptrace也是极好的。 一口气直接1~10发完（｀Δ´）！ （一）：准备工作（二）：断点（三）：内存和寄存器（四）：Elves 和 dwarves（五）：源码和信号（六）：源码级单步执行（七）：源码级断点（八）：栈卷回（九）：处理变量（十）：进阶话题">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/debugger_2_c1d8a1307d84d0de293a90b678d7f0ee.png">
+<meta name="twitter:image" content="http://img2.tan90.me/debugger_2_c1d8a1307d84d0de293a90b678d7f0ee.png">
 
 
 
@@ -348,12 +348,24 @@
                 
               
 
-              <time title="Created: 2017-10-16 00:00:00 / Modified: 17:14:30" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
+              <time title="Created: 2017-10-16 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">2017-10-16</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -493,7 +505,7 @@
 </ul>
 <p>第一个问题的答案很显然，<code>ptrace</code>。我们之前使用它来设置我们的程序来跟踪以及继续执行，但我们也可以使用它来读取和写入内存。</p>
 <p>当执行到断点位置的时候，我们的修改要让处理器暂停并向调试器发送信号。在x86上这是通过将需要下断的地址上的指令设置为<code>int 3</code>来实现的。x86上有一个中断向量表（interrupt vector table），操作系统通过中断向量表能够为许多事件注册处理函数，比如缺页中断（page faults），保护错误（protection faults），无效操作码（invalid opcodes）等。它有点像注册错误的回调函数，但是在硬件层面实现的。当处理器执行到<code>int 3</code>指令是，控制权就被传递给了断点中断处理程序（breakpoint interrupt handler），就Linux来说，是给进程发送<code>SIGTRAP</code>信号。下图展现了这个过程，当把<code>mov</code>指令的第一个字节覆盖为<code>0xcc</code>，即<code>int 3</code>的机器码。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/debugger_2_c1d8a1307d84d0de293a90b678d7f0ee.png" alt=""></p>
+<p><img src="http://img2.tan90.me/debugger_2_c1d8a1307d84d0de293a90b678d7f0ee.png" alt=""></p>
 <p>最后一个问题是如何让调试器注意到这个中断。如果你还记得上一篇中我们使用<code>waitpid</code>函数来监听被调试端发送的信号的方法，我们在此处也可以用同样的方法来处理：设置断点，让程序继续执行，调用<code>waitpid</code>直到收到<code>SIGTRAP</code>信号。然后就可以通过打印当前代码的位置或改变图形界面中选中的行来将这个断点传达给用户。</p>
 <hr>
 <h2 id="实现内存断点"><a href="#实现内存断点" class="headerlink" title="实现内存断点"></a>实现内存断点</h2><p>我们实现一个<code>breakpoint</code>类来表现一个断点断在某个位置，然后根据需求选择启用或是停用这个断点。</p>
@@ -939,7 +951,7 @@
 <h1 id="（十）：进阶话题"><a href="#（十）：进阶话题" class="headerlink" title="（十）：进阶话题"></a>（十）：进阶话题</h1><p>我们终于来到这系列文章的最后一篇，这一次我们将从较高的层面概述调试中的一些更高级的概念：远程调试，共享库支持，表达式求值和多线程支持。这些想法更难实现，所以我不会详细的说明如何做，但如果你有任何概念上的问题，我乐于回答。</p>
 <hr>
 <h2 id="远程调试"><a href="#远程调试" class="headerlink" title="远程调试"></a>远程调试</h2><p>对嵌入式系统或是环境差异影响的调试来说，远程调试是非常有用的。它还良好的区别了高级调试器操作和操作系统与硬件的交互。事实上，<br>像GDB或是LLDB那样的调试器几十载调试本地程序的时候也能像远程调试器那样操作。一般的架构是这样的：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/ptrace_10_260e0e6cc5e29daf92c63851d919e8c2.png" alt=""></p>
+<p><img src="http://img2.tan90.me/ptrace_10_260e0e6cc5e29daf92c63851d919e8c2.png" alt=""></p>
 <p>调试器是我们通过命令行进行交互的组件。如果你在使用IDE那么可能还有一层通过<em>机器接口</em>和调试器进行通信。在目标机器（可能和主机相同）上会有一个<em>调试存根(debug stub)</em>，理论上它是在系统调试库周围的一个包装器，它带来了所有低等级的调试指令，例如设置断点。我说“理论上”是因为存根目前在不断变大。在我机器上LLDB的调试存根大小为7.6MB。调试存根使用某些特定于系统的功能（在我们的例子中为<code>ptrace</code>）来与被调试端通信并通过一些远程协议和调试器通信。</p>
 <p>在调试中，最常见的远程协议为GDB远程协议。这是一种基于文本的数据包格式，用于在调试器和调试存根间传递命令和信息。我不会详细介绍，但你可以在<a href="https://sourceware.org/gdb/onlinedocs/gdb/Remote-Protocol.html" target="_blank" rel="noopener">这里</a>阅读所有你想了解的内容。如果你启动LLDB并执行命令<code>log enable gdb-remote packets</code>，你将得到所有通过远程协议发送的数据包。在GDB上你可以执行<code>set remotelogfile &lt;file&gt;</code>获得上述结果。</p>
 <p>举个例子，这是设置断点发送的一个数据包：</p>

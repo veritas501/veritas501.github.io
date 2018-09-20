@@ -114,49 +114,49 @@
 <meta property="og:site_name" content="Veritas501&#39;s Blog">
 <meta property="og:description" content="前言这道题是iscc 2017中的安卓第二题，所有的算法都在lib库中，而lib库又是加了壳的，所以就用动态调试解决吧。第一次动态调试安卓，就写的详细一些吧。 文中用到1.能正常运行这个crackme的手机一部，需要root（本人手上的主力机是安卓7.1的就运行不了）2.IDA一个3.IDA神级插件Keypatch4.安卓调试adb5.python6.这个crackme 题目链接链接：http:/">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8dc0238d14b3e4acd5ff0eed2d93ad13.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_14c15ef29fc8e062fb52325ae4a511e0.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_966e419be601b6c8be4ad88103810fb1.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c117daab91abb5e8bd8c51397c878677.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5263fd444bca2534afcadb424c2cf68b.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_cb101eae0a64730fc0b157de8e1f97c7.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_69ac151ca103ef9482a44ebe3ba5ab46.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a48b10e88f3c7c3e412adee477df394a.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3b8cc7eae16d22a08feab4d08ae2191f.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_815d06cd54eb6b8df2928b58a80d6f4f.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a972ed0d59c1f2bd1ede68903b9dbf8.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_f324840f8f2651543c48f453eaa38fa0.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1c4cad3d43ce12d23c8edf4f3b489758.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_04c1cd0b8c025ac3a54f6fdc4a9f8108.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_807674aaa026af8c591763c48db1f756.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_39c321129d26d8216cd122443bcbf3c1.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_64be8f45e5ac4c15ac8100e9a27bb446.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_7fedd350f904564e4b6e2b37b827a18a.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_32b4e026fa0d202cee99e3622d82cb34.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8db239d0de7fedf5bf8f024d82e05dfb.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ac8e1cabc1a92417762bc19b014226b7.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c7a8060760ab38e528125c4d0ff24e2d.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a727c1b7c64339a82c60a8475b739b13.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5424e011ca9628baff83b4a935938f3a.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5d1ba5b288f98a09ab62f20255855694.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_d733c5edf6641271d116a31468e6570d.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_95d2c5ae15e2a6b7a23922d32fb47d2c.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_6c0bea21f8f05fccb94431ea41bf9929.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c0a585b319b0d3384224a3d8f42353f4.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_16337b75d1b4c0ea8c0c234520f16e8e.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_02233be220103eee2194b9aa12d034fd.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_29ff5e89fd9f0caaeeeca9b624645abb.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_9c85b30936f38e6cbb1de6934352b3b0.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a42b0ce72c75de31700e5060c7ae5f5.png">
-<meta property="og:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ad77b344794448f626f0a55c15c30572.png">
-<meta property="og:updated_time" content="2017-08-25T06:31:41.480Z">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_8dc0238d14b3e4acd5ff0eed2d93ad13.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_14c15ef29fc8e062fb52325ae4a511e0.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_966e419be601b6c8be4ad88103810fb1.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_c117daab91abb5e8bd8c51397c878677.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_5263fd444bca2534afcadb424c2cf68b.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_cb101eae0a64730fc0b157de8e1f97c7.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_69ac151ca103ef9482a44ebe3ba5ab46.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_a48b10e88f3c7c3e412adee477df394a.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_3b8cc7eae16d22a08feab4d08ae2191f.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_815d06cd54eb6b8df2928b58a80d6f4f.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_3a972ed0d59c1f2bd1ede68903b9dbf8.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_f324840f8f2651543c48f453eaa38fa0.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_1c4cad3d43ce12d23c8edf4f3b489758.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_04c1cd0b8c025ac3a54f6fdc4a9f8108.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_807674aaa026af8c591763c48db1f756.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_39c321129d26d8216cd122443bcbf3c1.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_64be8f45e5ac4c15ac8100e9a27bb446.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_7fedd350f904564e4b6e2b37b827a18a.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_32b4e026fa0d202cee99e3622d82cb34.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_8db239d0de7fedf5bf8f024d82e05dfb.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_ac8e1cabc1a92417762bc19b014226b7.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_c7a8060760ab38e528125c4d0ff24e2d.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_a727c1b7c64339a82c60a8475b739b13.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_5424e011ca9628baff83b4a935938f3a.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_5d1ba5b288f98a09ab62f20255855694.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_d733c5edf6641271d116a31468e6570d.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_95d2c5ae15e2a6b7a23922d32fb47d2c.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_6c0bea21f8f05fccb94431ea41bf9929.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_c0a585b319b0d3384224a3d8f42353f4.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_16337b75d1b4c0ea8c0c234520f16e8e.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_02233be220103eee2194b9aa12d034fd.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_29ff5e89fd9f0caaeeeca9b624645abb.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_9c85b30936f38e6cbb1de6934352b3b0.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_3a42b0ce72c75de31700e5060c7ae5f5.png">
+<meta property="og:image" content="http://img2.tan90.me/libso_debug_note_ad77b344794448f626f0a55c15c30572.png">
+<meta property="og:updated_time" content="2018-09-20T06:34:26.471Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记录一次安卓动态调试lib库">
 <meta name="twitter:description" content="前言这道题是iscc 2017中的安卓第二题，所有的算法都在lib库中，而lib库又是加了壳的，所以就用动态调试解决吧。第一次动态调试安卓，就写的详细一些吧。 文中用到1.能正常运行这个crackme的手机一部，需要root（本人手上的主力机是安卓7.1的就运行不了）2.IDA一个3.IDA神级插件Keypatch4.安卓调试adb5.python6.这个crackme 题目链接链接：http:/">
-<meta name="twitter:image" content="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png">
+<meta name="twitter:image" content="http://img2.tan90.me/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png">
 
 
 
@@ -401,7 +401,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2017-08-25 14:31:41" itemprop="dateModified" datetime="2017-08-25T14:31:41+08:00">2017-08-25</time>
+                <time title="Modified: 2018-09-20 14:34:26" itemprop="dateModified" datetime="2018-09-20T14:34:26+08:00">2018-09-20</time>
               
             
           </span>
@@ -463,87 +463,87 @@
 <p>通过jeb的逆向，发现所有与题目解题相关的代码都在libtutu.so中。ida直接载入会发现这个so是被加密的。</p>
 <p>那就开始动态调试。</p>
 <p>在ida的目录下有一个叫dbgsrv的文件夹</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_3bbf792b29183461fb6742b45ff4562c.png" alt=""></p>
 <p>此次我们动态调试所需要的是android_server。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8dc0238d14b3e4acd5ff0eed2d93ad13.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_8dc0238d14b3e4acd5ff0eed2d93ad13.png" alt=""></p>
 <p>通过各种方法，把它放到<code>/system/bin/</code>目录下，并给予执行权限</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_14c15ef29fc8e062fb52325ae4a511e0.png" alt=""></p>
-<p>然后在电脑上执行<code>adb shell</code>，输入<code>su</code>拿到root权限后再输入<code>andoird_server</code>。<br><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_966e419be601b6c8be4ad88103810fb1.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_14c15ef29fc8e062fb52325ae4a511e0.png" alt=""></p>
+<p>然后在电脑上执行<code>adb shell</code>，输入<code>su</code>拿到root权限后再输入<code>andoird_server</code>。<br><img src="http://img2.tan90.me/libso_debug_note_966e419be601b6c8be4ad88103810fb1.png" alt=""></p>
 <p>看到<code>Listening on port #23946...</code></p>
 <p>再开一个命令行窗口，输入 <code>adb forward tcp:23946 tcp:23946</code>进行端口转发。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c117daab91abb5e8bd8c51397c878677.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_c117daab91abb5e8bd8c51397c878677.png" alt=""></p>
 <p>至此，准备工作就完成了。</p>
 <h2 id="IDA连接调试"><a href="#IDA连接调试" class="headerlink" title="IDA连接调试"></a>IDA连接调试</h2><p>在手机端打开待调试的crackme</p>
 <p>在x86的ida下，选择如下菜单</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5263fd444bca2534afcadb424c2cf68b.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_cb101eae0a64730fc0b157de8e1f97c7.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_5263fd444bca2534afcadb424c2cf68b.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_cb101eae0a64730fc0b157de8e1f97c7.png" alt=""></p>
 <p>点击OK。</p>
 <p>找到待调试的应用：</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_69ac151ca103ef9482a44ebe3ba5ab46.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_69ac151ca103ef9482a44ebe3ba5ab46.png" alt=""></p>
 <p>点击OK，等待片刻后进入调试界面。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a48b10e88f3c7c3e412adee477df394a.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_a48b10e88f3c7c3e412adee477df394a.png" alt=""></p>
 <p>由于要等待so解密，所以我们打开这一项</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3b8cc7eae16d22a08feab4d08ae2191f.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_3b8cc7eae16d22a08feab4d08ae2191f.png" alt=""></p>
 <p>勾上这里</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_815d06cd54eb6b8df2928b58a80d6f4f.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_815d06cd54eb6b8df2928b58a80d6f4f.png" alt=""></p>
 <p>点击运行让程序跑起来。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a972ed0d59c1f2bd1ede68903b9dbf8.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_3a972ed0d59c1f2bd1ede68903b9dbf8.png" alt=""></p>
 <p>手机端随便输入一些东西后点击确定，发现IDA成功断下。</p>
-<p>出现这个直接点OK跳过<br><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_f324840f8f2651543c48f453eaa38fa0.png" alt=""></p>
+<p>出现这个直接点OK跳过<br><img src="http://img2.tan90.me/libso_debug_note_f324840f8f2651543c48f453eaa38fa0.png" alt=""></p>
 <p>直接apply</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1c4cad3d43ce12d23c8edf4f3b489758.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_1c4cad3d43ce12d23c8edf4f3b489758.png" alt=""></p>
 <p>断在linker</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_04c1cd0b8c025ac3a54f6fdc4a9f8108.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_04c1cd0b8c025ac3a54f6fdc4a9f8108.png" alt=""></p>
 <p>手动按f8从linker走到libart.so（我调试用的手机是安卓5.1的）</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_807674aaa026af8c591763c48db1f756.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_807674aaa026af8c591763c48db1f756.png" alt=""></p>
 <p>在Modules里找到libtutu.so</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_39c321129d26d8216cd122443bcbf3c1.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_39c321129d26d8216cd122443bcbf3c1.png" alt=""></p>
 <p>双击check</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_64be8f45e5ac4c15ac8100e9a27bb446.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_64be8f45e5ac4c15ac8100e9a27bb446.png" alt=""></p>
 <p>发现代码已经解密了。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_7fedd350f904564e4b6e2b37b827a18a.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_7fedd350f904564e4b6e2b37b827a18a.png" alt=""></p>
 <p>可以按F5看看</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_32b4e026fa0d202cee99e3622d82cb34.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_32b4e026fa0d202cee99e3622d82cb34.png" alt=""></p>
 <p>一切正常。</p>
-<h2 id="方法一：静态分析"><a href="#方法一：静态分析" class="headerlink" title="方法一：静态分析"></a>方法一：静态分析</h2><p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_8db239d0de7fedf5bf8f024d82e05dfb.png" alt=""></p>
+<h2 id="方法一：静态分析"><a href="#方法一：静态分析" class="headerlink" title="方法一：静态分析"></a>方法一：静态分析</h2><p><img src="http://img2.tan90.me/libso_debug_note_8db239d0de7fedf5bf8f024d82e05dfb.png" alt=""></p>
 <p>这些明显是函数指针，我们双击过去，按<code>c</code>转换成代码，再回来按f5。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ac8e1cabc1a92417762bc19b014226b7.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_ac8e1cabc1a92417762bc19b014226b7.png" alt=""></p>
 <p>上面有个未知作用的函数，我们一层层点进去看，发现是strlen。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png" alt=""></p>
 <p>稍微重命名一下，我们可以看出就是一个AES_ECB模式的加密</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_1df9055ddb4ebce29ba5132cde11bb6f.png" alt=""></p>
 <p>IV和enc都有了，直接用python解密一下就出来了。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c7a8060760ab38e528125c4d0ff24e2d.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_c7a8060760ab38e528125c4d0ff24e2d.png" alt=""></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line">iv = <span class="string">'122B157F2BAED2A6ACF7158807CF4F3C'</span>.decode(<span class="string">'hex'</span>)</span><br><span class="line">enc = <span class="string">'47FE6CEEA092F9A72A73B3763613701A'</span>.decode(<span class="string">'hex'</span>)</span><br><span class="line"></span><br><span class="line">cryptor = AES.new(iv,AES.MODE_ECB)</span><br><span class="line">dec = cryptor.decrypt(enc)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> dec</span><br><span class="line"><span class="comment">#6ae379eaf3ccada5</span></span><br></pre></td></tr></table></figure>
 <p>flag:<code>6ae379eaf3ccada5</code></p>
 <h2 id="方法二：纯动态调试"><a href="#方法二：纯动态调试" class="headerlink" title="方法二：纯动态调试"></a>方法二：纯动态调试</h2><p>既然都已经开始动态调试了，为什么还要劳烦我们去分析代码呢？总有人会这样想。</p>
 <p>也算是锻炼一下动态的能力，我们现在用纯动态的方法来做。</p>
 <p>首先，如果你脱完壳直接f9开跑的话，你会发现程序结束了，因为这个so里有一个叫做antiDebug的函数</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_a727c1b7c64339a82c60a8475b739b13.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5424e011ca9628baff83b4a935938f3a.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_a727c1b7c64339a82c60a8475b739b13.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_5424e011ca9628baff83b4a935938f3a.png" alt=""></p>
 <p>我们不用去管这个函数内部到底干了什么，我们只要直接将这个函数在段首ret掉，这样下面的所有代码都不会被执行了。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_5d1ba5b288f98a09ab62f20255855694.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_5d1ba5b288f98a09ab62f20255855694.png" alt=""></p>
 <p>我们掏出插件keypatch，ctrl+alt+k</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_d733c5edf6641271d116a31468e6570d.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_d733c5edf6641271d116a31468e6570d.png" alt=""></p>
 <p>改成<code>POP {R4-R7,PC}</code></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_95d2c5ae15e2a6b7a23922d32fb47d2c.png" alt=""></p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_6c0bea21f8f05fccb94431ea41bf9929.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_95d2c5ae15e2a6b7a23922d32fb47d2c.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_6c0bea21f8f05fccb94431ea41bf9929.png" alt=""></p>
 <p>这样这个antiDebug就被patch掉了。</p>
 <p>我们还发现这个so中自带了decrypt函数。</p>
 <p>我们来到check函数，找到这一段。</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_c0a585b319b0d3384224a3d8f42353f4.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_c0a585b319b0d3384224a3d8f42353f4.png" alt=""></p>
 <p>我们要把原来的<code>AES128_ECB_encrypt)(input, &amp;IV, &amp;enc_out)</code>改成<code>AES128_ECB_decrypt)(enc_right, &amp;IV, &amp;enc_out)</code>，这样enc_out里保存的就是我们所需要的flag了。</p>
 <p>这里，我们发现我们需要的enc_right保存在R6寄存器里</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_16337b75d1b4c0ea8c0c234520f16e8e.png" alt=""></p>
-<p>所以我们patch这两句<br><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_02233be220103eee2194b9aa12d034fd.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_16337b75d1b4c0ea8c0c234520f16e8e.png" alt=""></p>
+<p>所以我们patch这两句<br><img src="http://img2.tan90.me/libso_debug_note_02233be220103eee2194b9aa12d034fd.png" alt=""></p>
 <p>重新f5，现在变成了我们所希望的样子</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_29ff5e89fd9f0caaeeeca9b624645abb.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_29ff5e89fd9f0caaeeeca9b624645abb.png" alt=""></p>
 <p>用f2下好断点，f9运行</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_9c85b30936f38e6cbb1de6934352b3b0.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_9c85b30936f38e6cbb1de6934352b3b0.png" alt=""></p>
 <p>enc_out是在R7寄存器里，此时的R7为FFABD2A4</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_3a42b0ce72c75de31700e5060c7ae5f5.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_3a42b0ce72c75de31700e5060c7ae5f5.png" alt=""></p>
 <p>在数据窗口我们按G键，跳转到FFABD2A4</p>
-<p><img src="http://ordvwjm69.bkt.clouddn.com/libso_debug_note_ad77b344794448f626f0a55c15c30572.png" alt=""></p>
+<p><img src="http://img2.tan90.me/libso_debug_note_ad77b344794448f626f0a55c15c30572.png" alt=""></p>
 <p>成功得到flag：<code>6ae379eaf3ccada5</code></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>作为第一次安卓动态调试，很多地方还做的很生疏，但收获也是很多的。</p>
 

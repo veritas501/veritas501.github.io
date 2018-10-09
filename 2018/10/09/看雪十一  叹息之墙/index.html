@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="好久没写blog了，水一篇。。。">
+<meta name="keywords" content="CTF,RE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pediy CTF 2018 10.1  - 叹息之墙">
+<meta property="og:url" content="https://veritas501.github.io/2018/10/09/看雪十一  叹息之墙/index.html">
+<meta property="og:site_name" content="Veritas501&#39;s Blog">
+<meta property="og:description" content="好久没写blog了，水一篇。。。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-10-09T10:49:43.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="pediy CTF 2018 10.1  - 叹息之墙">
+<meta name="twitter:description" content="好久没写blog了，水一篇。。。">
+
+
+
+
+
+
+  <link rel="canonical" href="https://veritas501.github.io/2018/10/09/看雪十一  叹息之墙/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>pediy CTF 2018 10.1  - 叹息之墙 | Veritas501's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Veritas501's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-guestbook">
+    <a href="/Guestbook" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-pencil"></i> <br />Guestbook</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://veritas501.github.io/2018/10/09/看雪十一  叹息之墙/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Veritas501">
+      <meta itemprop="description" content="开始踏上Re&Pwn之路...">
+      <meta itemprop="image" content="/images/215.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Veritas501's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">pediy CTF 2018 10.1  - 叹息之墙
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-10-09 00:00:00 / Modified: 18:49:43" itemprop="dateCreated datePublished" datetime="2018-10-09T00:00:00+08:00">2018-10-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/09/看雪十一  叹息之墙/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">Comments: </span> <span class="post-comments-count valine-comment-count" data-xid="/2018/10/09/看雪十一  叹息之墙/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/10/09/看雪十一  叹息之墙/" class="leancloud_visitors" data-flag-title="pediy CTF 2018 10.1  - 叹息之墙">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views: </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>好久没写blog了，水一篇。。。</p>
+<a id="more"></a>
+<p>说一下前面的ollvm</p>
+<p>本来是想用deflat的脚本的。<br>但默认的貌似跑不了这个程序，稍微魔改了一下（只能跑这个程序）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> barf.barf <span class="keyword">import</span> BARF</span><br><span class="line"><span class="keyword">import</span> angr</span><br><span class="line"><span class="keyword">import</span> simuvex</span><br><span class="line"><span class="keyword">import</span> pyvex</span><br><span class="line"><span class="keyword">import</span> claripy</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_retn_predispatcher</span><span class="params">(cfg)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> main_dispatcher</span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> cfg.basic_blocks:</span><br><span class="line">        <span class="keyword">if</span> len(block.branches) == <span class="number">0</span> <span class="keyword">and</span> block.direct_branch == <span class="keyword">None</span>:</span><br><span class="line">            retn = block.start_address</span><br><span class="line">        <span class="keyword">elif</span> block.direct_branch == main_dispatcher:</span><br><span class="line">            pre_dispatcher = block.start_address</span><br><span class="line">    <span class="keyword">return</span> retn, pre_dispatcher</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_relevant_nop_blocks</span><span class="params">(cfg)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> pre_dispatcher, prologue, retn</span><br><span class="line">    relevant_blocks = []</span><br><span class="line">    nop_blocks = []</span><br><span class="line">    <span class="keyword">for</span> block <span class="keyword">in</span> cfg.basic_blocks:</span><br><span class="line">        <span class="keyword">if</span> block.direct_branch == pre_dispatcher <span class="keyword">and</span> len(block.instrs) != <span class="number">1</span>:</span><br><span class="line">            relevant_blocks.append(block.start_address)</span><br><span class="line">        <span class="keyword">elif</span> block.start_address != prologue <span class="keyword">and</span> block.start_address != retn:</span><br><span class="line">            nop_blocks.append(block)</span><br><span class="line">    <span class="keyword">return</span> relevant_blocks, nop_blocks</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">statement_inspect</span><span class="params">(state)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> modify_value</span><br><span class="line">    expressions = state.scratch.irsb.statements[state.inspect.statement].expressions</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        x = expressions.next()</span><br><span class="line">        <span class="keyword">if</span> isinstance(x, pyvex.expr.ITE):</span><br><span class="line">            state.scratch.temps[x.cond.tmp] = modify_value</span><br><span class="line">            state.inspect._breakpoints[<span class="string">'statement'</span>] = []</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">symbolic_execution</span><span class="params">(start_addr, hook_addr=None, modify=None, inspect=False)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> b, relevants, modify_value</span><br><span class="line">    <span class="keyword">if</span> hook_addr != <span class="keyword">None</span>:</span><br><span class="line">        b.hook(hook_addr, retn_procedure, length=<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">if</span> modify != <span class="keyword">None</span>:</span><br><span class="line">        modify_value = modify</span><br><span class="line">    state = b.factory.blank_state(addr=start_addr, remove_options=&#123;simuvex.o.LAZY_SOLVES&#125;)</span><br><span class="line">    <span class="keyword">if</span> inspect:</span><br><span class="line">        state.inspect.b(<span class="string">'statement'</span>, when=simuvex.BP_BEFORE, action=statement_inspect)</span><br><span class="line">    p = b.factory.path(state)</span><br><span class="line">    succ=p.step()</span><br><span class="line">    <span class="keyword">while</span> succ.successors[<span class="number">0</span>].addr <span class="keyword">not</span> <span class="keyword">in</span> relevants:</span><br><span class="line">        succ=succ.successors[<span class="number">0</span>].step()</span><br><span class="line">    <span class="keyword">return</span> succ.successors[<span class="number">0</span>].addr</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">retn_procedure</span><span class="params">(state)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> b</span><br><span class="line">    ip = state.se.eval(state.regs.ip)</span><br><span class="line">    b.unhook(ip)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fill_nop</span><span class="params">(data, start, end)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> opcode</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(start, end):</span><br><span class="line">        data[i] = opcode[<span class="string">'nop'</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fill_jmp_offset</span><span class="params">(data, start, offset)</span>:</span></span><br><span class="line">    jmp_offset = struct.pack(<span class="string">'&lt;i'</span>, offset)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>):</span><br><span class="line">        data[start + i] = jmp_offset[i]</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) != <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Usage: python deflat.py filename function_address(hex)'</span></span><br><span class="line">        exit(<span class="number">0</span>)</span><br><span class="line">    opcode = &#123;<span class="string">'a'</span>:<span class="string">'\x87'</span>, <span class="string">'ae'</span>: <span class="string">'\x83'</span>, <span class="string">'b'</span>:<span class="string">'\x82'</span>, <span class="string">'be'</span>:<span class="string">'\x86'</span>, <span class="string">'c'</span>:<span class="string">'\x82'</span>, <span class="string">'e'</span>:<span class="string">'\x84'</span>, <span class="string">'z'</span>:<span class="string">'\x84'</span>, <span class="string">'g'</span>:<span class="string">'\x8F'</span>, </span><br><span class="line">              <span class="string">'ge'</span>:<span class="string">'\x8D'</span>, <span class="string">'l'</span>:<span class="string">'\x8C'</span>, <span class="string">'le'</span>:<span class="string">'\x8E'</span>, <span class="string">'na'</span>:<span class="string">'\x86'</span>, <span class="string">'nae'</span>:<span class="string">'\x82'</span>, <span class="string">'nb'</span>:<span class="string">'\x83'</span>, <span class="string">'nbe'</span>:<span class="string">'\x87'</span>, <span class="string">'nc'</span>:<span class="string">'\x83'</span>,</span><br><span class="line">              <span class="string">'ne'</span>:<span class="string">'\x85'</span>, <span class="string">'ng'</span>:<span class="string">'\x8E'</span>, <span class="string">'nge'</span>:<span class="string">'\x8C'</span>, <span class="string">'nl'</span>:<span class="string">'\x8D'</span>, <span class="string">'nle'</span>:<span class="string">'\x8F'</span>, <span class="string">'no'</span>:<span class="string">'\x81'</span>, <span class="string">'np'</span>:<span class="string">'\x8B'</span>, <span class="string">'ns'</span>:<span class="string">'\x89'</span>,</span><br><span class="line">              <span class="string">'nz'</span>:<span class="string">'\x85'</span>, <span class="string">'o'</span>:<span class="string">'\x80'</span>, <span class="string">'p'</span>:<span class="string">'\x8A'</span>, <span class="string">'pe'</span>:<span class="string">'\x8A'</span>, <span class="string">'po'</span>:<span class="string">'\x8B'</span>, <span class="string">'s'</span>:<span class="string">'\x88'</span>, <span class="string">'nop'</span>:<span class="string">'\x90'</span>, <span class="string">'jmp'</span>:<span class="string">'\xE9'</span>, <span class="string">'j'</span>:<span class="string">'\x0F'</span>&#125;</span><br><span class="line">    filename = sys.argv[<span class="number">1</span>]</span><br><span class="line">    start = int(sys.argv[<span class="number">2</span>], <span class="number">16</span>)</span><br><span class="line">    barf = BARF(filename)</span><br><span class="line">    base_addr = barf.binary.entry_point &gt;&gt; <span class="number">12</span> &lt;&lt; <span class="number">12</span></span><br><span class="line">    base_addr = <span class="number">0x401000</span><span class="number">-0x400</span></span><br><span class="line">    b = angr.Project(filename, load_options=&#123;<span class="string">'auto_load_libs'</span>: <span class="keyword">False</span>&#125;)</span><br><span class="line">    <span class="comment"># b = angr.Project(filename, load_options=&#123;'auto_load_libs': False,'main_opts':&#123;'custom_base_addr': 0&#125;&#125;)</span></span><br><span class="line">    cfg = barf.recover_cfg(start=start)</span><br><span class="line">    blocks = cfg.basic_blocks</span><br><span class="line">    prologue = start</span><br><span class="line">    main_dispatcher = cfg.find_basic_block(prologue).direct_branch</span><br><span class="line">    retn, pre_dispatcher = get_retn_predispatcher(cfg)</span><br><span class="line">    relevant_blocks, nop_blocks = get_relevant_nop_blocks(cfg)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'*******************relevant blocks************************'</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'prologue:%#x'</span> % start</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'main_dispatcher:%#x'</span> % main_dispatcher</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'pre_dispatcher:%#x'</span> % pre_dispatcher</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'retn:%#x'</span> % retn</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'relevant_blocks:'</span>, [hex(addr) <span class="keyword">for</span> addr <span class="keyword">in</span> relevant_blocks]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'*******************symbolic execution*********************'</span></span><br><span class="line">    relevants = relevant_blocks</span><br><span class="line">    relevants.append(prologue)</span><br><span class="line">    relevants_without_retn = list(relevants)</span><br><span class="line">    relevants.append(retn)</span><br><span class="line">    flow = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> parent <span class="keyword">in</span> relevants:</span><br><span class="line">        flow[parent] = []</span><br><span class="line">    modify_value = <span class="keyword">None</span></span><br><span class="line">    patch_instrs = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> relevant <span class="keyword">in</span> relevants_without_retn:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'-------------------dse %#x---------------------'</span> % relevant</span><br><span class="line">        block = cfg.find_basic_block(relevant)</span><br><span class="line">        has_branches = <span class="keyword">False</span></span><br><span class="line">        hook_addr = <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">for</span> ins <span class="keyword">in</span> block.instrs:</span><br><span class="line">            <span class="keyword">if</span> ins.mnemonic.startswith(<span class="string">'cmov'</span>):</span><br><span class="line">                patch_instrs[relevant] = ins</span><br><span class="line">                has_branches = <span class="keyword">True</span></span><br><span class="line">            <span class="keyword">elif</span> ins.mnemonic.startswith(<span class="string">'call'</span>):</span><br><span class="line">                hook_addr = ins.address</span><br><span class="line">        <span class="keyword">if</span> has_branches:</span><br><span class="line">            flow[relevant].append(symbolic_execution(relevant, hook_addr, claripy.BVV(<span class="number">1</span>, <span class="number">1</span>), <span class="keyword">True</span>))</span><br><span class="line">            flow[relevant].append(symbolic_execution(relevant, hook_addr, claripy.BVV(<span class="number">0</span>, <span class="number">1</span>), <span class="keyword">True</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            flow[relevant].append(symbolic_execution(relevant, hook_addr))</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">print</span> <span class="string">'************************flow******************************'</span></span><br><span class="line">    <span class="keyword">for</span> (k, v) <span class="keyword">in</span> flow.items():</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'%#x:'</span> % k, [hex(child) <span class="keyword">for</span> child <span class="keyword">in</span> v]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'************************patch*****************************'</span></span><br><span class="line">    flow.pop(retn)</span><br><span class="line">    origin = open(filename, <span class="string">'rb'</span>)</span><br><span class="line">    origin_data = list(origin.read())</span><br><span class="line">    origin.close()</span><br><span class="line">    recovery = open(filename + <span class="string">'.recovered'</span>, <span class="string">'wb'</span>)</span><br><span class="line">    <span class="keyword">for</span> nop_block <span class="keyword">in</span> nop_blocks:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'=================================='</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'debug:'</span>,hex(nop_block.start_address)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'debug:'</span>,hex(base_addr)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'debug:'</span>,hex(nop_block.start_address - base_addr)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'debug:'</span>,hex(nop_block.end_address - base_addr + <span class="number">1</span>)</span><br><span class="line">        </span><br><span class="line">        fill_nop(origin_data, nop_block.start_address - base_addr, nop_block.end_address - base_addr + <span class="number">1</span>)    </span><br><span class="line">    <span class="keyword">for</span> (parent, childs) <span class="keyword">in</span> flow.items():</span><br><span class="line">        <span class="keyword">if</span> len(childs) == <span class="number">1</span>:</span><br><span class="line">            last_instr = cfg.find_basic_block(parent).instrs[<span class="number">-1</span>]</span><br><span class="line">            file_offset = last_instr.address - base_addr</span><br><span class="line">            origin_data[file_offset] = opcode[<span class="string">'jmp'</span>]</span><br><span class="line">            file_offset += <span class="number">1</span></span><br><span class="line">            fill_nop(origin_data, file_offset, file_offset + last_instr.size - <span class="number">1</span>)</span><br><span class="line">            fill_jmp_offset(origin_data, file_offset, childs[<span class="number">0</span>] - last_instr.address - <span class="number">5</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            instr = patch_instrs[parent]</span><br><span class="line">            file_offset = instr.address - base_addr</span><br><span class="line">            fill_nop(origin_data, file_offset, cfg.find_basic_block(parent).end_address - base_addr + <span class="number">1</span>)</span><br><span class="line">            origin_data[file_offset] = opcode[<span class="string">'j'</span>]</span><br><span class="line">            origin_data[file_offset + <span class="number">1</span>] = opcode[instr.mnemonic[<span class="number">4</span>:]]</span><br><span class="line">            fill_jmp_offset(origin_data, file_offset + <span class="number">2</span>, childs[<span class="number">0</span>] - instr.address - <span class="number">6</span>)</span><br><span class="line">            file_offset += <span class="number">6</span></span><br><span class="line">            origin_data[file_offset] = opcode[<span class="string">'jmp'</span>]</span><br><span class="line">            fill_jmp_offset(origin_data, file_offset + <span class="number">1</span>, childs[<span class="number">1</span>] - (instr.address + <span class="number">6</span>) - <span class="number">5</span>)</span><br><span class="line">    recovery.write(<span class="string">''</span>.join(origin_data))</span><br><span class="line">    recovery.close()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Successful! The recovered file: %s'</span> % (filename + <span class="string">'.recovered'</span>)</span><br></pre></td></tr></table></figure>
+<p>我先尝试对一个小函数去平坦化，但是发现花还是没去掉，看起来还是特别的丑。。。<br>而且最大的那个函数貌似去平坦化也有问题，总是报奇怪的错。。。那就不去了。。</p>
+<p>首先通过ida的框图功能，看出了一个函数的功能分别为printf,scanf,sscanf和sprintf，当然还有库函数strlen和strcmp能直接看到。</p>
+<p>通过上面的脚本，虽然我们得不到解密的程序，但他在打log的时候能把所有程序主体块的地址打印出来。如下图中的<code>relevant_blocks</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">^[[C^[[C*******************relevant blocks************************</span><br><span class="line">prologue:0x409ff0</span><br><span class="line">main_dispatcher:0x40a09b</span><br><span class="line">pre_dispatcher:0x45c132</span><br><span class="line">retn:0x45104d</span><br><span class="line">relevant_blocks: [&apos;0x40bdc1&apos;, &apos;0x40bff3&apos;, &apos;0x40d599&apos;, &apos;0x40d5a8&apos;, &apos;0x40d7f5&apos;, &apos;0x40e544&apos;, &apos;0x40e565&apos;, &apos;0x40e95f&apos;, &apos;0x40edf7&apos;, &apos;0x40ee18&apos;, &apos;0x40fd16&apos;, &apos;0x410e18&apos;, &apos;0x411101&apos;, &apos;0x411dec&apos;, &apos;0x411dfb&apos;, &apos;0x412080&apos;, &apos;0x413095&apos;, &apos;0x4130a4&apos;, &apos;0x4130c5&apos;, &apos;0x41311f&apos;, &apos;0x413140&apos;, &apos;0x413161&apos;, &apos;0x413182&apos;, &apos;0x4131a3&apos;, &apos;0x413630&apos;, &apos;0x4144f3&apos;, &apos;0x414502&apos;, &apos;0x414523&apos;, &apos;0x414544&apos;, &apos;0x414565&apos;, &apos;0x41555b&apos;, &apos;0x416a65&apos;, &apos;0x416a74&apos;, &apos;0x4178c6&apos;, &apos;0x417b6a&apos;, &apos;0x417cf9&apos;, &apos;0x418c1d&apos;, &apos;0x418c2c&apos;, &apos;0x418c3b&apos;, &apos;0x418c4a&apos;, &apos;0x419d61&apos;, &apos;0x41ae49&apos;, &apos;0x41bf3a&apos;, &apos;0x41ce9e&apos;, &apos;0x41cead&apos;, &apos;0x41d22c&apos;, &apos;0x41d3d5&apos;, &apos;0x41d3e4&apos;, &apos;0x41d405&apos;, &apos;0x41d426&apos;, &apos;0x41d447&apos;, &apos;0x41d990&apos;, &apos;0x41ea18&apos;, &apos;0x41ea27&apos;, &apos;0x41eacd&apos;, &apos;0x41eadc&apos;, &apos;0x41fc47&apos;, &apos;0x420939&apos;, &apos;0x420948&apos;, &apos;0x420c35&apos;, &apos;0x420ec1&apos;, &apos;0x420ed0&apos;, &apos;0x4212e4&apos;, &apos;0x4220df&apos;, &apos;0x4220ee&apos;, &apos;0x42210f&apos;, &apos;0x422130&apos;, &apos;0x422151&apos;, &apos;0x422607&apos;, &apos;0x422b48&apos;, &apos;0x422dc4&apos;, &apos;0x4232f7&apos;, &apos;0x423306&apos;, &apos;0x4233a5&apos;, &apos;0x4233b4&apos;, &apos;0x42413f&apos;, &apos;0x4245e5&apos;, &apos;0x4245f4&apos;, &apos;0x42575b&apos;, &apos;0x426464&apos;, &apos;0x426473&apos;, &apos;0x426482&apos;, &apos;0x426491&apos;, &apos;0x4264a0&apos;, &apos;0x4268ca&apos;, &apos;0x427acc&apos;, &apos;0x427adb&apos;, &apos;0x427ef0&apos;, &apos;0x42835d&apos;, &apos;0x428385&apos;, &apos;0x429469&apos;, &apos;0x42a3ba&apos;, &apos;0x42b00d&apos;, &apos;0x42b2a6&apos;, &apos;0x42c57d&apos;, &apos;0x42dd57&apos;, &apos;0x42dd74&apos;, &apos;0x42dd93&apos;, &apos;0x42e1d3&apos;, &apos;0x42e5c6&apos;, &apos;0x42e5d5&apos;, &apos;0x42e5fb&apos;, &apos;0x42e9ca&apos;, &apos;0x42f12c&apos;, &apos;0x42f13b&apos;, &apos;0x430530&apos;, &apos;0x4311b6&apos;, &apos;0x431e7a&apos;, &apos;0x43225b&apos;, &apos;0x43226a&apos;, &apos;0x43262c&apos;, &apos;0x432a70&apos;, &apos;0x432f28&apos;, &apos;0x433db0&apos;, &apos;0x434e40&apos;, &apos;0x435cce&apos;, &apos;0x435cef&apos;, &apos;0x43712f&apos;, &apos;0x437da3&apos;, &apos;0x437db2&apos;, &apos;0x437ddb&apos;, &apos;0x438067&apos;, &apos;0x438314&apos;, &apos;0x438335&apos;, &apos;0x43922e&apos;, &apos;0x43a9c5&apos;, &apos;0x43a9d4&apos;, &apos;0x43a9ef&apos;, &apos;0x43ac0d&apos;, &apos;0x43afae&apos;, &apos;0x43b19d&apos;, &apos;0x43b329&apos;, &apos;0x43cc3f&apos;, &apos;0x43dd68&apos;, &apos;0x43ee27&apos;, &apos;0x43f06c&apos;, &apos;0x43f08d&apos;, &apos;0x440277&apos;, &apos;0x4405d3&apos;, &apos;0x4405f4&apos;, &apos;0x441371&apos;, &apos;0x4418a1&apos;, &apos;0x442a87&apos;, &apos;0x443c31&apos;, &apos;0x444c61&apos;, &apos;0x4457e7&apos;, &apos;0x446acd&apos;, &apos;0x447812&apos;, &apos;0x447821&apos;, &apos;0x4479a9&apos;, &apos;0x447eb9&apos;, &apos;0x448373&apos;, &apos;0x44877c&apos;, &apos;0x448926&apos;, &apos;0x448c7e&apos;, &apos;0x448c8d&apos;, &apos;0x448d09&apos;, &apos;0x448f60&apos;, &apos;0x44a144&apos;, &apos;0x44a153&apos;, &apos;0x44b0e1&apos;, &apos;0x44c174&apos;, &apos;0x44c195&apos;, &apos;0x44c1d5&apos;, &apos;0x44c285&apos;, &apos;0x44d170&apos;, &apos;0x44e753&apos;, &apos;0x44e774&apos;, &apos;0x44ec31&apos;, &apos;0x44f12e&apos;, &apos;0x44f13d&apos;, &apos;0x44f166&apos;, &apos;0x44f516&apos;, &apos;0x44f78f&apos;, &apos;0x44fb98&apos;, &apos;0x44ffa3&apos;, &apos;0x4502bf&apos;, &apos;0x450812&apos;, &apos;0x450cf7&apos;, &apos;0x451055&apos;, &apos;0x4513a6&apos;, &apos;0x452a8d&apos;, &apos;0x452a9c&apos;, &apos;0x452aab&apos;, &apos;0x453a75&apos;, &apos;0x453d05&apos;, &apos;0x453d14&apos;, &apos;0x453d23&apos;, &apos;0x453f5a&apos;, &apos;0x454dfb&apos;, &apos;0x454e0a&apos;, &apos;0x455252&apos;, &apos;0x45552e&apos;, &apos;0x45553d&apos;, &apos;0x45554c&apos;, &apos;0x455567&apos;, &apos;0x4559b7&apos;, &apos;0x455e21&apos;, &apos;0x455e30&apos;, &apos;0x456cee&apos;, &apos;0x45710e&apos;, &apos;0x45711d&apos;, &apos;0x457414&apos;, &apos;0x4577bd&apos;, &apos;0x4577cc&apos;, &apos;0x4588ba&apos;, &apos;0x458cf6&apos;, &apos;0x458d05&apos;, &apos;0x458d14&apos;, &apos;0x459c97&apos;, &apos;0x45a2ae&apos;, &apos;0x45a2bd&apos;, &apos;0x45a2e4&apos;, &apos;0x45a30d&apos;, &apos;0x45a31c&apos;, &apos;0x45a4c4&apos;, &apos;0x45b4cc&apos;, &apos;0x45b4db&apos;, &apos;0x45b4ea&apos;, &apos;0x45b4f9&apos;, &apos;0x45b65b&apos;, &apos;0x45b66a&apos;, &apos;0x45b679&apos;, &apos;0x45b694&apos;, &apos;0x45b6a3&apos;, &apos;0x45b6b2&apos;, &apos;0x45b6c1&apos;, &apos;0x45b6dc&apos;, &apos;0x45b6eb&apos;, &apos;0x45b6fa&apos;, &apos;0x45b715&apos;, &apos;0x45b724&apos;, &apos;0x45b733&apos;, &apos;0x45b742&apos;, &apos;0x45b751&apos;, &apos;0x45b76c&apos;, &apos;0x45b77b&apos;, &apos;0x45b8d5&apos;, &apos;0x45b96e&apos;, &apos;0x45babc&apos;, &apos;0x45bacb&apos;, &apos;0x45baf4&apos;, &apos;0x45bb03&apos;, &apos;0x45bb1e&apos;, &apos;0x45bb2d&apos;, &apos;0x45bb3c&apos;, &apos;0x45bb62&apos;, &apos;0x45bb71&apos;, &apos;0x45bb80&apos;, &apos;0x45bb8f&apos;, &apos;0x45bbbd&apos;, &apos;0x45bbd5&apos;, &apos;0x45bbfb&apos;, &apos;0x45bc0a&apos;, &apos;0x45bc19&apos;, &apos;0x45bc28&apos;, &apos;0x45bcff&apos;, &apos;0x45bdbc&apos;, &apos;0x45bdcb&apos;, &apos;0x45bdda&apos;, &apos;0x45bf11&apos;, &apos;0x45bfba&apos;, &apos;0x45c0d3&apos;, &apos;0x45c0e2&apos;, &apos;0x45c0fa&apos;]</span><br><span class="line">*******************symbolic execution*********************</span><br></pre></td></tr></table></figure>
+<p>因此我们通过对所有主体块下断，通过od脚本或者x64dbg的脚本自动trace调用的顺序。</p>
+<p>od script：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br></pre></td><td class="code"><pre><span class="line">bp 40bdc1</span><br><span class="line">bp 40bff3</span><br><span class="line">bp 40d599</span><br><span class="line">bp 40d5a8</span><br><span class="line">bp 40d7f5</span><br><span class="line">bp 40e544</span><br><span class="line">bp 40e565</span><br><span class="line">bp 40e95f</span><br><span class="line">bp 40edf7</span><br><span class="line">bp 40ee18</span><br><span class="line">bp 40fd16</span><br><span class="line">bp 410e18</span><br><span class="line">bp 411101</span><br><span class="line">bp 411dec</span><br><span class="line">bp 411dfb</span><br><span class="line">bp 412080</span><br><span class="line">bp 413095</span><br><span class="line">bp 4130a4</span><br><span class="line">bp 4130c5</span><br><span class="line">bp 41311f</span><br><span class="line">bp 413140</span><br><span class="line">bp 413161</span><br><span class="line">bp 413182</span><br><span class="line">bp 4131a3</span><br><span class="line">bp 413630</span><br><span class="line">bp 4144f3</span><br><span class="line">bp 414502</span><br><span class="line">bp 414523</span><br><span class="line">bp 414544</span><br><span class="line">bp 414565</span><br><span class="line">bp 41555b</span><br><span class="line">bp 416a65</span><br><span class="line">bp 416a74</span><br><span class="line">bp 4178c6</span><br><span class="line">bp 417b6a</span><br><span class="line">bp 417cf9</span><br><span class="line">bp 418c1d</span><br><span class="line">bp 418c2c</span><br><span class="line">bp 418c3b</span><br><span class="line">bp 418c4a</span><br><span class="line">bp 419d61</span><br><span class="line">bp 41ae49</span><br><span class="line">bp 41bf3a</span><br><span class="line">bp 41ce9e</span><br><span class="line">bp 41cead</span><br><span class="line">bp 41d22c</span><br><span class="line">bp 41d3d5</span><br><span class="line">bp 41d3e4</span><br><span class="line">bp 41d405</span><br><span class="line">bp 41d426</span><br><span class="line">bp 41d447</span><br><span class="line">bp 41d990</span><br><span class="line">bp 41ea18</span><br><span class="line">bp 41ea27</span><br><span class="line">bp 41eacd</span><br><span class="line">bp 41eadc</span><br><span class="line">bp 41fc47</span><br><span class="line">bp 420939</span><br><span class="line">bp 420948</span><br><span class="line">bp 420c35</span><br><span class="line">bp 420ec1</span><br><span class="line">bp 420ed0</span><br><span class="line">bp 4212e4</span><br><span class="line">bp 4220df</span><br><span class="line">bp 4220ee</span><br><span class="line">bp 42210f</span><br><span class="line">bp 422130</span><br><span class="line">bp 422151</span><br><span class="line">bp 422607</span><br><span class="line">bp 422b48</span><br><span class="line">bp 422dc4</span><br><span class="line">bp 4232f7</span><br><span class="line">bp 423306</span><br><span class="line">bp 4233a5</span><br><span class="line">bp 4233b4</span><br><span class="line">bp 42413f</span><br><span class="line">bp 4245e5</span><br><span class="line">bp 4245f4</span><br><span class="line">bp 42575b</span><br><span class="line">bp 426464</span><br><span class="line">bp 426473</span><br><span class="line">bp 426482</span><br><span class="line">bp 426491</span><br><span class="line">bp 4264a0</span><br><span class="line">bp 4268ca</span><br><span class="line">bp 427acc</span><br><span class="line">bp 427adb</span><br><span class="line">bp 427ef0</span><br><span class="line">bp 42835d</span><br><span class="line">bp 428385</span><br><span class="line">bp 429469</span><br><span class="line">bp 42a3ba</span><br><span class="line">bp 42b00d</span><br><span class="line">bp 42b2a6</span><br><span class="line">bp 42c57d</span><br><span class="line">bp 42dd57</span><br><span class="line">bp 42dd74</span><br><span class="line">bp 42dd93</span><br><span class="line">bp 42e1d3</span><br><span class="line">bp 42e5c6</span><br><span class="line">bp 42e5d5</span><br><span class="line">bp 42e5fb</span><br><span class="line">bp 42e9ca</span><br><span class="line">bp 42f12c</span><br><span class="line">bp 42f13b</span><br><span class="line">bp 430530</span><br><span class="line">bp 4311b6</span><br><span class="line">bp 431e7a</span><br><span class="line">bp 43225b</span><br><span class="line">bp 43226a</span><br><span class="line">bp 43262c</span><br><span class="line">bp 432a70</span><br><span class="line">bp 432f28</span><br><span class="line">bp 433db0</span><br><span class="line">bp 434e40</span><br><span class="line">bp 435cce</span><br><span class="line">bp 435cef</span><br><span class="line">bp 43712f</span><br><span class="line">bp 437da3</span><br><span class="line">bp 437db2</span><br><span class="line">bp 437ddb</span><br><span class="line">bp 438067</span><br><span class="line">bp 438314</span><br><span class="line">bp 438335</span><br><span class="line">bp 43922e</span><br><span class="line">bp 43a9c5</span><br><span class="line">bp 43a9d4</span><br><span class="line">bp 43a9ef</span><br><span class="line">bp 43ac0d</span><br><span class="line">bp 43afae</span><br><span class="line">bp 43b19d</span><br><span class="line">bp 43b329</span><br><span class="line">bp 43cc3f</span><br><span class="line">bp 43dd68</span><br><span class="line">bp 43ee27</span><br><span class="line">bp 43f06c</span><br><span class="line">bp 43f08d</span><br><span class="line">bp 440277</span><br><span class="line">bp 4405d3</span><br><span class="line">bp 4405f4</span><br><span class="line">bp 441371</span><br><span class="line">bp 4418a1</span><br><span class="line">bp 442a87</span><br><span class="line">bp 443c31</span><br><span class="line">bp 444c61</span><br><span class="line">bp 4457e7</span><br><span class="line">bp 446acd</span><br><span class="line">bp 447812</span><br><span class="line">bp 447821</span><br><span class="line">bp 4479a9</span><br><span class="line">bp 447eb9</span><br><span class="line">bp 448373</span><br><span class="line">bp 44877c</span><br><span class="line">bp 448926</span><br><span class="line">bp 448c7e</span><br><span class="line">bp 448c8d</span><br><span class="line">bp 448d09</span><br><span class="line">bp 448f60</span><br><span class="line">bp 44a144</span><br><span class="line">bp 44a153</span><br><span class="line">bp 44b0e1</span><br><span class="line">bp 44c174</span><br><span class="line">bp 44c195</span><br><span class="line">bp 44c1d5</span><br><span class="line">bp 44c285</span><br><span class="line">bp 44d170</span><br><span class="line">bp 44e753</span><br><span class="line">bp 44e774</span><br><span class="line">bp 44ec31</span><br><span class="line">bp 44f12e</span><br><span class="line">bp 44f13d</span><br><span class="line">bp 44f166</span><br><span class="line">bp 44f516</span><br><span class="line">bp 44f78f</span><br><span class="line">bp 44fb98</span><br><span class="line">bp 44ffa3</span><br><span class="line">bp 4502bf</span><br><span class="line">bp 450812</span><br><span class="line">bp 450cf7</span><br><span class="line">bp 451055</span><br><span class="line">bp 4513a6</span><br><span class="line">bp 452a8d</span><br><span class="line">bp 452a9c</span><br><span class="line">bp 452aab</span><br><span class="line">bp 453a75</span><br><span class="line">bp 453d05</span><br><span class="line">bp 453d14</span><br><span class="line">bp 453d23</span><br><span class="line">bp 453f5a</span><br><span class="line">bp 454dfb</span><br><span class="line">bp 454e0a</span><br><span class="line">bp 455252</span><br><span class="line">bp 45552e</span><br><span class="line">bp 45553d</span><br><span class="line">bp 45554c</span><br><span class="line">bp 455567</span><br><span class="line">bp 4559b7</span><br><span class="line">bp 455e21</span><br><span class="line">bp 455e30</span><br><span class="line">bp 456cee</span><br><span class="line">bp 45710e</span><br><span class="line">bp 45711d</span><br><span class="line">bp 457414</span><br><span class="line">bp 4577bd</span><br><span class="line">bp 4577cc</span><br><span class="line">bp 4588ba</span><br><span class="line">bp 458cf6</span><br><span class="line">bp 458d05</span><br><span class="line">bp 458d14</span><br><span class="line">bp 459c97</span><br><span class="line">bp 45a2ae</span><br><span class="line">bp 45a2bd</span><br><span class="line">bp 45a2e4</span><br><span class="line">bp 45a30d</span><br><span class="line">bp 45a31c</span><br><span class="line">bp 45a4c4</span><br><span class="line">bp 45b4cc</span><br><span class="line">bp 45b4db</span><br><span class="line">bp 45b4ea</span><br><span class="line">bp 45b4f9</span><br><span class="line">bp 45b65b</span><br><span class="line">bp 45b66a</span><br><span class="line">bp 45b679</span><br><span class="line">bp 45b694</span><br><span class="line">bp 45b6a3</span><br><span class="line">bp 45b6b2</span><br><span class="line">bp 45b6c1</span><br><span class="line">bp 45b6dc</span><br><span class="line">bp 45b6eb</span><br><span class="line">bp 45b6fa</span><br><span class="line">bp 45b715</span><br><span class="line">bp 45b724</span><br><span class="line">bp 45b733</span><br><span class="line">bp 45b742</span><br><span class="line">bp 45b751</span><br><span class="line">bp 45b76c</span><br><span class="line">bp 45b77b</span><br><span class="line">bp 45b8d5</span><br><span class="line">bp 45b96e</span><br><span class="line">bp 45babc</span><br><span class="line">bp 45bacb</span><br><span class="line">bp 45baf4</span><br><span class="line">bp 45bb03</span><br><span class="line">bp 45bb1e</span><br><span class="line">bp 45bb2d</span><br><span class="line">bp 45bb3c</span><br><span class="line">bp 45bb62</span><br><span class="line">bp 45bb71</span><br><span class="line">bp 45bb80</span><br><span class="line">bp 45bb8f</span><br><span class="line">bp 45bbbd</span><br><span class="line">bp 45bbd5</span><br><span class="line">bp 45bbfb</span><br><span class="line">bp 45bc0a</span><br><span class="line">bp 45bc19</span><br><span class="line">bp 45bc28</span><br><span class="line">bp 45bcff</span><br><span class="line">bp 45bdbc</span><br><span class="line">bp 45bdcb</span><br><span class="line">bp 45bdda</span><br><span class="line">bp 45bf11</span><br><span class="line">bp 45bfba</span><br><span class="line">bp 45c0d3</span><br><span class="line">bp 45c0e2</span><br><span class="line">bp 45c0fa</span><br><span class="line">wrt &quot;out_func0.txt&quot;, &quot;======analysis1 log======&quot;</span><br><span class="line">myloop:</span><br><span class="line">	wrta &quot;out_func0.txt&quot;,eip</span><br><span class="line">	run</span><br><span class="line">	jmp myloop</span><br></pre></td></tr></table></figure></p>
+<p>对主函数分析如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line">log 11x22x33x44x55x66x77X </span><br><span class="line">48141A </span><br><span class="line"> </span><br><span class="line">40BDC1 - init </span><br><span class="line">40BFF3 - print_banner&amp;get_input </span><br><span class="line">40D599 - direct_nop </span><br><span class="line"> </span><br><span class="line">for i in range(7): </span><br><span class="line"># loop_main_log </span><br><span class="line">	40D5A8 nop </span><br><span class="line">	40D7F5 cmp flag1 == zero </span><br><span class="line">	40E544 nop </span><br><span class="line">	40E565 nop </span><br><span class="line">	40E95F %d%n  sscanf </span><br><span class="line">	40EDF7 test [303Bh],1 </span><br><span class="line">	411DFB nop </span><br><span class="line">	412080 nop </span><br><span class="line">	413095 direct_nop </span><br><span class="line">	4130A4 cmp flag1 == zero </span><br><span class="line">	4130C5 %c sscanf ,inc flag1 </span><br><span class="line">	41311F cmp [303Ch],1 </span><br><span class="line">	413182 cmp [303Ch],0 </span><br><span class="line">	4131A3 nop </span><br><span class="line">	413630 nop </span><br><span class="line">	4144F3 direct_nop </span><br><span class="line">	414502 cmp [3040h],&apos;x&apos; </span><br><span class="line"> </span><br><span class="line"># loop_continue </span><br><span class="line">	414523 cmp [3040h],&apos;x&apos; </span><br><span class="line">	414565 nop </span><br><span class="line">	41555B nop </span><br><span class="line">	416A65 direct_nop </span><br><span class="line">	418C4A nop</span><br><span class="line">	419D61 nop</span><br><span class="line">	41AE49 nop</span><br><span class="line">	41BF3A nop</span><br><span class="line">	41CE9E direct_nop</span><br><span class="line">	426491 direct_nop</span><br><span class="line">	4264A0 nop</span><br><span class="line">	4268CA nop</span><br><span class="line">	427ACC direct_nop</span><br><span class="line">	427ADB nop </span><br><span class="line">	427EF0 nop</span><br><span class="line">	42835D test [304Ch],1</span><br><span class="line"></span><br><span class="line">	428385 nop</span><br><span class="line">	429469 nop</span><br><span class="line">	42A3BA nop</span><br><span class="line">	42B00D nop</span><br><span class="line">	42B2A6 nop</span><br><span class="line">	42C57D nop</span><br><span class="line">	42DD57 mov [301Bh], [301Ch]&amp;1</span><br><span class="line">	42DD74 test [301Bh],1</span><br><span class="line"> </span><br><span class="line">#loop_end </span><br><span class="line">414544 cmp [3040h],&apos;X&apos;</span><br><span class="line">416A74 nop</span><br><span class="line">4178C6 nop</span><br><span class="line">417B6A nop</span><br><span class="line">417CF9 nop</span><br><span class="line">418C1D direct_nop</span><br><span class="line"> </span><br><span class="line">418C4A nop</span><br><span class="line">419D61 nop</span><br><span class="line">41AE49 nop</span><br><span class="line">41BF3A nop</span><br><span class="line">41CE9E direct_nop</span><br><span class="line">426491 direct_nop</span><br><span class="line">4264A0 nop</span><br><span class="line">4268CA nop</span><br><span class="line">427ACC direct_nop</span><br><span class="line">427ADB nop </span><br><span class="line">427EF0 nop</span><br><span class="line">42835D test [304Ch],1</span><br><span class="line">42DD74 test [301Bh],1</span><br><span class="line"> </span><br><span class="line">42DD93 nop</span><br><span class="line">42E1D3 %d strlen input_tbl ,sprintf </span><br><span class="line">42E5C6 direct_nop</span><br><span class="line"> </span><br><span class="line">for i in range(7): </span><br><span class="line">#main log </span><br><span class="line">	42E5D5 cmp [[esi+302Ch]], idx_tbl</span><br><span class="line">#continue </span><br><span class="line">	42E5FB nop</span><br><span class="line">	42E9CA &apos;x%d&apos;, strlen input_tbl ,sprintf</span><br><span class="line">	42F12C direct_nop</span><br><span class="line">	42F13B nop</span><br><span class="line">	430530 nop</span><br><span class="line">	4311B6 nop</span><br><span class="line">	431E7A nop</span><br><span class="line">	43225B direct_nop</span><br><span class="line"> </span><br><span class="line">#loop_end </span><br><span class="line">43226A nop</span><br><span class="line">43262C nop</span><br><span class="line">432A70 &apos;X&apos;, strlen ,sprintf</span><br><span class="line">432F28 nop</span><br><span class="line">433DB0 nop</span><br><span class="line">434E40 nop</span><br><span class="line">435CCE test [esi+304Eh],1</span><br><span class="line">437DDB nop</span><br><span class="line">438067 nop</span><br><span class="line">438314 test [esi+304Fh],1</span><br><span class="line">43A9D4 mov [[esi+302Ch]], 0</span><br><span class="line"> </span><br><span class="line">for i in range(7) </span><br><span class="line">#main log </span><br><span class="line">	43A9EF nop</span><br><span class="line">	43AC0D nop</span><br><span class="line">	43AFAE nop</span><br><span class="line">	43B19D nop</span><br><span class="line">	43B329 idx_tbl	</span><br><span class="line">	43CC3F nop</span><br><span class="line">	43DD68 nop</span><br><span class="line">	43EE27 nop</span><br><span class="line">	43F06C test [esi+3050h],1</span><br><span class="line">#continue </span><br><span class="line">	43F08D nop</span><br><span class="line">	440277 input_tbl (0x0049FE40)</span><br><span class="line">	4405D3 </span><br><span class="line">	447821 </span><br><span class="line">	4479A9 </span><br><span class="line">	447EB9 </span><br><span class="line">	448373 </span><br><span class="line">	44877C </span><br><span class="line">	448926 </span><br><span class="line">	448C7E </span><br><span class="line">	448C8D </span><br><span class="line"> </span><br><span class="line">#loop end </span><br><span class="line">448D09 </span><br><span class="line">448F60 </span><br><span class="line">44A144 </span><br><span class="line"> </span><br><span class="line">for i in range(8): </span><br><span class="line">#main log </span><br><span class="line">	44A153 nop</span><br><span class="line">	44B0E1 cmp [[esi+302Ch]],idx_tbl</span><br><span class="line">	44C174 test [esi+3052h],1</span><br><span class="line"> </span><br><span class="line">#continue </span><br><span class="line">	44C195 [esi+302Ch]-&gt;idx, some_tbl[input_tbl[idx]] (351), adc [esi+3024h] , 64位累加</span><br><span class="line">	44C1D5 nop</span><br><span class="line"> </span><br><span class="line">#loop end </span><br><span class="line">44C285 nop</span><br><span class="line">44D170 val1,func2333,val2</span><br><span class="line">44E753 test [esi+3053h],1</span><br><span class="line">44E774 nop</span><br><span class="line">44EC31 输入错误</span><br><span class="line">44F12E </span><br><span class="line">44F166 </span><br><span class="line">44F516 </span><br><span class="line">44F78F </span><br><span class="line">44FB98 </span><br><span class="line">44FFA3 </span><br><span class="line">4502BF </span><br><span class="line">450812 </span><br><span class="line">450CF7</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">=============</span><br><span class="line"></span><br><span class="line">input &quot;11x22x33x44X&quot;</span><br><span class="line">idx = [11,22,33,44]</span><br><span class="line">int64 sum = 0</span><br><span class="line">for iidx in idx:</span><br><span class="line">	sum += tbl[idx]</span><br><span class="line"></span><br><span class="line">int64 val1 = 0x65757832</span><br><span class="line">int ret_val = func2333(val1,sum)</span><br><span class="line"></span><br><span class="line">cmp ret_val, 0x6E616B34??</span><br></pre></td></tr></table></figure></p>
+<p>然后我又对func233（最前面的一个function）分析了一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">======analysis2 log======</span><br><span class="line">48141A start</span><br><span class="line"></span><br><span class="line">401410 nop</span><br><span class="line">401761 nop</span><br><span class="line">4019CE nop</span><br><span class="line">401BF3 push what?</span><br><span class="line">4020FB direct_nop</span><br><span class="line"></span><br><span class="line">40210A mov eax, [esi+5B0h],mov ecx, [eax],mov eax, [eax+4],or ecx, eax</span><br><span class="line">402135 nop</span><br><span class="line">402DF2</span><br><span class="line">403FD1</span><br><span class="line">404499</span><br><span class="line">4055FB</span><br><span class="line">405685 x32次（bit） </span><br><span class="line"></span><br><span class="line">40210A</span><br><span class="line">402135</span><br><span class="line">402DF2</span><br><span class="line">403FD1</span><br><span class="line">404499</span><br><span class="line">4055FB</span><br><span class="line">	40561C imul allrem(取余) 0FFA1CF8Fh</span><br><span class="line">405685</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">40210A</span><br><span class="line">402135</span><br><span class="line">402DF2</span><br><span class="line">403FD1</span><br><span class="line">404499</span><br><span class="line">4055FB</span><br><span class="line">	40561C</span><br><span class="line">405685</span><br><span class="line"></span><br><span class="line">40210A</span><br><span class="line">40570C</span><br><span class="line">406548</span><br><span class="line">407759</span><br><span class="line">408B62</span><br><span class="line">408FC7</span><br><span class="line">409BC5</span><br></pre></td></tr></table></figure></p>
+<p>然后再通过半黑盒测试，我们得到其算法如下：</p>
+<p><code>pow(1702197298,x,4288794511)=1851878196</code></p>
+<p>其中x是一个总和，来自一张有351个元素的表，我们输入的每一个数都是这张表的元素下标。</p>
+<p>可以发现，4288794511是一个质数，所以我们可以考虑大小步算法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bsgs</span><span class="params">(g, h, p)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Baby-Step-Giant-Step</span></span><br><span class="line"><span class="string">    h = g^x mod p</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> gmpy2.is_prime(p):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"p is not prime, you shouldn't use BSGS anyway."</span></span><br><span class="line">    N = int(gmpy2.ceil(gmpy2.sqrt(p - <span class="number">1</span>)))</span><br><span class="line">    tbl = &#123;pow(g, i, p): i <span class="keyword">for</span> i <span class="keyword">in</span> range(N)&#125;</span><br><span class="line">    c = pow(g, N * (p - <span class="number">2</span>), p)</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(N):</span><br><span class="line">        y = (h * pow(c, j, p)) % p</span><br><span class="line">        <span class="keyword">if</span> y <span class="keyword">in</span> tbl: <span class="keyword">return</span> j * N + tbl[y]</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<p>这样我们就能得到解1427250197。</p>
+<p>但实际上，x肯定是会大于1427250197的，且运算的时候x是一个64位的数。而这个1427250197肯定不是唯一解。</p>
+<p>因为4288794511是质数，$phi(p)=p-1$,</p>
+<p>也就是说pow(1702197298,(p-1)*k+1427250197,p)=1851878196</p>
+<p>所以得到x的通解(p-1)*k+1427250197 = 4288794510k+1427250197</p>
+<p>现在来看这张表<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tbl=[<span class="number">0xB42B31EE</span>, <span class="number">0x8B9B7068</span>, <span class="number">0x5F45C09A</span>, <span class="number">0xD077AD0A</span>, <span class="number">0xB0F9DE76</span>, <span class="number">0x77CC4D6E</span>, <span class="number">0xD2854184</span>, <span class="number">0xE80CBE4C</span>, <span class="number">0xDCBAF374</span>, <span class="number">0xEDB5A3B8</span>, <span class="number">0x301B9E16</span>, <span class="number">0x1D3DF6AE</span>, <span class="number">0xC37BBCD6</span>, <span class="number">0x0C43466A</span>, <span class="number">0x0B51CAD8</span>, <span class="number">0x6128B7BE</span>, <span class="number">0xC6175DC4</span>, <span class="number">0xAA6BDFB4</span>, <span class="number">0x44DC3CA2</span>, <span class="number">0xB9EA0B50</span>, <span class="number">0xA14D8A86</span>, <span class="number">0x47B0AF58</span>, <span class="number">0x83F06B20</span>, <span class="number">0xBE8B8134</span>, <span class="number">0xF45004B6</span>, <span class="number">0x840F93D8</span>, <span class="number">0x29813D18</span>, <span class="number">0x45CDB834</span>, <span class="number">0x4A373C42</span>, <span class="number">0x7C83B748</span>, <span class="number">0x6D8E7D86</span>, <span class="number">0xAF73C814</span>, <span class="number">0x48A22AEA</span>, <span class="number">0x083F06B2</span>, <span class="number">0x078BDC90</span>, <span class="number">0xB7F12036</span>, <span class="number">0xE6E4BB78</span>, <span class="number">0xBD9A05A2</span>, <span class="number">0x0A604F46</span>, <span class="number">0x99C1ADF6</span>, <span class="number">0x6B33570A</span>, <span class="number">0x55D6ECE6</span>, <span class="number">0x6C7A8296</span>, <span class="number">0x5C714DE4</span>, <span class="number">0xDDAC6F06</span>, <span class="number">0x527642F4</span>, <span class="number">0xA604F460</span>, <span class="number">0xDAD7FC50</span>, <span class="number">0x78BDC900</span>, <span class="number">0xDEA5B4C6</span>, <span class="number">0xCCB1BEC2</span>, <span class="number">0x46BF33C6</span>, <span class="number">0x93274CF8</span>, <span class="number">0xDF8F662A</span>, <span class="number">0xCE94B5E6</span>, <span class="number">0xEF23C22A</span>, <span class="number">0x100934B2</span>, <span class="number">0x9418C88A</span>, <span class="number">0xC8EBD07A</span>, <span class="number">0xDB1CFB0C</span>, <span class="number">0x33205CB6</span>, <span class="number">0x1A6983F8</span>, <span class="number">0xBCA88A10</span>, <span class="number">0x599CDB2E</span>, <span class="number">0x74F7DAB8</span>, <span class="number">0xD8F5052C</span>, <span class="number">0xE080E1BC</span>, <span class="number">0x58AB5F9C</span>, <span class="number">0x9D4FE230</span>, <span class="number">0x6942A0C2</span>, <span class="number">0x2C55AFCE</span>, <span class="number">0x02D472B6</span>, <span class="number">0x8049A590</span>, <span class="number">0x57B9E40A</span>, <span class="number">0xC15FF3EA</span>, <span class="number">0xB06543A6</span>, <span class="number">0xA6F66FF2</span>, <span class="number">0x2484D482</span>, <span class="number">0x087D5822</span>, <span class="number">0xAD90D0F0</span>, <span class="number">0x3B6D68EE</span>, <span class="number">0x95FBBFAE</span>, <span class="number">0x7F5829FE</span>, <span class="number">0x1F20EDD2</span>, <span class="number">0x621A3350</span>, <span class="number">0x2D1C8E0A</span>, <span class="number">0x8C8CEBFA</span>, <span class="number">0x42F9457E</span>, <span class="number">0x68B4944E</span>, <span class="number">0x19780866</span>, <span class="number">0xBDA999FE</span>, <span class="number">0xEBD2AC94</span>, <span class="number">0xB51CAD80</span>, <span class="number">0x03C5EE48</span>, <span class="number">0xAC9F555E</span>, <span class="number">0xE629C728</span>, <span class="number">0x65E02198</span>, <span class="number">0x5CF505A8</span>, <span class="number">0x3898F638</span>, <span class="number">0x86E4068E</span>, <span class="number">0xF632FBDA</span>, <span class="number">0x54E57154</span>, <span class="number">0x5B7FD252</span>, <span class="number">0x74065F26</span>, <span class="number">0x8E6FE31E</span>, <span class="number">0x99611622</span>, <span class="number">0x9235D166</span>, <span class="number">0xC342EB0E</span>, <span class="number">0xE18EC632</span>, <span class="number">0xA568B37A</span>, <span class="number">0x784C2570</span>, <span class="number">0x13CF22FA</span>, <span class="number">0x6A978B72</span>, <span class="number">0x20126964</span>, <span class="number">0x89A5E5EA</span>, <span class="number">0xFDBED86A</span>, <span class="number">0x34D307F0</span>, <span class="number">0x72236802</span>, <span class="number">0xC7FA54E8</span>, <span class="number">0x8C2F71D2</span>, <span class="number">0x9C9620AC</span>, <span class="number">0x173D416A</span>, <span class="number">0xA2ACC9E6</span>, <span class="number">0xA8D96716</span>, <span class="number">0xA51378CE</span>, <span class="number">0xAE824C82</span>, <span class="number">0xDBC977E2</span>, <span class="number">0x813B2122</span>, <span class="number">0x3D506012</span>, <span class="number">0x2A72B8AA</span>, <span class="number">0x18868CD4</span>, <span class="number">0xBBB70E7E</span>, <span class="number">0x05A8E56C</span>, <span class="number">0x7FD0E7C7</span>, <span class="number">0xF17B9200</span>, <span class="number">0x950A441C</span>, <span class="number">0x75FBE9A4</span>, <span class="number">0x6D6BFE28</span>, <span class="number">0x0F0984AE</span>, <span class="number">0x87D58220</span>, <span class="number">0x6B890704</span>, <span class="number">0x9F6A9362</span>, <span class="number">0x25BB4ED0</span>, <span class="number">0xFBDBE146</span>, <span class="number">0x14C09E8C</span>, <span class="number">0x4A85220E</span>, <span class="number">0xE8FE39DE</span>, <span class="number">0x3E41DBA4</span>, <span class="number">0xCF863178</span>, <span class="number">0xF815F2FE</span>, <span class="number">0xE71B42BA</span>, <span class="number">0x946E7884</span>, <span class="number">0x62F45058</span>, <span class="number">0x60373C2C</span>, <span class="number">0xF9076E90</span>, <span class="number">0xABADD9CC</span>, <span class="number">0xA05C0EF4</span>, <span class="number">0xD1274CBA</span>, <span class="number">0x4207C9EC</span>, <span class="number">0x2F2A2284</span>, <span class="number">0x85F28AFC</span>, <span class="number">0x92135208</span>, <span class="number">0xC43466A0</span>, <span class="number">0xE263D8E0</span>, <span class="number">0x56C86878</span>, <span class="number">0x22E6DC1A</span>, <span class="number">0xBAC592EC</span>, <span class="number">0x5AB549A6</span>, <span class="number">0x53F3F5C2</span>, <span class="number">0x5D62C976</span>, <span class="number">0x4B769DA0</span>, <span class="number">0x1B5AFF8A</span>, <span class="number">0x0E263D8E</span>, <span class="number">0x9D879C3E</span>, <span class="number">0xBF7CFCC6</span>, <span class="number">0x3AFDF4D2</span>, <span class="number">0x5A8E56C0</span>, <span class="number">0x8755AA1E</span>, <span class="number">0xCC8172D8</span>, <span class="number">0x3C2612B8</span>, <span class="number">0x63FD2A74</span>, <span class="number">0xB156BF38</span>, <span class="number">0xCBC04330</span>, <span class="number">0x37A77AA6</span>, <span class="number">0x35C48382</span>, <span class="number">0x9E7917D0</span>, <span class="number">0x21F56088</span>, <span class="number">0x3C5EE480</span>, <span class="number">0xD169289C</span>, <span class="number">0x1E2F7240</span>, <span class="number">0x17951142</span>, <span class="number">0xB698268A</span>, <span class="number">0x3F335736</span>, <span class="number">0xC9DD4C0C</span>, <span class="number">0x79AF4492</span>, <span class="number">0x39B92EDE</span>, <span class="number">0x13A9FC46</span>, <span class="number">0x9CAD7F36</span>, <span class="number">0x4E4B1056</span>, <span class="number">0xA23F0618</span>, <span class="number">0x36B5FF14</span>, <span class="number">0xAD2B8C9A</span>, <span class="number">0xD34C1FC0</span>, <span class="number">0xB339B65C</span>, <span class="number">0xD25AA42E</span>, <span class="number">0x1C4C7B1C</span>, <span class="number">0x97DEB6D2</span>, <span class="number">0x4F3C8BE8</span>, <span class="number">0x2753F88C</span>, <span class="number">0xB56A934C</span>, <span class="number">0x6251ED5E</span>, <span class="number">0x4909A904</span>, <span class="number">0x704070DE</span>, <span class="number">0xCE27A762</span>, <span class="number">0x2B64343C</span>, <span class="number">0xF26D0D92</span>, <span class="number">0x5E544508</span>, <span class="number">0xA7E7EB84</span>, <span class="number">0x32F010CC</span>, <span class="number">0x4D5994C4</span>, <span class="number">0x2E7A82D4</span>, <span class="number">0xF762C8DC</span>, <span class="number">0x98D03264</span>, <span class="number">0xF5418048</span>, <span class="number">0x7D7532DA</span>, <span class="number">0xE3555472</span>, <span class="number">0x18BD1416</span>, <span class="number">0x88C6FDB2</span>, <span class="number">0x45B7C43E</span>, <span class="number">0x9052DA42</span>, <span class="number">0x12DDA768</span>, <span class="number">0x9AB32988</span>, <span class="number">0xD7120E08</span>, <span class="number">0x41F83590</span>, <span class="number">0xF0984AE0</span>, <span class="number">0xEF989ADC</span>, <span class="number">0x96ED3B40</span>, <span class="number">0xA4EC85E8</span>, <span class="number">0xD9E680BE</span>, <span class="number">0x069A60FE</span>, <span class="number">0xE9EFB570</span>, <span class="number">0x822C9CB4</span>, <span class="number">0x8D7E678C</span>, <span class="number">0x20FC1AC8</span>, <span class="number">0x75E9564A</span>, <span class="number">0x8F615EB0</span>, <span class="number">0xFAEA65B4</span>, <span class="number">0xB2483ACA</span>, <span class="number">0x914455D4</span>, <span class="number">0x43EAC110</span>, <span class="number">0x10FAB044</span>, <span class="number">0xC2516F7C</span>, <span class="number">0x2D472B60</span>, <span class="number">0x7AA0C024</span>, <span class="number">0xFCCD5CD8</span>, <span class="number">0xC4A3DABC</span>, <span class="number">0xB60E2912</span>, <span class="number">0x01E2F724</span>, <span class="number">0x6640B96C</span>, <span class="number">0xD52F16E4</span>, <span class="number">0x31FE953A</span>, <span class="number">0xF9F8EA22</span>, <span class="number">0x288FC186</span>, <span class="number">0x317A282C</span>, <span class="number">0x965F2ECC</span>, <span class="number">0xD84DD702</span>, <span class="number">0x6F4EF54C</span>, <span class="number">0x53027A30</span>, <span class="number">0x4024D2C8</span>, <span class="number">0x1E13095C</span>, <span class="number">0x4EA7F118</span>, <span class="number">0x4B2F9766</span>, <span class="number">0xD43D9B52</span>, <span class="number">0x8AA9F4D6</span>, <span class="number">0x33E18C5E</span>, <span class="number">0xB8E29BC8</span>, <span class="number">0x279E45F4</span>, <span class="number">0x398A71CA</span>, <span class="number">0xEEA71F4A</span>, <span class="number">0x0F17B920</span>, <span class="number">0x23D857AC</span>, <span class="number">0x26ACCA62</span>, <span class="number">0xE446D004</span>, <span class="number">0xC708D956</span>, <span class="number">0x0D34C1FC</span>, <span class="number">0xE8648E24</span>, <span class="number">0x85010F6A</span>, <span class="number">0xC5E8A0B0</span>, <span class="number">0x89B87944</span>, <span class="number">0x107E0D64</span>, <span class="number">0x69A60FE0</span>, <span class="number">0x67C318BC</span>, <span class="number">0xB4723828</span>, <span class="number">0x293B217A</span>, <span class="number">0x66D19D2A</span>, <span class="number">0x00F17B92</span>, <span class="number">0x11EC2BD6</span>, <span class="number">0x7BB1646E</span>, <span class="number">0xF08A166E</span>, <span class="number">0xDE9DEA98</span>, <span class="number">0x310D19A8</span>, <span class="number">0x7B923BB6</span>, <span class="number">0x831E1846</span>, <span class="number">0xEAE13102</span>, <span class="number">0x630BAEE2</span>, <span class="number">0xA9CAE2A8</span>, <span class="number">0x7314E394</span>, <span class="number">0xD666AE14</span>, <span class="number">0xCACEC79E</span>, <span class="number">0xEBF7D348</span>, <span class="number">0xE5384B96</span>, <span class="number">0x3A7BED5C</span>, <span class="number">0x24C9D33E</span>, <span class="number">0x2E38A6F2</span>, <span class="number">0x04B769DA</span>, <span class="number">0x096ED3B4</span>, <span class="number">0xA33081AA</span>, <span class="number">0xC525E232</span>, <span class="number">0xD803899A</span>, <span class="number">0x73725DBC</span>, <span class="number">0x15B21A1E</span>, <span class="number">0x4C681932</span>, <span class="number">0x64EEA606</span>, <span class="number">0xFEB053FC</span>, <span class="number">0x5535EFDA</span>, <span class="number">0xB9D4175A</span>, <span class="number">0xC06E7858</span>, <span class="number">0xF35E8924</span>, <span class="number">0x5210FE9E</span>, <span class="number">0x76DAD1DC</span>, <span class="number">0xCDA33A54</span>, <span class="number">0x16A395B0</span>, <span class="number">0xF724776C</span>, <span class="number">0x7E66AE6C</span>, <span class="number">0x8B6F887C</span>, <span class="number">0x511F830C</span>, <span class="number">0x41164E5A</span>, <span class="number">0x4993A67C</span>, <span class="number">0xECC42826</span>, <span class="number">0x9BA4A51A</span>, <span class="number">0xD6209276</span>, <span class="number">0xA421FD3C</span>, <span class="number">0xAABC5E3A</span>, <span class="number">0x5A391C14</span>, <span class="number">0xE1725D4E</span>, <span class="number">0x74324712</span>, <span class="number">0xB6FFA4A4</span>, <span class="number">0x2103E4F6</span>, <span class="number">0x7131EC70</span>, <span class="number">0x6E5D79BA</span>, <span class="number">0x502E077A</span>]</span><br></pre></td></tr></table></figure></p>
+<p>这张表里其实有很多要素。</p>
+<p>比如我们sort一下，会发现首位相加都等于4288794510，<br>而且除了5个个位数分别为2,4,5,6,8的，其他都是10的倍数，<br>最小的数是15825810，其中有一大半是这个数的倍数，不是倍数的数如下。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tbl2=[<span class="number">2969165430</span>, <span class="number">3531948420</span>, <span class="number">3279666390</span>, <span class="number">2859196340</span>, <span class="number">3119123280</span>, <span class="number">2213571360</span>, <span class="number">1245133890</span>, <span class="number">1838054790</span>, <span class="number">138348210</span>, <span class="number">3873749880</span>, <span class="number">1798526730</span>, <span class="number">1383482100</span>, <span class="number">3735401670</span>, <span class="number">4012098090</span>, <span class="number">3676109580</span>, <span class="number">857758902</span>, <span class="number">2639258160</span>, <span class="number">1765974210</span>, <span class="number">612684930</span>, <span class="number">756846090</span>, <span class="number">3182008830</span>, <span class="number">1559561640</span>, <span class="number">2573276706</span>, <span class="number">3784230450</span>, <span class="number">2775102330</span>, <span class="number">2018256240</span>, <span class="number">2309350890</span>, <span class="number">2351919570</span>, <span class="number">389890410</span>, <span class="number">2729232870</span>, <span class="number">2144397255</span>, <span class="number">1979443620</span>, <span class="number">252282030</span>, <span class="number">2490267780</span>, <span class="number">1660178520</span>, <span class="number">3509013690</span>, <span class="number">2450739720</span>, <span class="number">1521830310</span>, <span class="number">989721810</span>, <span class="number">2270538270</span>, <span class="number">3431035608</span>, <span class="number">1009128120</span>, <span class="number">3063424650</span>, <span class="number">968437470</span>, <span class="number">329907270</span>, <span class="number">2628615990</span>, <span class="number">2905312410</span>, <span class="number">659814540</span>, <span class="number">3043660620</span>, <span class="number">1649536350</span>, <span class="number">1225369860</span>, <span class="number">3458705250</span>, <span class="number">779780820</span>, <span class="number">4150446300</span>, <span class="number">415044630</span>, <span class="number">1169671230</span>, <span class="number">1106785680</span>, <span class="number">4036512480</span>, <span class="number">2766964200</span>, <span class="number">553392840</span>, <span class="number">3299072700</span>, <span class="number">1715517804</span>, <span class="number">830089260</span>, <span class="number">2522820300</span>, <span class="number">3628979970</span>, <span class="number">504564060</span>, <span class="number">1319629080</span>, <span class="number">1261410150</span>, <span class="number">3898904100</span>, <span class="number">3320357040</span>, <span class="number">276696420</span>, <span class="number">3027384360</span>, <span class="number">691741050</span>, <span class="number">2075223150</span>, <span class="number">3597053460</span>, <span class="number">3958887240</span>, <span class="number">1936874940</span>, <span class="number">1429598170</span>, <span class="number">2339342460</span>, <span class="number">1513692180</span>, <span class="number">1949452050</span>]</span><br></pre></td></tr></table></figure></p>
+<p>现在我们再来读一遍题目:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">正确的序列号由不超过9整数构成，每个整数取值范围是 [0,351)   </span><br><span class="line">请按照顺序输入数字，用字符&apos;x&apos;隔开，用字符&apos;X&apos;结尾         </span><br><span class="line">例如：0x1x23x45x67x350X</span><br></pre></td></tr></table></figure></p>
+<p>不超过9个数，我们猜就是由9个数构成，因为要按顺序排序，所以不存在同一个数用两遍的情况。</p>
+<p>因为这个通解的个位数是7，所以各位为5的肯定需要，又因为个位为2的+8和4+6的结果都是4288794510，而要组成7只有2,8+4,2+4+6这几种了。4+6没有意义，因此只有2和4+8。我们先假设是2吧。。</p>
+<p>因为多次使用那些最小数的倍数没有意义，因此只有1个是最小数的倍数，其他都不是倍数，也就是tbl2里的数了。</p>
+<p>那么总结一下，现在的解为6个tbl2的值，857758902，2144397255，一个15825810的倍数。</p>
+<p>跑暴力长这样：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> a1 <span class="keyword">in</span> tbl2:</span><br><span class="line">	<span class="keyword">for</span> a2 <span class="keyword">in</span> tbl2:</span><br><span class="line">		<span class="keyword">for</span> a3 <span class="keyword">in</span> tbl2:</span><br><span class="line">			<span class="keyword">for</span> a4 <span class="keyword">in</span> tbl2:</span><br><span class="line">				<span class="keyword">for</span> a5 <span class="keyword">in</span> tbl2:</span><br><span class="line">					<span class="keyword">for</span> a6 <span class="keyword">in</span> tbl2:</span><br><span class="line">						<span class="keyword">if</span> <span class="number">7675040</span> == (a1+a2+a3+a4+a5+a6)%<span class="number">15825810</span>:</span><br><span class="line">							<span class="keyword">print</span> a1,a2,a3,a4,a5,a6</span><br></pre></td></tr></table></figure></p>
+<p>但复杂度还是太高。。。</p>
+<p>考虑meet in the middle</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">arr1=[]</span><br><span class="line">arr2=[]</span><br><span class="line"><span class="keyword">for</span> a1 <span class="keyword">in</span> tbl2:</span><br><span class="line">	<span class="keyword">for</span> a2 <span class="keyword">in</span> tbl2:</span><br><span class="line">		<span class="keyword">for</span> a3 <span class="keyword">in</span> tbl2:</span><br><span class="line">			arr1.append((<span class="number">7675040</span>-a1-a2-a3)%<span class="number">15825810</span>)</span><br><span class="line">			arr2.append((a1+a2+a3)%<span class="number">15825810</span>)</span><br><span class="line"></span><br><span class="line">arr1 = sorted(arr1)</span><br><span class="line">arr2 = sorted(arr2)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> len(arr1)</span><br><span class="line"><span class="keyword">print</span> len(arr2)</span><br><span class="line">leng=len(arr2)</span><br><span class="line">idx=<span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(leng):</span><br><span class="line">	val1 = arr1[i]</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> xrange(idx,leng):</span><br><span class="line">		<span class="keyword">if</span> val1 == arr2[j]:</span><br><span class="line">			<span class="keyword">print</span> val1</span><br><span class="line">			exit(<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">elif</span> val1 &lt; arr2[j]:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">else</span>: <span class="comment">#val &gt; arr2[j]</span></span><br><span class="line">			idx+=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>几分钟后能看到相等的值为1096160</p>
+<p>重跑一边拿到6个数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">equ_val = <span class="number">1096160</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> a1 <span class="keyword">in</span> tbl2:</span><br><span class="line">	<span class="keyword">for</span> a2 <span class="keyword">in</span> tbl2:</span><br><span class="line">		<span class="keyword">for</span> a3 <span class="keyword">in</span> tbl2:</span><br><span class="line">			<span class="keyword">if</span> (<span class="number">7675040</span>-a1-a2-a3)%<span class="number">15825810</span> == equ_val:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">'typ1: '</span>,a1,a2,a3</span><br><span class="line">			<span class="keyword">if</span> (a1+a2+a3)%<span class="number">15825810</span> == equ_val:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">'typ2: '</span>,a1,a2,a3</span><br><span class="line"><span class="comment">#2859196340,1559561640,2450739720,553392840,3027384360,3958887240</span></span><br></pre></td></tr></table></figure></p>
+<p>得到那个倍数<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#test</span></span><br><span class="line">s = [<span class="number">2859196340</span>,<span class="number">1559561640</span>,<span class="number">2450739720</span>,<span class="number">553392840</span>,<span class="number">3027384360</span>,<span class="number">3958887240</span>]</span><br><span class="line">ssum=<span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">	ssum+=i</span><br><span class="line">ssum+=<span class="number">857758902</span>+<span class="number">2144397255</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> tbl:</span><br><span class="line">	<span class="keyword">for</span> k <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">		<span class="keyword">if</span> <span class="number">4288794510</span>*k+<span class="number">1427250197</span> == x+ssum:</span><br><span class="line">			<span class="keyword">print</span> k,x,ssum</span><br><span class="line"><span class="comment">#print 4 1171109940 17411318297</span></span><br></pre></td></tr></table></figure></p>
+<p>倍数为1171109940</p>
+<p>现在我们得到了9个数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1171109940,2859196340,1559561640,2450739720,553392840,3027384360,3958887240,857758902,2144397255</span><br></pre></td></tr></table></figure></p>
+<p>用c打表优化一下<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="keyword">long</span> <span class="title">modulo</span><span class="params">(<span class="keyword">long</span> <span class="keyword">long</span> x,<span class="keyword">long</span> <span class="keyword">long</span> N)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (x % N + N) %N;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> lists[]=&#123;<span class="number">0xB42B31EE</span>, <span class="number">0x8B9B7068</span>, <span class="number">0x5F45C09A</span>, <span class="number">0xD077AD0A</span>, <span class="number">0xB0F9DE76</span>, <span class="number">0x77CC4D6E</span>, <span class="number">0xD2854184</span>, <span class="number">0xE80CBE4C</span>, <span class="number">0xDCBAF374</span>, <span class="number">0xEDB5A3B8</span>, <span class="number">0x301B9E16</span>, <span class="number">0x1D3DF6AE</span>, <span class="number">0xC37BBCD6</span>, <span class="number">0x0C43466A</span>, <span class="number">0x0B51CAD8</span>, <span class="number">0x6128B7BE</span>, <span class="number">0xC6175DC4</span>, <span class="number">0xAA6BDFB4</span>, <span class="number">0x44DC3CA2</span>, <span class="number">0xB9EA0B50</span>, <span class="number">0xA14D8A86</span>, <span class="number">0x47B0AF58</span>, <span class="number">0x83F06B20</span>, <span class="number">0xBE8B8134</span>, <span class="number">0xF45004B6</span>, <span class="number">0x840F93D8</span>, <span class="number">0x29813D18</span>, <span class="number">0x45CDB834</span>, <span class="number">0x4A373C42</span>, <span class="number">0x7C83B748</span>, <span class="number">0x6D8E7D86</span>, <span class="number">0xAF73C814</span>, <span class="number">0x48A22AEA</span>, <span class="number">0x083F06B2</span>, <span class="number">0x078BDC90</span>, <span class="number">0xB7F12036</span>, <span class="number">0xE6E4BB78</span>, <span class="number">0xBD9A05A2</span>, <span class="number">0x0A604F46</span>, <span class="number">0x99C1ADF6</span>, <span class="number">0x6B33570A</span>, <span class="number">0x55D6ECE6</span>, <span class="number">0x6C7A8296</span>, <span class="number">0x5C714DE4</span>, <span class="number">0xDDAC6F06</span>, <span class="number">0x527642F4</span>, <span class="number">0xA604F460</span>, <span class="number">0xDAD7FC50</span>, <span class="number">0x78BDC900</span>, <span class="number">0xDEA5B4C6</span>, <span class="number">0xCCB1BEC2</span>, <span class="number">0x46BF33C6</span>, <span class="number">0x93274CF8</span>, <span class="number">0xDF8F662A</span>, <span class="number">0xCE94B5E6</span>, <span class="number">0xEF23C22A</span>, <span class="number">0x100934B2</span>, <span class="number">0x9418C88A</span>, <span class="number">0xC8EBD07A</span>, <span class="number">0xDB1CFB0C</span>, <span class="number">0x33205CB6</span>, <span class="number">0x1A6983F8</span>, <span class="number">0xBCA88A10</span>, <span class="number">0x599CDB2E</span>, <span class="number">0x74F7DAB8</span>, <span class="number">0xD8F5052C</span>, <span class="number">0xE080E1BC</span>, <span class="number">0x58AB5F9C</span>, <span class="number">0x9D4FE230</span>, <span class="number">0x6942A0C2</span>, <span class="number">0x2C55AFCE</span>, <span class="number">0x02D472B6</span>, <span class="number">0x8049A590</span>, <span class="number">0x57B9E40A</span>, <span class="number">0xC15FF3EA</span>, <span class="number">0xB06543A6</span>, <span class="number">0xA6F66FF2</span>, <span class="number">0x2484D482</span>, <span class="number">0x087D5822</span>, <span class="number">0xAD90D0F0</span>, <span class="number">0x3B6D68EE</span>, <span class="number">0x95FBBFAE</span>, <span class="number">0x7F5829FE</span>, <span class="number">0x1F20EDD2</span>, <span class="number">0x621A3350</span>, <span class="number">0x2D1C8E0A</span>, <span class="number">0x8C8CEBFA</span>, <span class="number">0x42F9457E</span>, <span class="number">0x68B4944E</span>, <span class="number">0x19780866</span>, <span class="number">0xBDA999FE</span>, <span class="number">0xEBD2AC94</span>, <span class="number">0xB51CAD80</span>, <span class="number">0x03C5EE48</span>, <span class="number">0xAC9F555E</span>, <span class="number">0xE629C728</span>, <span class="number">0x65E02198</span>, <span class="number">0x5CF505A8</span>, <span class="number">0x3898F638</span>, <span class="number">0x86E4068E</span>, <span class="number">0xF632FBDA</span>, <span class="number">0x54E57154</span>, <span class="number">0x5B7FD252</span>, <span class="number">0x74065F26</span>, <span class="number">0x8E6FE31E</span>, <span class="number">0x99611622</span>, <span class="number">0x9235D166</span>, <span class="number">0xC342EB0E</span>, <span class="number">0xE18EC632</span>, <span class="number">0xA568B37A</span>, <span class="number">0x784C2570</span>, <span class="number">0x13CF22FA</span>, <span class="number">0x6A978B72</span>, <span class="number">0x20126964</span>, <span class="number">0x89A5E5EA</span>, <span class="number">0xFDBED86A</span>, <span class="number">0x34D307F0</span>, <span class="number">0x72236802</span>, <span class="number">0xC7FA54E8</span>, <span class="number">0x8C2F71D2</span>, <span class="number">0x9C9620AC</span>, <span class="number">0x173D416A</span>, <span class="number">0xA2ACC9E6</span>, <span class="number">0xA8D96716</span>, <span class="number">0xA51378CE</span>, <span class="number">0xAE824C82</span>, <span class="number">0xDBC977E2</span>, <span class="number">0x813B2122</span>, <span class="number">0x3D506012</span>, <span class="number">0x2A72B8AA</span>, <span class="number">0x18868CD4</span>, <span class="number">0xBBB70E7E</span>, <span class="number">0x05A8E56C</span>, <span class="number">0x7FD0E7C7</span>, <span class="number">0xF17B9200</span>, <span class="number">0x950A441C</span>, <span class="number">0x75FBE9A4</span>, <span class="number">0x6D6BFE28</span>, <span class="number">0x0F0984AE</span>, <span class="number">0x87D58220</span>, <span class="number">0x6B890704</span>, <span class="number">0x9F6A9362</span>, <span class="number">0x25BB4ED0</span>, <span class="number">0xFBDBE146</span>, <span class="number">0x14C09E8C</span>, <span class="number">0x4A85220E</span>, <span class="number">0xE8FE39DE</span>, <span class="number">0x3E41DBA4</span>, <span class="number">0xCF863178</span>, <span class="number">0xF815F2FE</span>, <span class="number">0xE71B42BA</span>, <span class="number">0x946E7884</span>, <span class="number">0x62F45058</span>, <span class="number">0x60373C2C</span>, <span class="number">0xF9076E90</span>, <span class="number">0xABADD9CC</span>, <span class="number">0xA05C0EF4</span>, <span class="number">0xD1274CBA</span>, <span class="number">0x4207C9EC</span>, <span class="number">0x2F2A2284</span>, <span class="number">0x85F28AFC</span>, <span class="number">0x92135208</span>, <span class="number">0xC43466A0</span>, <span class="number">0xE263D8E0</span>, <span class="number">0x56C86878</span>, <span class="number">0x22E6DC1A</span>, <span class="number">0xBAC592EC</span>, <span class="number">0x5AB549A6</span>, <span class="number">0x53F3F5C2</span>, <span class="number">0x5D62C976</span>, <span class="number">0x4B769DA0</span>, <span class="number">0x1B5AFF8A</span>, <span class="number">0x0E263D8E</span>, <span class="number">0x9D879C3E</span>, <span class="number">0xBF7CFCC6</span>, <span class="number">0x3AFDF4D2</span>, <span class="number">0x5A8E56C0</span>, <span class="number">0x8755AA1E</span>, <span class="number">0xCC8172D8</span>, <span class="number">0x3C2612B8</span>, <span class="number">0x63FD2A74</span>, <span class="number">0xB156BF38</span>, <span class="number">0xCBC04330</span>, <span class="number">0x37A77AA6</span>, <span class="number">0x35C48382</span>, <span class="number">0x9E7917D0</span>, <span class="number">0x21F56088</span>, <span class="number">0x3C5EE480</span>, <span class="number">0xD169289C</span>, <span class="number">0x1E2F7240</span>, <span class="number">0x17951142</span>, <span class="number">0xB698268A</span>, <span class="number">0x3F335736</span>, <span class="number">0xC9DD4C0C</span>, <span class="number">0x79AF4492</span>, <span class="number">0x39B92EDE</span>, <span class="number">0x13A9FC46</span>, <span class="number">0x9CAD7F36</span>, <span class="number">0x4E4B1056</span>, <span class="number">0xA23F0618</span>, <span class="number">0x36B5FF14</span>, <span class="number">0xAD2B8C9A</span>, <span class="number">0xD34C1FC0</span>, <span class="number">0xB339B65C</span>, <span class="number">0xD25AA42E</span>, <span class="number">0x1C4C7B1C</span>, <span class="number">0x97DEB6D2</span>, <span class="number">0x4F3C8BE8</span>, <span class="number">0x2753F88C</span>, <span class="number">0xB56A934C</span>, <span class="number">0x6251ED5E</span>, <span class="number">0x4909A904</span>, <span class="number">0x704070DE</span>, <span class="number">0xCE27A762</span>, <span class="number">0x2B64343C</span>, <span class="number">0xF26D0D92</span>, <span class="number">0x5E544508</span>, <span class="number">0xA7E7EB84</span>, <span class="number">0x32F010CC</span>, <span class="number">0x4D5994C4</span>, <span class="number">0x2E7A82D4</span>, <span class="number">0xF762C8DC</span>, <span class="number">0x98D03264</span>, <span class="number">0xF5418048</span>, <span class="number">0x7D7532DA</span>, <span class="number">0xE3555472</span>, <span class="number">0x18BD1416</span>, <span class="number">0x88C6FDB2</span>, <span class="number">0x45B7C43E</span>, <span class="number">0x9052DA42</span>, <span class="number">0x12DDA768</span>, <span class="number">0x9AB32988</span>, <span class="number">0xD7120E08</span>, <span class="number">0x41F83590</span>, <span class="number">0xF0984AE0</span>, <span class="number">0xEF989ADC</span>, <span class="number">0x96ED3B40</span>, <span class="number">0xA4EC85E8</span>, <span class="number">0xD9E680BE</span>, <span class="number">0x069A60FE</span>, <span class="number">0xE9EFB570</span>, <span class="number">0x822C9CB4</span>, <span class="number">0x8D7E678C</span>, <span class="number">0x20FC1AC8</span>, <span class="number">0x75E9564A</span>, <span class="number">0x8F615EB0</span>, <span class="number">0xFAEA65B4</span>, <span class="number">0xB2483ACA</span>, <span class="number">0x914455D4</span>, <span class="number">0x43EAC110</span>, <span class="number">0x10FAB044</span>, <span class="number">0xC2516F7C</span>, <span class="number">0x2D472B60</span>, <span class="number">0x7AA0C024</span>, <span class="number">0xFCCD5CD8</span>, <span class="number">0xC4A3DABC</span>, <span class="number">0xB60E2912</span>, <span class="number">0x01E2F724</span>, <span class="number">0x6640B96C</span>, <span class="number">0xD52F16E4</span>, <span class="number">0x31FE953A</span>, <span class="number">0xF9F8EA22</span>, <span class="number">0x288FC186</span>, <span class="number">0x317A282C</span>, <span class="number">0x965F2ECC</span>, <span class="number">0xD84DD702</span>, <span class="number">0x6F4EF54C</span>, <span class="number">0x53027A30</span>, <span class="number">0x4024D2C8</span>, <span class="number">0x1E13095C</span>, <span class="number">0x4EA7F118</span>, <span class="number">0x4B2F9766</span>, <span class="number">0xD43D9B52</span>, <span class="number">0x8AA9F4D6</span>, <span class="number">0x33E18C5E</span>, <span class="number">0xB8E29BC8</span>, <span class="number">0x279E45F4</span>, <span class="number">0x398A71CA</span>, <span class="number">0xEEA71F4A</span>, <span class="number">0x0F17B920</span>, <span class="number">0x23D857AC</span>, <span class="number">0x26ACCA62</span>, <span class="number">0xE446D004</span>, <span class="number">0xC708D956</span>, <span class="number">0x0D34C1FC</span>, <span class="number">0xE8648E24</span>, <span class="number">0x85010F6A</span>, <span class="number">0xC5E8A0B0</span>, <span class="number">0x89B87944</span>, <span class="number">0x107E0D64</span>, <span class="number">0x69A60FE0</span>, <span class="number">0x67C318BC</span>, <span class="number">0xB4723828</span>, <span class="number">0x293B217A</span>, <span class="number">0x66D19D2A</span>, <span class="number">0x00F17B92</span>, <span class="number">0x11EC2BD6</span>, <span class="number">0x7BB1646E</span>, <span class="number">0xF08A166E</span>, <span class="number">0xDE9DEA98</span>, <span class="number">0x310D19A8</span>, <span class="number">0x7B923BB6</span>, <span class="number">0x831E1846</span>, <span class="number">0xEAE13102</span>, <span class="number">0x630BAEE2</span>, <span class="number">0xA9CAE2A8</span>, <span class="number">0x7314E394</span>, <span class="number">0xD666AE14</span>, <span class="number">0xCACEC79E</span>, <span class="number">0xEBF7D348</span>, <span class="number">0xE5384B96</span>, <span class="number">0x3A7BED5C</span>, <span class="number">0x24C9D33E</span>, <span class="number">0x2E38A6F2</span>, <span class="number">0x04B769DA</span>, <span class="number">0x096ED3B4</span>, <span class="number">0xA33081AA</span>, <span class="number">0xC525E232</span>, <span class="number">0xD803899A</span>, <span class="number">0x73725DBC</span>, <span class="number">0x15B21A1E</span>, <span class="number">0x4C681932</span>, <span class="number">0x64EEA606</span>, <span class="number">0xFEB053FC</span>, <span class="number">0x5535EFDA</span>, <span class="number">0xB9D4175A</span>, <span class="number">0xC06E7858</span>, <span class="number">0xF35E8924</span>, <span class="number">0x5210FE9E</span>, <span class="number">0x76DAD1DC</span>, <span class="number">0xCDA33A54</span>, <span class="number">0x16A395B0</span>, <span class="number">0xF724776C</span>, <span class="number">0x7E66AE6C</span>, <span class="number">0x8B6F887C</span>, <span class="number">0x511F830C</span>, <span class="number">0x41164E5A</span>, <span class="number">0x4993A67C</span>, <span class="number">0xECC42826</span>, <span class="number">0x9BA4A51A</span>, <span class="number">0xD6209276</span>, <span class="number">0xA421FD3C</span>, <span class="number">0xAABC5E3A</span>, <span class="number">0x5A391C14</span>, <span class="number">0xE1725D4E</span>, <span class="number">0x74324712</span>, <span class="number">0xB6FFA4A4</span>, <span class="number">0x2103E4F6</span>, <span class="number">0x7131EC70</span>, <span class="number">0x6E5D79BA</span>, <span class="number">0x502E077A</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span>* tab = <span class="built_in">malloc</span>(<span class="number">0x100000000</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i1 = <span class="number">0</span>;i1 &lt; <span class="number">351</span>;i1++)  &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i2 = <span class="number">0</span>;i2 &lt; <span class="number">351</span>;i2++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i3 = <span class="number">0</span>;i3 &lt; <span class="number">351</span>;i3++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(i1 != i2) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(i1 != i3) &#123;</span><br><span class="line">                        <span class="keyword">if</span>(i2 != i3) &#123;</span><br><span class="line">                            <span class="keyword">unsigned</span> <span class="keyword">int</span> index = (<span class="number">0x5ddf2868</span>+lists[i1]+lists[i2]+lists[i3])%<span class="number">0xffa1cf8e</span>;</span><br><span class="line">                            tab[index]=<span class="number">1</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"table done\n"</span>);</span><br><span class="line">    <span class="keyword">int</span> k1,k2,k3,k4;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i1 = <span class="number">0</span>; i1 &lt; <span class="number">351</span>;i1++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i2 = <span class="number">0</span>; i2 &lt; <span class="number">351</span>;i2++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i3 = <span class="number">0</span>; i3 &lt; <span class="number">351</span>;i3++) &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> i4 = <span class="number">0</span>; i4 &lt; <span class="number">351</span>;i4++) &#123;</span><br><span class="line">                    <span class="keyword">unsigned</span> <span class="keyword">int</span> index =modulo((-(lists[i1]+lists[i2]+lists[i3]+lists[i4])),<span class="number">0xffa1cf8e</span>);</span><br><span class="line">                    <span class="keyword">if</span>(tab[index] == <span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="built_in">printf</span>(<span class="string">"%d %d %d %d\n"</span>,i1,i2,i3,i4);</span><br><span class="line">                        k1=i1;</span><br><span class="line">                        k2=i2;</span><br><span class="line">                        k3=i3;</span><br><span class="line">                        k4=i4;</span><br><span class="line">                        <span class="keyword">goto</span> next;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">next:;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> n;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"k: %d %d %d %d\n"</span>,k1,k2,k3,k4);</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> v = modulo((-(lists[k1]+lists[k2]+lists[k3]+lists[k4])),<span class="number">0xffa1cf8e</span>);</span><br><span class="line">    n=v;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"num: %p %p %p %p\n"</span>,lists[k1],lists[k2],lists[k3],lists[k4]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i1 = <span class="number">0</span>;i1 &lt; <span class="number">351</span>;i1++)  &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i2 = <span class="number">0</span>;i2 &lt; <span class="number">351</span>;i2++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i3 = <span class="number">0</span>;i3 &lt; <span class="number">351</span>;i3++) &#123;</span><br><span class="line">                <span class="keyword">if</span>((<span class="number">0x5ddf2868</span>+lists[i1]+lists[i2]+lists[i3])%<span class="number">0xffa1cf8e</span> == n) &#123;</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">"%p %p %p\n"</span>, lists[i1],lists[i2],lists[i3]);</span><br><span class="line">                    assert((lists[i1]+lists[i2]+lists[i3]+lists[k1]+lists[k2]+lists[k3]+lists[k4]+<span class="number">857758902</span>+<span class="number">2144397255</span>)%<span class="number">0xffa1cf8e</span> == <span class="number">1427250197</span>);</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">"done"</span>);</span><br><span class="line">                    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"err"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>算flag：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">s=[<span class="number">1171109940</span>,<span class="number">2859196340</span>,<span class="number">1559561640</span>,<span class="number">2450739720</span>,<span class="number">553392840</span>,<span class="number">3027384360</span>,<span class="number">3958887240</span>,<span class="number">857758902</span>,<span class="number">2144397255</span>]</span><br><span class="line"></span><br><span class="line">flag=<span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> idx <span class="keyword">in</span> range(len(tbl)):</span><br><span class="line">	<span class="keyword">if</span> tbl[idx] <span class="keyword">in</span> s:</span><br><span class="line">		flag+=str(idx)+<span class="string">'x'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> flag[:<span class="number">-1</span>]+<span class="string">'X'</span></span><br><span class="line"><span class="comment"># 17x27x60x97x133x161x243x292x309X</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Veritas501</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://veritas501.github.io/2018/10/09/看雪十一  叹息之墙/" title="pediy CTF 2018 10.1  - 叹息之墙">https://veritas501.github.io/2018/10/09/看雪十一  叹息之墙/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> unless stating additionally.</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"># CTF</a>
+          
+            <a href="/tags/RE/" rel="tag"># RE</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/26/qemu缺ld.so的解决方法/" rel="next" title="qemu缺ld.so的解决方法">
+                <i class="fa fa-chevron-left"></i> qemu缺ld.so的解决方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/215.png"
+                alt="Veritas501" />
+            
+              <p class="site-author-name" itemprop="name">Veritas501</p>
+              <p class="site-description motion-element" itemprop="description">开始踏上Re&Pwn之路...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">64</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">38</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/veritas501" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://music.163.com/#/user/home?id=58295006" target="_blank" title="网易云"><i class="fa fa-fw fa-music"></i>网易云</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/xu-qt/activities" target="_blank" title="知乎"><i class="fa fa-fw fa-quora"></i>知乎</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://osu.ppy.sh/users/9533614" target="_blank" title="OSU"><i class="fa fa-fw fa-headphones"></i>OSU</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Veritas501</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'zUGXRoho5JEFbk0lDKssrDi6-gzGzoHsz',
+        appKey: 'IE9Knp7ku8I57kP5vFnPO2zA',
+        placeholder: '说点什么...',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("97qzbH6lJuabRg1KDY7DtJRS-gzGzoHsz", "GS8vVhMCaeXncQF8mQOIShBj");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            
+            counter.save(null, {
+              success: function(counter) {
+                
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            
+              var newcounter = new Counter();
+              /* Set ACL */
+              var acl = new AV.ACL();
+              acl.setPublicReadAccess(true);
+              acl.setPublicWriteAccess(true);
+              newcounter.setACL(acl);
+              /* End Set ACL */
+              newcounter.set("title", title);
+              newcounter.set("url", url);
+              newcounter.set("time", 1);
+              newcounter.save(null, {
+                success: function(newcounter) {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                },
+                error: function(newcounter, error) {
+                  console.log('Failed to create');
+                }
+              });
+            
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

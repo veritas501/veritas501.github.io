@@ -306,8 +306,10 @@ hr {
 }
 blockquote {
   padding: 0 15px;
-  color: #666;
-  border-left: 4px solid #ddd;
+  color: #999;
+  border-left: 4px solid #666;
+  background-color: #f5f5f5;
+  border-radius: 3px;
 }
 blockquote cite::before {
   content: "-";
@@ -1858,7 +1860,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #d790b0;
+  background: #520109;
 }
 .links-of-blogroll {
   font-size: 13px;

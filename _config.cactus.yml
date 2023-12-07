@@ -14,7 +14,7 @@ direction: ltr
 # navigation menu. Optionally, you can add translations for the 'Key' in
 # languages/*.yml
 nav:
-  home: /archives/
+  home: /
   about: /about/
   articles: /archives/
   projects: http://github.com/veritas501
@@ -25,8 +25,12 @@ nav:
 # (see https://fontawesome.com/icons?d=gallery&s=brands);
 # only 'mail' is an exception.
 social_links:
-  github: http://github.com/veritas501
-  mail: mailto:veritas501@qq.com
+  - 
+    icon: github
+    link: http://github.com/veritas501
+  -
+    icon: mail
+    link: mailto:veritas501@qq.com
 
 # Customize the overview with displaying a tagcloud on the index page.
 # Options: https://hexo.io/docs/helpers.html#tagcloud

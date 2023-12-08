@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这次我们来调试dex，题目是GCTF 2017中的一道安卓水题，算法一望而知，但我们换一种方法做做看。 题目附件：com.example.crackme.apk 你大概需要：1.一部手机，已root，有ro.debuggable&#x3D;1，安卓4.4.4（非必须），cpu架构32位（非必须,但这题我在64位机子上调试失败）2.IDA3.JEB2（此处非必须） 参照前一篇文章，手机连电脑，adb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录一次安卓动态调试dex">
+<meta property="og:url" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="这次我们来调试dex，题目是GCTF 2017中的一道安卓水题，算法一望而知，但我们换一种方法做做看。 题目附件：com.example.crackme.apk 你大概需要：1.一部手机，已root，有ro.debuggable&#x3D;1，安卓4.4.4（非必须），cpu架构32位（非必须,但这题我在64位机子上调试失败）2.IDA3.JEB2（此处非必须） 参照前一篇文章，手机连电脑，adb">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_4c037905308d23890d1eee9508a6c714.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_3ac13a280460df19d0069ddf3f8663bb.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_36c306d7ab3b8a2bfa6ffb5744b44394.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_303ca5bbf62225a3784f809e7268f807.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_6a3a7d98518f9ec1f5d660276695b863.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_eee4722ce93f7f3e7cf5cd5f5f36eed1.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_84992a9ae2dc56548af59ca705eb86dc.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_23f91dbc651c150261c3e5e954981f95.png">
+<meta property="article:published_time" content="2017-06-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.390Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="Mobile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>记录一次安卓动态调试dex</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_06_23-%E7%BB%99%E4%BD%A0%E5%8E%8B%E7%BC%A9%E5%8C%85%E5%8D%B4%E4%B8%8D%E7%BB%99%E4%BD%A0%E5%AF%86%E7%A0%81%E7%9A%84%E4%BA%BA%E5%88%B0%E5%BA%95%E5%9C%A8%E6%83%B3%E4%BB%80%E4%B9%88/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_06_04-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95lib%E5%BA%93/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&text=记录一次安卓动态调试dex"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&is_video=false&description=记录一次安卓动态调试dex"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记录一次安卓动态调试dex&body=Check out this article: https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&name=记录一次安卓动态调试dex&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&t=记录一次安卓动态调试dex"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        记录一次安卓动态调试dex
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-06-12T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-06-13</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.390Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Mobile/" rel="tag">Mobile</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>这次我们来调试dex，题目是GCTF 2017中的一道安卓水题，算法一望而知，但我们换一种方法做做看。</p>
+<p>题目附件：<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/veritas501/attachment_in_blog/master/%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/com.example.crackme.apk">com.example.crackme.apk</a></p>
+<p>你大概需要：<br>1.一部手机，已root，有ro.debuggable&#x3D;1，安卓4.4.4（非必须），cpu架构32位（非必须,但这题我在64位机子上调试失败）<br>2.IDA<br>3.JEB2（此处非必须）</p>
+<p>参照前一篇文章，手机连电脑，adb连shell以root启动android_server，adb再转发端口，这里不再多说。</p>
+<p>apk文件拖到IDA里，选择dex文件。</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_ef5f6b26778b8ce20f0724cd1c4a4dae.png"></p>
+<p>根据JEB2中的反汇编结果，我们找到关键的函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle arg3)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(arg3);</span><br><span class="line">        <span class="built_in">this</span>.setContentView(<span class="number">2130968601</span>);</span><br><span class="line">        <span class="built_in">this</span>.setTitle(<span class="number">2131099677</span>);</span><br><span class="line">        <span class="built_in">this</span>.edit_userName = <span class="string">&quot;Tenshine&quot;</span>;</span><br><span class="line">        <span class="built_in">this</span>.edit_sn = <span class="built_in">this</span>.findViewById(<span class="number">2131492945</span>);</span><br><span class="line">        <span class="built_in">this</span>.btn_register = <span class="built_in">this</span>.findViewById(<span class="number">2131492946</span>);</span><br><span class="line">        <span class="built_in">this</span>.btn_register.setOnClickListener(<span class="keyword">new</span> <span class="title class_">View$OnClickListener</span>() &#123;</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onClick</span><span class="params">(View arg5)</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(!MainActivity.<span class="built_in">this</span>.checkSN(MainActivity.<span class="built_in">this</span>.edit_userName.trim(), MainActivity.<span class="built_in">this</span>.edit_sn.getText().toString().trim())) &#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="built_in">this</span>, <span class="number">2131099678</span>, <span class="number">0</span>).show();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    Toast.makeText(MainActivity.<span class="built_in">this</span>, <span class="number">2131099675</span>, <span class="number">0</span>).show();</span><br><span class="line">                    MainActivity.<span class="built_in">this</span>.btn_register.setEnabled(<span class="literal">false</span>);</span><br><span class="line">                    MainActivity.<span class="built_in">this</span>.setTitle(<span class="number">2131099673</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">checkSN</span><span class="params">(String name, String sn)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">v7</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(name != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(name.length() == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(sn == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(sn.length() != <span class="number">22</span>) &#123;  <span class="comment">// sn长度必须为22</span></span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="type">MessageDigest</span> <span class="variable">v1</span> <span class="operator">=</span> MessageDigest.getInstance(<span class="string">&quot;MD5&quot;</span>);  <span class="comment">// MD5加密name</span></span><br><span class="line">                v1.reset();</span><br><span class="line">                v1.update(name.getBytes());</span><br><span class="line">                <span class="type">String</span> <span class="variable">enc1</span> <span class="operator">=</span> MainActivity.toHexString(v1.digest(), <span class="string">&quot;&quot;</span>);</span><br><span class="line">                <span class="type">StringBuilder</span> <span class="variable">ecn2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">                <span class="type">int</span> v4;</span><br><span class="line">                <span class="keyword">for</span>(v4 = <span class="number">0</span>; v4 &lt; enc1.length(); v4 += <span class="number">2</span>) &#123;</span><br><span class="line">                    ecn2.append(enc1.charAt(v4));  <span class="comment">// 取md5后的奇数位</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(!<span class="string">&quot;flag&#123;&quot;</span> + ecn2.toString() + <span class="string">&quot;&#125;&quot;</span>.equalsIgnoreCase(sn)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> v7;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span>(NoSuchAlgorithmException v2) &#123;</span><br><span class="line">                goto label_40;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            v7 = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> v7;</span><br><span class="line">    label_40:</span><br><span class="line">        v2.printStackTrace();</span><br><span class="line">        <span class="keyword">return</span> v7;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果是静态分析的话，这样也就分析出来了，很简单，但现在我们假设中间是一坨很复杂的算法，那么动态分析就方便的多了。</p>
+<p>IDA中找到关键代码下好断点。</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_4c037905308d23890d1eee9508a6c714.png"></p>
+<p>手机端打开crackme到主界面，IDA选择attach to process</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_3ac13a280460df19d0069ddf3f8663bb.png"></p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_36c306d7ab3b8a2bfa6ffb5744b44394.png"></p>
+<p>成功后会显示如下，点一下运行。</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_303ca5bbf62225a3784f809e7268f807.png"></p>
+<p>输入长度22位的假flag后成功断下</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_6a3a7d98518f9ec1f5d660276695b863.png"></p>
+<p>打开local窗口</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_eee4722ce93f7f3e7cf5cd5f5f36eed1.png"></p>
+<p>单步f8，</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_84992a9ae2dc56548af59ca705eb86dc.png"></p>
+<p>切换到local窗口</p>
+<p><img src="/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/dex_debug_note_23f91dbc651c150261c3e5e954981f95.png"></p>
+<p>可以看到，flag直接通过动态跟踪的方式出来了。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&text=记录一次安卓动态调试dex"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&is_video=false&description=记录一次安卓动态调试dex"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记录一次安卓动态调试dex&body=Check out this article: https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&title=记录一次安卓动态调试dex"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&name=记录一次安卓动态调试dex&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_06_13-%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E5%AE%89%E5%8D%93%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95dex/&t=记录一次安卓动态调试dex"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

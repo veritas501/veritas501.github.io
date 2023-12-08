@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers in the mid-1970s. CHIP-8 programs are run on">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始写一个CHIP-8模拟器">
+<meta property="og:url" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers in the mid-1970s. CHIP-8 programs are run on">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_2dcc2123b366792fdcae9c834b4dcadd.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_c0f313226194b902e652c309c1d22a6f.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_ec77b7010253486cf263ee249a871529.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_afc493d4d7f522dae00dc038699e9da4.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_0018c82adbaf69987c5b420d13c8926c.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_90cba3df17b85f0d1a52d567bdab1e62.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_9814ef1408c86cf38417929f46a1427b.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_4f8b88af8b964c9321912d73f5259349.png">
+<meta property="article:published_time" content="2018-02-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.410Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="CHIP-8">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_2dcc2123b366792fdcae9c834b4dcadd.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>从零开始写一个CHIP-8模拟器</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018_02_21-pwnable.tw_1_10%E9%A2%98_writeup/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018_02_10-BAMBOOFOX_CTF_%E9%83%A8%E5%88%86_writeup/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&text=从零开始写一个CHIP-8模拟器"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&is_video=false&description=从零开始写一个CHIP-8模拟器"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=从零开始写一个CHIP-8模拟器&body=Check out this article: https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&name=从零开始写一个CHIP-8模拟器&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&t=从零开始写一个CHIP-8模拟器"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">硬件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.1.</span> <span class="toc-text">寄存器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98"><span class="toc-number">1.2.</span> <span class="toc-text">内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E8%AE%BE"><span class="toc-number">1.3.</span> <span class="toc-text">外设</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">指令集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">具体实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        从零开始写一个CHIP-8模拟器
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-02-19T16:00:00.000Z" class="dt-published" itemprop="datePublished">2018-02-20</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.410Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/CHIP-8/" rel="tag">CHIP-8</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers in the mid-1970s. CHIP-8 programs are run on a CHIP-8 virtual machine. It was made to allow video games to be more easily programmed for said computers.</p>
+<p>没错,上面这些是从wikipedia上复制过来的.这两天我就亲自实现了一下,先看看运行效果.</p>
+<p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_2dcc2123b366792fdcae9c834b4dcadd.png"></p>
+<p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_c0f313226194b902e652c309c1d22a6f.png"></p>
+<p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_ec77b7010253486cf263ee249a871529.png"></p>
+<p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_afc493d4d7f522dae00dc038699e9da4.png"></p>
+<p><strong>源码</strong>我放在github上了.<a target="_blank" rel="noopener" href="https://github.com/veritas501/CHIP-8_Emulator">https://github.com/veritas501/CHIP-8_Emulator</a></p>
+<hr>
+<h2 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h2><p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_0018c82adbaf69987c5b420d13c8926c.png"></p>
+<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><p>V0~VF是16个1byte的寄存器,其中VF也用做进位,借位等特殊操作的标志位.</p>
+<p>I是索引(index)寄存器,2byte长度.相当于一个pointer的作用.</p>
+<p>Sound Timer(ST)和Delay Timer(DT)是两个1byte的寄存器,他们都是以60Hz的速度递减1,当减到0就停止,略有不同的是DT只是简单的停下,而ST在非0时,1bit的Sound Channel会发出声音.</p>
+<p>PC就是我们熟知的Program Counter,程序计数器,2bytes长度.</p>
+<p>SP就是我们熟知的Stack Pointer,2bytes长度.</p>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_90cba3df17b85f0d1a52d567bdab1e62.png"></p>
+<p>程序预留了4K(0x1000bytes)的空间当作主要存储空间,其中0x0~0x200都是做字体用.</p>
+<p>4x5 low-res 字体编码方式:</p>
+<p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_9814ef1408c86cf38417929f46a1427b.png"></p>
+<p>0x0~0x200的这部分内存我直接从<a target="_blank" rel="noopener" href="https://github.com/massung/CHIP-8">https://github.com/massung/CHIP-8</a>处拷贝过来了,偷了个懒.这个作者还做了8*10 high-res的字体,以及后面还编码了一些貌似用不到的字体.</p>
+<p>64bytes的空间做栈.就不多解释了.</p>
+<p>64*32(屏幕尺寸)bits的空间做Framebuffer.每次对framebuffer做修改时,并不是对指定bits直接置1或是置0,而是对他做一个异或(new &#x3D; set^old)</p>
+<h3 id="外设"><a href="#外设" class="headerlink" title="外设"></a>外设</h3><p>需要映射16key(0~F)的键盘,1bit Sound Channel,以及用于显示的屏幕.</p>
+<p>CHIP-8内部的键盘布局是这样的:</p>
+<p><img src="/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/chip8_4f8b88af8b964c9321912d73f5259349.png"></p>
+<p>对此,我们可以从上到下,从左到右,映射为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 2 3 4</span><br><span class="line">Q W E R</span><br><span class="line">A S D F</span><br><span class="line">Z X C V</span><br></pre></td></tr></table></figure>
+
+<p>屏幕的显示可以用picturebox来实现.</p>
+<hr>
+<h2 id="指令集"><a href="#指令集" class="headerlink" title="指令集"></a>指令集</h2><p>CHIP-8的指令是定长的,为2字节.</p>
+<ul>
+<li>0nnn - SYS addr</li>
+</ul>
+<p>Jump to a machine code routine at nnn. This instruction is only used on the old computers on which Chip-8<br>was originally implemented. It is ignored by modern interpreters. This will not be implemented.</p>
+<p>我们无需实现,可以当nop处理.</p>
+<ul>
+<li>00E0 - CLS</li>
+</ul>
+<p>Clear the display.</p>
+<p>清除显存.</p>
+<ul>
+<li>00EE - RET</li>
+</ul>
+<p>Return from a subroutine.The interpreter sets the program counter to the address at the top of the stack,<br>then subtracts 1 from the stack pointer.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PC = stack[SP--];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1nnn - JP addr</li>
+</ul>
+<p>Jump to location nnn. The interpreter sets the program counter to nnn.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PC = 0xnnn;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2nnn - CALL addr</li>
+</ul>
+<p>Call subroutine at nnn. The interpreter increments the stack pointer, then puts the current PC on the top<br>of the stack. The PC is then set to nnn.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stack[++SP] = PC;</span><br><span class="line">PC = nnn;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3xkk - SE Vx, byte</li>
+</ul>
+<p>Skip next instruction if Vx &#x3D; kk. The interpreter compares register Vx to kk, and if they are equal,<br>increments the program counter by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(Vx == kk) PC+=2;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4xkk - SNE Vx, byte</li>
+</ul>
+<p>Skip next instruction if Vx !&#x3D; kk. The interpreter compares register Vx to kk, and if they are not equal,<br>increments the program counter by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(Vx != kk) PC+=2;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5xy0 - SE Vx, Vy</li>
+</ul>
+<p>Skip next instruction if Vx &#x3D; Vy. The interpreter compares register Vx to register Vy, and if they are equal,<br>increments the program counter by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(Vx == Vy) PC+=2;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>6xkk - LD Vx, byte</li>
+</ul>
+<p>Set Vx &#x3D; kk. The interpreter puts the value kk into register Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx = kk;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>7xkk - ADD Vx, byte</li>
+</ul>
+<p>Set Vx &#x3D; Vx + kk. Adds the value kk to the value of register Vx, then stores the result in Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx += kk;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy0 - LD Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vy. Stores the value of register Vy in register Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx = Vy;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy1 - OR Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vx OR Vy. Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx. A<br>bitwise OR compares the corresponding bits from two values, and if either bit is 1, then the same bit in the<br>result is also 1. Otherwise, it is 0.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx |= Vy;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy2 - AND Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vx AND Vy. Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx.<br>A bitwise AND compares the corresponding bits from two values, and if both bits are 1, then the same bit<br>in the result is also 1. Otherwise, it is 0.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx &amp;= Vy;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy3 - XOR Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vx XOR Vy. Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result<br>in Vx. An exclusive OR compares the corresponding bits from two values, and if the bits are not both the<br>same, then the corresponding bit in the result is set to 1. Otherwise, it is 0.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx ^= Vy;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy4 - ADD Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vx + Vy, set VF &#x3D; carry. The values of Vx and Vy are added together. If the result is greater<br>than 8 bits (i.e., ¿ 255,) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored<br>in Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VF = (Vx &gt; 255 - Vy) ? 1 : 0;</span><br><span class="line">Vx += Vy;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy5 - SUB Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vx - Vy, set VF &#x3D; NOT borrow. If Vx ¿ Vy, then VF is set to 1, otherwise 0. Then Vy is<br>subtracted from Vx, and the results stored in Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VF = (Vx &gt; Vy) ? 1 : 0;</span><br><span class="line">Vx -= Vy;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy6 - SHR Vx {, Vy}</li>
+</ul>
+<p>Set Vx &#x3D; Vx SHR 1. If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is<br>divided by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VF = (Vx &amp; 1) ? 1 : 0;</span><br><span class="line">Vx &gt;&gt;= 1;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xy7 - SUBN Vx, Vy</li>
+</ul>
+<p>Set Vx &#x3D; Vy - Vx, set VF &#x3D; NOT borrow. If Vy ¿ Vx, then VF is set to 1, otherwise 0. Then Vx is<br>subtracted from Vy, and the results stored in Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VF = (Vy &gt; Vx) ? 1 : 0;</span><br><span class="line">Vx = Vy - Vx;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>8xyE - SHL Vx {, Vy}</li>
+</ul>
+<p>Set Vx &#x3D; Vx SHL 1. If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is<br>multiplied by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VF = (Vx &gt;&gt; 7) ? 1 : 0;</span><br><span class="line">Vx &lt;&lt;= 1;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>9xy0 - SNE Vx, Vy</li>
+</ul>
+<p>Skip next instruction if Vx !&#x3D; Vy. The values of Vx and Vy are compared, and if they are not equal, the<br>program counter is increased by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(Vx != Vy) PC += 2;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Annn - LD I, addr</li>
+</ul>
+<p>Set I &#x3D; nnn. The value of register I is set to nnn.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">I = nnn;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Bnnn - JP V0, addr</li>
+</ul>
+<p>Jump to location nnn + V0. The program counter is set to nnn plus the value of V0.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PC = V0 + nnn;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Cxkk - RND Vx, byte</li>
+</ul>
+<p>Set Vx &#x3D; random byte AND kk. The interpreter generates a random number from 0 to 255, which is then<br>ANDed with the value kk. The results are stored in Vx. See instruction 8xy2 for more information on AND.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx = randnum &amp; kk;//randnum: 0 ~ 255</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Dxyn - DRW Vx, Vy, nibble</li>
+</ul>
+<p>Display n-byte sprite starting at memory location I at (Vx, Vy), set VF &#x3D; collision. The interpreter reads n<br>bytes from memory, starting at the address stored in I. These bytes are then displayed as sprites on screen<br>at coordinates (Vx, Vy). Sprites are XOR’d onto the existing screen. If this causes any pixels to be erased,<br>VF is set to 1, otherwise it is set to 0. If the sprite is positioned so part of it is outside the coordinates of<br>the display, it wraps around to the opposite side of the screen.</p>
+<p>这个指令有点复杂,解释一下,framebuf是bit为单位的.</p>
+<p>从memory[I]取出1byte,展开为8bits:7654 3210,<br>framebuf[Vx+0,Vy] ^&#x3D; bit7;<br>framebuf[Vx+1,Vy] ^&#x3D; bit6;<br>…<br>framebuf[Vx+7,Vy] ^&#x3D; bit0;<br>这么一步操作是1nibble.<br>假设此处传进来的nibble是2,那么下一步就是从memory[I+1]取出1byte,展开为8bits,<br>framebuf[Vx+0,Vy+1] ^&#x3D; bit7;<br>framebuf[Vx+1,Vy+1] ^&#x3D; bit6;<br>…<br>framebuf[Vx+7,Vy+1] ^&#x3D; bit0;</p>
+<p>在整个操作中,如果framebuf有一个bit从1变成了0,那么设置VF为1,否则为0.</p>
+<ul>
+<li>Ex9E - SKP Vx</li>
+</ul>
+<p>Skip next instruction if key with the value of Vx is pressed. Checks the keyboard, and if the key corresponding<br>to the value of Vx is currently in the down position, PC is increased by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if(key[Vx])&#123;//pressed</span><br><span class="line">    PC+=2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>ExA1 - SKNP Vx</li>
+</ul>
+<p>Skip next instruction if key with the value of Vx is not pressed. Checks the keyboard, and if the key<br>corresponding to the value of Vx is currently in the up position, PC is increased by 2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if(!key[Vx])&#123;//unpressed</span><br><span class="line">    PC+=2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx07 - LD Vx, DT</li>
+</ul>
+<p>Set Vx &#x3D; delay timer value. The value of DT is placed into Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vx = DT;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx0A - LD Vx, K</li>
+</ul>
+<p>Wait for a key press, store the value of the key in Vx. All execution stops until a key is pressed, then the<br>value of that key is stored in Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">for (byte i = 0; i &lt; 0x10; i++)</span><br><span class="line">&#123;</span><br><span class="line">    if (key[i] == 1)</span><br><span class="line">    &#123;</span><br><span class="line">        Vx = i;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PC -= 2;//如果所有键都没有按下,延时后重新执行这条指令.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx15 - LD DT, Vx</li>
+</ul>
+<p>Set delay timer &#x3D; Vx. Delay Timer is set equal to the value of Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DT = Vx;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx18 - LD ST, Vx</li>
+</ul>
+<p>Set sound timer &#x3D; Vx. Sound Timer is set equal to the value of Vx.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ST = Vx;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx1E - ADD I, Vx</li>
+</ul>
+<p>Set I &#x3D; I + Vx. The values of I and Vx are added, and the results are stored in I.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">I += Vx;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx29 - LD F, Vx</li>
+</ul>
+<p>Set I &#x3D; location of sprite for digit Vx. The value of I is set to the location for the hexadecimal sprite<br>corresponding to the value of Vx. See section 2.4, Display, for more information on the Chip-8 hexadecimal<br>font. To obtain this value, multiply VX by 5 (all font data stored in first 80 bytes of memory).</p>
+<p>将Vx的值所对应的字体在内存中的位置赋给I.由于0~F在内存中是按顺序存储在开头的80字节中.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">I = Vx * 5;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx33 - LD B, Vx</li>
+</ul>
+<p>Store BCD representation of Vx in memory locations I, I+1, and I+2. The interpreter takes the decimal<br>value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and<br>the ones digit at location I+2.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Mem[I + 0] = (byte)((Vx / 100) % 10);</span><br><span class="line">Mem[I + 1] = (byte)((Vx / 10) % 10);</span><br><span class="line">Mem[I + 2] = (byte)(Vx % 10);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fx55 - LD [I], Vx</li>
+</ul>
+<p>Stores V0 to VX in memory starting at address I. I is then set to I + x + 1.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for (byte i = 0; i &lt;= x; i++)</span><br><span class="line">&#123;</span><br><span class="line">	Mem[I + i] = V[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>Fx65 - LD Vx, [I]</li>
+</ul>
+<p>Fills V0 to VX with values from memory starting at address I. I is then set to I + x + 1.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for (byte i = 0; i &lt;= x; i++)</span><br><span class="line">&#123;</span><br><span class="line">	V[i] = Mem[I + i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>见github源码吧.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/veritas501/CHIP-8_Emulator">https://github.com/veritas501/CHIP-8_Emulator</a></p>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/CHIP-8">https://en.wikipedia.org/wiki/CHIP-8</a><br><a target="_blank" rel="noopener" href="http://www.cs.columbia.edu/~sedwards/classes/2016/4840-spring/designs/Chip8.pdf">http://www.cs.columbia.edu/~sedwards&#x2F;classes&#x2F;2016&#x2F;4840-spring&#x2F;designs&#x2F;Chip8.pdf</a><br><a target="_blank" rel="noopener" href="https://github.com/massung/CHIP-8">https://github.com/massung/CHIP-8</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">硬件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.1.</span> <span class="toc-text">寄存器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98"><span class="toc-number">1.2.</span> <span class="toc-text">内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E8%AE%BE"><span class="toc-number">1.3.</span> <span class="toc-text">外设</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">指令集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">具体实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&text=从零开始写一个CHIP-8模拟器"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&is_video=false&description=从零开始写一个CHIP-8模拟器"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=从零开始写一个CHIP-8模拟器&body=Check out this article: https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&title=从零开始写一个CHIP-8模拟器"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&name=从零开始写一个CHIP-8模拟器&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2018_02_20-%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%86%99%E4%B8%80%E4%B8%AACHIP_8%E6%A8%A1%E6%8B%9F%E5%99%A8/&t=从零开始写一个CHIP-8模拟器"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

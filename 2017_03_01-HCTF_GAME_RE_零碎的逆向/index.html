@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="首先不要误会，这几道题不是因为简单而放在零碎中。 思维混乱的出题人下载：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1i57edOp 密码：61z7 说句实话，我做完后感觉这题的确有些混乱，我尽量简单的说。 先随便跑跑，发现随便输入最后会显示What do you his mother&#39;s want to do!，OD载入，查找字符串，发现3个比较可疑的字符串tutushigecaiji">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HCTF GAME RE - 零碎的逆向">
+<meta property="og:url" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="首先不要误会，这几道题不是因为简单而放在零碎中。 思维混乱的出题人下载：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1i57edOp 密码：61z7 说句实话，我做完后感觉这题的确有些混乱，我尽量简单的说。 先随便跑跑，发现随便输入最后会显示What do you his mother&#39;s want to do!，OD载入，查找字符串，发现3个比较可疑的字符串tutushigecaiji">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222815023.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222846586.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222851892.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222857486.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222901493.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223201588.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223205506.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223210869.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223214646.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223218209.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223223432.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223227740.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223232494.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223236084.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223240319.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223246619.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223611606.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223615371.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223619184.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223622887.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/img_QndsbTdhbEtXdVJkblREbGZFN3NXRlVUcTZxTmNHNHhoVjRRcDFBWXpFREk5MVNyMkZxejJnPT0.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/img_QndsbTdhbEtXdVJkblREbGZFN3NXQnhvZzBqUGx5QTBvOEFKcW54M3hEd0J1cTVxYVduQlp3PT0.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/img_QndsbTdhbEtXdVJkblREbGZFN3NXSGJtdW1vWnh0L25nOWRKZFgrVGRLZnNKb1YwV05JUTJnPT0.png">
+<meta property="article:published_time" content="2017-02-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.338Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="RE">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="HCTF GAME">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222815023.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>HCTF GAME RE - 零碎的逆向</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_03_01-HCTF_GAME_RE_JAVA%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_03_01_HCTF_GAME_RE_Windows%E7%A4%BC%E5%8C%85/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&text=HCTF GAME RE - 零碎的逆向"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&is_video=false&description=HCTF GAME RE - 零碎的逆向"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HCTF GAME RE - 零碎的逆向&body=Check out this article: https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&name=HCTF GAME RE - 零碎的逆向&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&t=HCTF GAME RE - 零碎的逆向"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E7%BB%B4%E6%B7%B7%E4%B9%B1%E7%9A%84%E5%87%BA%E9%A2%98%E4%BA%BA"><span class="toc-number">1.</span> <span class="toc-text">思维混乱的出题人</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-shell"><span class="toc-number">2.</span> <span class="toc-text">easy-shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#coder"><span class="toc-number">3.</span> <span class="toc-text">coder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A5%87%E6%80%AA%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">奇怪的代码</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        HCTF GAME RE - 零碎的逆向
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-02-28T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-03-01</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.338Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/CTF/" rel="tag">CTF</a>, <a class="p-category" href="/tags/HCTF-GAME/" rel="tag">HCTF GAME</a>, <a class="p-category" href="/tags/RE/" rel="tag">RE</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>首先不要误会，这几道题不是因为简单而放在零碎中。</p>
+<h2 id="思维混乱的出题人"><a href="#思维混乱的出题人" class="headerlink" title="思维混乱的出题人"></a>思维混乱的出题人</h2><p>下载：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1i57edOp">http://pan.baidu.com/s/1i57edOp</a> 密码：61z7</p>
+<p>说句实话，我做完后感觉这题的确有些混乱，我尽量简单的说。</p>
+<p>先随便跑跑，发现随便输入最后会显示<code>What do you his mother&#39;s want to do!</code>，OD载入，查找字符串，发现3个比较可疑的字符串<code>tutushigecaiji</code>，<code>aGN0ZntpdF9pc19ub3RfZmxhZyF9</code>和<code>What do you his mother&#39;s want to do!</code>，第一个字符串让我感觉到了出题者和土土<s>某种微妙的关系</s>。动态调试后可知0x013E2B70是一个gets之类获取用户输入的函数，不是重点，略过。<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222815023.png"><br>比较微妙的是，当我们f8小心单步后可以发现：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222846586.png"></p>
+<p> 当我们执行完CALL 0x13E1070后，字符串<code>hctf&#123;it_is_not_flag!&#125;</code>出现在了我们的堆栈区，所以我用IDA看了一下这个CALL，发现0x61（‘&#x3D;’）这个字节：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222851892.png"></p>
+<p>理所当然的想到了base64，拿<code>aGN0ZntpdF9pc19ub3RfZmxhZyF9</code>进行base64解密得到了我们看到的字符串<code>hctf&#123;it_is_not_flag!&#125;</code>，合理推测flag应该是由某个base64字串解密得到。</p>
+<p>回头看一下，我们现在还有一个字符串没有用到：<code>tutushigecaiji</code>，我们总不能把出题人想的这么坏，写个和题目无关的字符串只为了<s>吐槽</s>一下土土吧？我们到字符串的附近下断，动态跟踪一下，发现此处：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222857486.png"></p>
+<p>程序在循环利用写在0x0059F6E4出的字节码进行某种解密，我们就在跳转的前面轻轻摁一下f4，发现此时数据窗口出现了两个可疑字符串：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215222901493.png"></p>
+<p>我们把它拼起来，得到<code>aGN0ZntJdF8xc190aDNfZmxhRyF9</code>,base64解密一下得到flag：<code>hctf&#123;It_1s_th3_flaG!&#125;</code></p>
+<h2 id="easy-shell"><a href="#easy-shell" class="headerlink" title="easy-shell"></a>easy-shell</h2><p>下载：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1i5OEU5v">http://pan.baidu.com/s/1i5OEU5v</a> 密码：6x5w</p>
+<p>首先扫下壳：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223201588.png"></p>
+<p>正如文件的名字，是个vmp壳，说真的我挺害怕这个壳的。</p>
+<p><strong>前排提醒：此处调试用的OD不能是原版OD，你可以使用网上各大论坛改的OD，比如52pojie，学破解，飘云阁等等。调试时需要Strong OD，FKVMP，忽略异常等。（你应该需要在XP上调试）</strong></p>
+<p>OD载入，先如下设置：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223205506.png"></p>
+<p>在此时的代码处右键选择FKVMP&gt;&gt;start，点击OD上方的L按钮，找到retn：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223210869.png"></p>
+<p>记录retn的地址：<code>0x00571903</code></p>
+<p>接着在OD上下断点：<code>bp VirtualProtect</code>，按f9运行，观察堆栈区：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223214646.png"></p>
+<p>直到NewProtect &#x3D; READONLY：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223218209.png"></p>
+<p>此时alt+B，断点界面取消或禁用断点，然后alt+M，对text段下内存访问断点：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223223432.png"></p>
+<p>f9一下，取消text段的访问断点，来到这里：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223227740.png"></p>
+<p>掏出我们之前记录下的retn地址：ctrl+G转到然后f2下断：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223232494.png"></p>
+<p>f9一下，取消retn的断点，再对text段下内存访问断点，f9一下，来到了我们的oep：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223236084.png"></p>
+<p>（此时我们可以对oep下硬件执行断点，方便下次调试，不用再重复之前那些动作）</p>
+<p>我们现在可以用lordpe dump一下镜像，虽然IAT没有修复，但是IDA还是能分析部分的。</p>
+<p>ida载入，找到关键函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">sub_401000</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> v0; <span class="comment">// eax@1</span></span><br><span class="line">  <span class="type">int</span> v1; <span class="comment">// esi@1</span></span><br><span class="line">  <span class="type">signed</span> <span class="type">int</span> v2; <span class="comment">// eax@2</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v3; <span class="comment">// eax@4</span></span><br><span class="line">  <span class="type">char</span> *v4; <span class="comment">// ecx@4</span></span><br><span class="line">  <span class="type">char</span> *v5; <span class="comment">// edx@4</span></span><br><span class="line">  __int16 v7; <span class="comment">// [sp+8h] [bp-50h]@1</span></span><br><span class="line">  <span class="type">char</span> v8; <span class="comment">// [sp+Ah] [bp-4Eh]@1</span></span><br><span class="line">  <span class="type">char</span> v9; <span class="comment">// [sp+Ch] [bp-4Ch]@1</span></span><br><span class="line">  __int16 v10; <span class="comment">// [sp+24h] [bp-34h]@1</span></span><br><span class="line">  <span class="type">char</span> v11[<span class="number">28</span>]; <span class="comment">// [sp+28h] [bp-30h]@2</span></span><br><span class="line">  <span class="type">int</span> v12; <span class="comment">// [sp+44h] [bp-14h]@1</span></span><br><span class="line">  __int16 v13; <span class="comment">// [sp+48h] [bp-10h]@1</span></span><br><span class="line">  <span class="type">int</span> v14; <span class="comment">// [sp+4Ch] [bp-Ch]@1</span></span><br><span class="line">  <span class="type">char</span> v15; <span class="comment">// [sp+50h] [bp-8h]@1</span></span><br><span class="line"></span><br><span class="line">  v8 = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">qmemcpy</span>(&amp;v9, word_40B90C, <span class="number">24u</span>);</span><br><span class="line">  <span class="built_in">LOBYTE</span>(v13) = <span class="number">0</span>;</span><br><span class="line">  v7 = <span class="number">0x201</span>;</span><br><span class="line">  v15 = <span class="number">0</span>;</span><br><span class="line">  v12 = <span class="number">0x4030201</span>;</span><br><span class="line">  <span class="built_in">LOBYTE</span>(v12) = <span class="string">&#x27;f&#x27;</span>;</span><br><span class="line">  <span class="built_in">BYTE1</span>(v12) ^= <span class="string">&#x27;n&#x27;</span>;</span><br><span class="line">  <span class="built_in">HIWORD</span>(v12) = <span class="string">&#x27;ga&#x27;</span>;                           <span class="comment">// flag</span></span><br><span class="line">  v14 = <span class="number">0x4030201</span>;</span><br><span class="line">  v10 = word_40B90C[<span class="number">12</span>];</span><br><span class="line">  v13 = <span class="number">0</span>;</span><br><span class="line">  v0 = <span class="built_in">sub_401311</span>((<span class="type">int</span>)&amp;v12, (<span class="type">int</span>)&amp;unk_40B928); <span class="comment">// &#x27;r&#x27; </span></span><br><span class="line">  v1 = v0;</span><br><span class="line">  <span class="keyword">if</span> ( v0 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">sub_40111D</span>(v11, <span class="number">26</span>, v0);</span><br><span class="line">    <span class="built_in">sub_4014E4</span>(v1);</span><br><span class="line">    <span class="built_in">LOBYTE</span>(v7) = v7 ^ <span class="string">&#x27;f&#x27;</span>;                      <span class="comment">// gg</span></span><br><span class="line">    <span class="built_in">HIBYTE</span>(v7) ^= <span class="string">&#x27;e&#x27;</span>;</span><br><span class="line">    <span class="built_in">LOBYTE</span>(v14) = v14 ^ <span class="string">&#x27;b&#x27;</span>;                    <span class="comment">// cool</span></span><br><span class="line">    <span class="built_in">BYTE1</span>(v14) ^= <span class="string">&#x27;m&#x27;</span>;</span><br><span class="line">    <span class="built_in">BYTE2</span>(v14) ^= <span class="string">&#x27;l&#x27;</span>;</span><br><span class="line">    <span class="built_in">BYTE3</span>(v14) ^= <span class="string">&#x27;h&#x27;</span>;</span><br><span class="line">    v2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v11[v2] = (v11[v2] - <span class="number">3</span>) ^ <span class="string">&#x27;3&#x27;</span>;</span><br><span class="line">      ++v2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( v2 &lt; <span class="number">25</span> );</span><br><span class="line">    v3 = <span class="number">25</span>;</span><br><span class="line">    v4 = v11;</span><br><span class="line">    v5 = &amp;v9;</span><br><span class="line">    <span class="keyword">while</span> ( *(_DWORD *)v5 == *(_DWORD *)v4 )</span><br><span class="line">    &#123;</span><br><span class="line">      v3 -= <span class="number">4</span>;</span><br><span class="line">      v4 += <span class="number">4</span>;</span><br><span class="line">      v5 += <span class="number">4</span>;</span><br><span class="line">      <span class="keyword">if</span> ( v3 &lt; <span class="number">4</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( *v4 != *v5 )</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="built_in">sub_401328</span>(&amp;v14);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">sub_401328</span>(&amp;v7);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>忽略中间的n多细节，我们只看两段：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v11[v2] = (v11[v2] - <span class="number">3</span>) ^ <span class="string">&#x27;3&#x27;</span>;</span><br><span class="line">      ++v2;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">while</span> ( v2 &lt; <span class="number">25</span> );</span><br><span class="line">...</span><br><span class="line"><span class="keyword">while</span> ( *(_DWORD *)v5 == *(_DWORD *)v4 )</span><br><span class="line">&#123;</span><br><span class="line">	v3 -= <span class="number">4</span>;</span><br><span class="line">	v4 += <span class="number">4</span>;</span><br><span class="line">	v5 += <span class="number">4</span>;</span><br><span class="line">	<span class="keyword">if</span> ( v3 &lt; <span class="number">4</span> )</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> ( *v4 != *v5 )</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="built_in">sub_401328</span>(&amp;v14); <span class="comment">//打印函数（cool）</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">sub_401328</span>(&amp;v7);<span class="comment">//打印函数（GG）</span></span><br></pre></td></tr></table></figure>
+<p>结合OD动态调试，我们发现，函数是将写在0x0012ff48处的数据做<code>byte = (byte - 3) ^ &#39;3&#39;</code>变换：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223240319.png"></p>
+<p>然后和写在0x0012FF2C处的数据一位一位比较，如果相同则输出’cool‘：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223246619.png"></p>
+<p>由此用py写出反函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">enc = [<span class="number">0x56</span>,<span class="number">0x53</span>,<span class="number">0x42</span>,<span class="number">0x50</span>,<span class="number">0x4B</span>,<span class="number">0x5F</span>,<span class="number">0x56</span>,<span class="number">0x6F</span>,<span class="number">0x65</span>,<span class="number">0x7F</span>,<span class="number">0x61</span>,<span class="number">0x6F</span>,<span class="number">0x0D</span>,<span class="number">0x7C</span>,<span class="number">0x71</span>,<span class="number">0x6F</span>,<span class="number">0x63</span>,<span class="number">0x7F</span>,<span class="number">0x6F</span>,<span class="number">0x63</span>,<span class="number">0x79</span>,<span class="number">0x0D</span>,<span class="number">0x7C</span>,<span class="number">0x62</span>,<span class="number">0x49</span>]</span><br><span class="line">dec=[]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(enc)):</span><br><span class="line">	dec.append(<span class="built_in">chr</span>(((enc[i])^<span class="number">0x33</span>)+<span class="number">3</span>))</span><br><span class="line"><span class="built_in">print</span> <span class="string">&#x27;&#x27;</span>.join(dec)</span><br><span class="line"></span><br><span class="line"><span class="comment">#hctf&#123;oh_YOU_ARE_SO_SMART&#125;</span></span><br></pre></td></tr></table></figure>
+<p>得flag：<code>hctf&#123;oh_YOU_ARE_SO_SMART&#125;</code></p>
+<p>后话：如果你知道vs编译出来的程序的用户函数一般都从data段最前面开始，而且你有成功猜到这道题的主函数在0x401000处的话，这道题会简单很多：首先下一个退出断点：BP ExitProcess，运行后断下，ctrl+G来到401000，发现代码完整，接着在数据窗口ctrl+G来到401000，对401000下硬件执行断点，重新载入，f9运行，程序成功断在401000处，然后和上面一样，很快就解得了flag。</p>
+<h2 id="coder"><a href="#coder" class="headerlink" title="coder"></a>coder</h2><p>下载：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1c1ZyuM8">http://pan.baidu.com/s/1c1ZyuM8</a> 密码：mugh</p>
+<p>一开始，我是打算用正常的做re题的方法来解的，先跑跑，逆代码，分析，写反函数之类的来解，但我失败了，大概是水平不够。但我们依然有方法解题。</p>
+<p>惯例扔到ida里，在main函数的加密函数中有如下一段：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;encrypt ok, your key is &quot;</span>, buf);</span><br><span class="line"><span class="keyword">for</span> ( k = <span class="number">0</span>; k &lt;= <span class="number">4</span>; ++k )</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%02x&quot;</span>, *((_BYTE *)&amp;pt_key1 + k));</span><br><span class="line"><span class="keyword">for</span> ( l = <span class="number">0</span>; l &lt;= <span class="number">9</span>; ++l )</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%02x&quot;</span>, *((_BYTE *)&amp;pt_key2 + l));</span><br><span class="line"><span class="keyword">for</span> ( m = <span class="number">0</span>; m &lt; size; ++m )</span><br><span class="line">&#123;</span><br><span class="line">  *((_BYTE *)&amp;pt_key1 + m % <span class="number">5</span>) = <span class="built_in">sub_401766</span>(*((_BYTE *)&amp;pt_key1 + m % <span class="number">5</span>), <span class="number">2u</span>);</span><br><span class="line">  *((_BYTE *)&amp;pt_key2 + m % <span class="number">10</span>) = <span class="built_in">sub_401766</span>(*((_BYTE *)&amp;pt_key2 + m % <span class="number">10</span>), <span class="number">4u</span>);</span><br><span class="line">  *((_BYTE *)buf + m) ^= *((_BYTE *)&amp;pt_key1 + m % <span class="number">5</span>) ^ *((_BYTE *)&amp;pt_key2 + m % <span class="number">10</span>);<span class="comment">// 将原始文件读入内存，在内存中加密，然后写出</span></span><br><span class="line">&#125;</span><br><span class="line">v8 = <span class="built_in">open</span>(*(<span class="type">const</span> <span class="type">char</span> **)(v12 + <span class="number">24</span>), <span class="number">0x41</span>, <span class="number">0x1B6</span>LL);</span><br><span class="line"><span class="built_in">write</span>(v8, buf, size);</span><br><span class="line"><span class="built_in">close</span>(v8);</span><br><span class="line"><span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line"><span class="built_in">free</span>(buf);</span><br></pre></td></tr></table></figure>
+<p>由此我们知道，key1为5位，key2为10位，加密过程可以大致表示为：<br><code>enc[i] ^= key3[i%10]</code>，其中key3为10位，<code>key3[i] = key1[i%5] ^ key2[i]</code>。</p>
+<p>但我们现在不知道sub_401766函数是做什么的，起初我怀疑这个函数会对key做某种变换，导致每一轮加密用的key都不一样（满足某种函数关系），我试着分析了一下，但关系实在不好找，以为要GG，但我们打开flag.mp4文件，看到文件尾部为：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223611606.png"></p>
+<p>非常整齐，十个一组，所以我的顾虑打消了，key3应该是不会改变的。</p>
+<p>flag的格式为mp4，这个条件我们不能漏下，我随便打开了我硬盘上的几个mp4文件，发现前八个字节都是相同的，为<br><code>dec1 = [0x00,0x00,0x00,0x20,0x66,0x74,0x79,0x70]</code>：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223615371.png"></p>
+<p>而加密后的文件头8个字节为：<code>enc1 = [0xFC,0x3E,0x96,0x1E,0xFE,0xDC,0xD9,0x32]</code></p>
+<p>我们将两者进行异或，得到<code>xor1 = [0xFC,0x3E,0x96,0x3E,0x98,0xA8,0xA0,0x42]</code></p>
+<p>如果没有猜错，文件的结尾出应该是一串相同的字符，就像我手头的这个文件一样：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223619184.png"></p>
+<p>那么我们用python脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">file_end = [<span class="number">0x3e</span>,<span class="number">0x96</span>,<span class="number">0x06</span>,<span class="number">0x98</span>,<span class="number">0xa8</span>,<span class="number">0xa0</span>,<span class="number">0x42</span>,<span class="number">0x34</span>,<span class="number">0x8a</span>,<span class="number">0xfc</span>,<span class="number">0x3e</span>,<span class="number">0x96</span>,<span class="number">0x06</span>,<span class="number">0x98</span>,<span class="number">0xa8</span>,<span class="number">0xa0</span>,<span class="number">0x42</span>,<span class="number">0x34</span>,<span class="number">0x8a</span>,<span class="number">0xfc</span>]</span><br><span class="line">xor1 = [<span class="number">0xFC</span>,<span class="number">0x3E</span>,<span class="number">0x96</span>,<span class="number">0x3E</span>,<span class="number">0x98</span>,<span class="number">0xA8</span>,<span class="number">0xA0</span>,<span class="number">0x42</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">	<span class="built_in">print</span> <span class="string">&#x27;i=&#x27;</span>,i</span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">		<span class="built_in">print</span> xor1[j]^file_end[i+j]</span><br><span class="line">	<span class="built_in">print</span> <span class="string">&#x27;====&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>观察输出有如下一段：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">====</span><br><span class="line">i= <span class="number">9</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">56</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line">====</span><br></pre></td></tr></table></figure>
+<p>这就验证了我们的猜想，只是flag.mp4的文件头的第4字节和我手头的MP4文件不同。根据file_end，从而我们得到了真正的<code>key3 = [0xFC,0x3E,0x96,0x06,0x98,0xA8,0xA0,0x42,0x34,0x8a]</code></p>
+<p>我们利用key3对flag.mp4进行解密：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">key3 = [<span class="number">0xFC</span>,<span class="number">0x3E</span>,<span class="number">0x96</span>,<span class="number">0x06</span>,<span class="number">0x98</span>,<span class="number">0xA8</span>,<span class="number">0xA0</span>,<span class="number">0x42</span>,<span class="number">0x34</span>,<span class="number">0x8a</span>]</span><br><span class="line">i=<span class="number">0</span></span><br><span class="line">fp = <span class="built_in">open</span>(<span class="string">r&#x27;D:\flag.mp4&#x27;</span>,<span class="string">&#x27;rb&#x27;</span>)</span><br><span class="line">stream = <span class="built_in">list</span>(fp.read())</span><br><span class="line">fp.close()</span><br><span class="line">out = []</span><br><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> stream:</span><br><span class="line">	out.append(<span class="built_in">chr</span>(<span class="built_in">ord</span>(ch)^key3[i%<span class="number">10</span>]))</span><br><span class="line">	i += <span class="number">1</span></span><br><span class="line">out = <span class="string">&#x27;&#x27;</span>.join(out)</span><br><span class="line">fp = <span class="built_in">open</span>(<span class="string">r&#x27;D:\flag_dec.mp4&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">fp.write(out)</span><br><span class="line">fp.close()</span><br></pre></td></tr></table></figure>
+<p>打开解密后的视频：<br><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/20170215223622887.png"><br>嗯，flag：<code>hctf&#123;L0ng_CSS_Seems_SHORT!&#125;</code></p>
+<h2 id="奇怪的代码"><a href="#奇怪的代码" class="headerlink" title="奇怪的代码"></a>奇怪的代码</h2><p>下载：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1nvjruXV">http://pan.baidu.com/s/1nvjruXV</a> 密码：3y72</p>
+<p>题目描述：</p>
+<blockquote>
+<p>部分思路来自：<a target="_blank" rel="noopener" href="https://github.com/xoreaxeaxeax/movfuscator">https://github.com/xoreaxeaxeax/movfuscator</a>  ，但比这个要简单的多</p>
+</blockquote>
+<p>首先看了上面那和github的网站，是一个混淆器，可以生成只含有mov指令的程序，作者是这样说的：</p>
+<blockquote>
+<p>The M&#x2F;o&#x2F;Vfuscator (short ‘o’, sounds like “mobfuscator”) compiles programs into “mov” instructions, and only “mov” instructions. Arithmetic, comparisons, jumps, function calls, and everything else a program needs are all performed through mov operations; there is no self-modifying code, no transport-triggered calculation, and no other form of non-mov cheating.</p>
+<p>The basic effects of the process can be seen in overview, which illustates compiling a simple prime number function with gcc and the M&#x2F;o&#x2F;Vfuscator.</p>
+</blockquote>
+<p>而这题只有一个函数是被混淆的。</p>
+<p>首先ida载入，大致分析完了程序的流程：</p>
+<p>main函数：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/img_QndsbTdhbEtXdVJkblREbGZFN3NXRlVUcTZxTmNHNHhoVjRRcDFBWXpFREk5MVNyMkZxejJnPT0.png"></p>
+<p>make_arr()生成数组：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/img_QndsbTdhbEtXdVJkblREbGZFN3NXQnhvZzBqUGx5QTBvOEFKcW54M3hEd0J1cTVxYVduQlp3PT0.png"></p>
+<p>check校验函数：</p>
+<p><img src="/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/img_QndsbTdhbEtXdVJkblREbGZFN3NXSGJtdW1vWnh0L25nOWRKZFgrVGRLZnNKb1YwV05JUTJnPT0.png"></p>
+<p>其中最主要的就是check函数了。</p>
+<p>首先分析出了4种array里的数据所满足的关系：</p>
+<p>arr1[x] &#x3D; (x&#x2F;256)^(x%256)<br>arr2[x] &#x3D; x<br>arr3[x] &#x3D; 256*x<br>arr4[x] &#x3D; 4*x</p>
+<p>由此可用python写出解密函数(不想仔细分析了，直接爆破)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">arr1</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">return</span> (n//<span class="number">256</span>)^(n%<span class="number">256</span>)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">arr3</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">256</span>*n</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">arr4</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">4</span>*n</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">magic</span>(<span class="params">n</span>):</span><br><span class="line">    num=[<span class="number">0x11</span>,<span class="number">0x22</span>,<span class="number">0x33</span>,<span class="number">0x44</span>,<span class="number">0x55</span>,<span class="number">0x66</span>,<span class="number">0x77</span>,<span class="number">0x88</span>]</span><br><span class="line">    <span class="keyword">return</span> num[n]</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">mag,enc_list</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">        enc1=arr1(arr3(mag)+i)</span><br><span class="line">        <span class="keyword">if</span> enc1 == enc_list[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">                enc2 = arr1(arr3(enc1)+j)</span><br><span class="line">                <span class="keyword">if</span> enc2 == enc_list[<span class="number">1</span>]:</span><br><span class="line">                    <span class="keyword">for</span> m <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">                        enc3 = arr1(arr3(enc2)+m)</span><br><span class="line">                        <span class="keyword">if</span> enc3 == enc_list[<span class="number">2</span>]:</span><br><span class="line">                            <span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">256</span>):</span><br><span class="line">                                enc4 = arr1(arr3(enc3)+n)</span><br><span class="line">                                <span class="keyword">if</span> enc4 == enc_list[<span class="number">3</span>]:</span><br><span class="line">                                    <span class="keyword">return</span> <span class="built_in">chr</span>(i)+<span class="built_in">chr</span>(j)+<span class="built_in">chr</span>(m)+<span class="built_in">chr</span>(n)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">flag_enc=[<span class="number">0x79</span>,<span class="number">0x1E</span>,<span class="number">0x7F</span>,<span class="number">0x12</span>,<span class="number">0x47</span>,<span class="number">0x3C</span>,<span class="number">0x55</span>,<span class="number">0x26</span>,<span class="number">0x6C</span>,<span class="number">0x05</span>,<span class="number">0x71</span>,<span class="number">0x2E</span>,<span class="number">0x2D</span>,<span class="number">0x43</span>,<span class="number">0x37</span>,<span class="number">0x52</span>,<span class="number">0x27</span>,<span class="number">0x54</span>,<span class="number">0x20</span>,<span class="number">0x49</span>,<span class="number">0x08</span>,<span class="number">0x6F</span>,<span class="number">0x30</span>,<span class="number">0x44</span>,<span class="number">0x18</span>,<span class="number">0x47</span>,<span class="number">0x2A</span>,<span class="number">0x45</span>,<span class="number">0xE7</span>,<span class="number">0x91</span>,<span class="number">0xAE</span>,<span class="number">0xD3</span>]</span><br><span class="line">flag_dec=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> grp <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    flag_dec+=decrypt(magic(grp),flag_enc[grp*<span class="number">4</span>:(grp+<span class="number">1</span>)*<span class="number">4</span>])</span><br><span class="line"><span class="built_in">print</span> flag_dec</span><br></pre></td></tr></table></figure>
+
+<p>得到flag：<code>hgame&#123;is_it_intersting_to_moov?&#125;</code></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E7%BB%B4%E6%B7%B7%E4%B9%B1%E7%9A%84%E5%87%BA%E9%A2%98%E4%BA%BA"><span class="toc-number">1.</span> <span class="toc-text">思维混乱的出题人</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-shell"><span class="toc-number">2.</span> <span class="toc-text">easy-shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#coder"><span class="toc-number">3.</span> <span class="toc-text">coder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A5%87%E6%80%AA%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">奇怪的代码</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&text=HCTF GAME RE - 零碎的逆向"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&is_video=false&description=HCTF GAME RE - 零碎的逆向"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=HCTF GAME RE - 零碎的逆向&body=Check out this article: https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&title=HCTF GAME RE - 零碎的逆向"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&name=HCTF GAME RE - 零碎的逆向&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_03_01-HCTF_GAME_RE_%E9%9B%B6%E7%A2%8E%E7%9A%84%E9%80%86%E5%90%91/&t=HCTF GAME RE - 零碎的逆向"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

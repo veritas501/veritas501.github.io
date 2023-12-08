@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="学长说，做出我这到题，你就可以到网上找CrackMe做了。那就做做看吧。 引言 RE程序来自学长  截图：    下载：链接：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1b2WNgU 密码：8c4s   分析学长给了个提示：  找到key！听说这个程序还能当计算器用？？喵喵喵？  先随便输输，发现输错不会有任何提示，会让你不断重输，没什么发现，直接OD载入先。 追踪老方法，先查找字符串，找到一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学长出的RE题">
+<meta property="og:url" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="学长说，做出我这到题，你就可以到网上找CrackMe做了。那就做做看吧。 引言 RE程序来自学长  截图：    下载：链接：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1b2WNgU 密码：8c4s   分析学长给了个提示：  找到key！听说这个程序还能当计算器用？？喵喵喵？  先随便输输，发现输错不会有任何提示，会让你不断重输，没什么发现，直接OD载入先。 追踪老方法，先查找字符串，找到一">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115202925183.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115203725999.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115203901797.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115204204973.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115204727153.png">
+<meta property="article:published_time" content="2017-02-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.334Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="RE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115202925183.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>学长出的RE题</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_02_17-%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%86%E5%90%91/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_02_14-hello_world/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&text=学长出的RE题"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&is_video=false&description=学长出的RE题"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=学长出的RE题&body=Check out this article: https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&name=学长出的RE题&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&t=学长出的RE题"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%BD%E8%B8%AA"><span class="toc-number">3.</span> <span class="toc-text">追踪</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        学长出的RE题
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-02-15T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-02-16</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.334Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/RE/" rel="tag">RE</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>学长说，做出我这到题，你就可以到网上找CrackMe做了。那就做做看吧。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><ul>
+<li><p>RE程序来自学长</p>
+</li>
+<li><p>截图：</p>
+</li>
+<li><p><img src="/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115202925183.png"></p>
+</li>
+<li><p>下载：链接：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1b2WNgU">http://pan.baidu.com/s/1b2WNgU</a> 密码：8c4s</p>
+</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>学长给了个提示：</p>
+<blockquote>
+<p>找到key！听说这个程序还能当计算器用？？喵喵喵？</p>
+</blockquote>
+<p>先随便输输，发现输错不会有任何提示，会让你不断重输，没什么发现，直接OD载入先。</p>
+<h2 id="追踪"><a href="#追踪" class="headerlink" title="追踪"></a>追踪</h2><p>老方法，先查找字符串，找到一些：<br><img src="/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115203725999.png"><br>上下翻翻发现这些：<br><img src="/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115203901797.png"><br>向下f8，可以发现，就是这个jnz让我们不断输入key：<br><img src="/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115204204973.png"><br>观察后发现eax存的是我们输入的key的长度，说明key必须为20位长度。根据下面两个jnz以及printf，我猜测CALL 004010A0和CALL 00401000为两个关键CALL。见下<br><img src="/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/20170115204727153.png"></p>
+<ul>
+<li>CALL 004010A0的分析<br>这里用到IDA，f5分析得：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a1=eax=12FE14,a2=ebx=key_address,a3=edi=length</span></span><br><span class="line"><span class="type">signed</span> <span class="type">int</span> __usercall sub_4010A0@&lt;eax&gt;(<span class="type">int</span> a1@&lt;eax&gt;, <span class="type">int</span> a2@&lt;ebx&gt;, <span class="type">unsigned</span> <span class="type">int</span> a3@&lt;edi&gt;)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v3; <span class="comment">// esi@1</span></span><br><span class="line">  <span class="type">char</span> v4; <span class="comment">// cl@2</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v5; <span class="comment">// ecx@5</span></span><br><span class="line"></span><br><span class="line">  v3 = <span class="number">0</span>;                                       <span class="comment">// v3为位数计数器</span></span><br><span class="line">  <span class="keyword">if</span> ( a3 )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">do</span>                                          <span class="comment">// do for each char</span></span><br><span class="line">    &#123;</span><br><span class="line">      v4 = *(_BYTE *)(v3 + a2);                 <span class="comment">// v4 = each char</span></span><br><span class="line">      <span class="keyword">if</span> ( v4 == <span class="number">61</span> )                           <span class="comment">// key第一位不能为&#x27;=&#x27;</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">if</span> ( v4 &lt; <span class="number">43</span> )                            <span class="comment">// 第一位不能小于43&#x27;+&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">if</span> ( v4 &gt; <span class="number">122</span> )                           <span class="comment">// 第一位不能大于122&#x27;Z&#x27;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      v5 = byte_4020CD[v4];                     <span class="comment">// 在4020CD上的相应的字符</span></span><br><span class="line">      <span class="keyword">if</span> ( v5 == <span class="number">-1</span> )                           <span class="comment">// eof不用管</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">switch</span> ( v3 &amp; <span class="number">3</span> )                         <span class="comment">// 结果依次为0,1,2,3 x5组</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0u</span>:                                <span class="comment">// 【a1=eax=12FE14 , a2=ebx=key_address , a3=edi=length】</span></span><br><span class="line">          *(_BYTE *)a1 = <span class="number">4</span> * v5;                <span class="comment">// 乘4</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1u</span>:</span><br><span class="line">          *(_BYTE *)a1++ += (v5 &gt;&gt; <span class="number">4</span>) &amp; <span class="number">3</span>;      <span class="comment">// +=(v5 &gt;&gt; 4) &amp; 3</span></span><br><span class="line">          <span class="keyword">if</span> ( v3 &lt; a3 - <span class="number">3</span> || *(_BYTE *)(a2 + a3 - <span class="number">2</span>) != <span class="number">61</span> )       <span class="comment">//不是最后三位 或 倒数第三位 不等于 &#x27;=&#x27;</span></span><br><span class="line">            *(_BYTE *)a1 = <span class="number">16</span> * v5;             <span class="comment">// 16 * v5</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2u</span>:</span><br><span class="line">          *(_BYTE *)a1++ += (v5 &gt;&gt; <span class="number">2</span>) &amp; <span class="number">0xF</span>;    <span class="comment">// +=(v5 &gt;&gt; 2) &amp; 15</span></span><br><span class="line">          <span class="keyword">if</span> ( v3 &lt; a3 - <span class="number">2</span> || *(_BYTE *)(a2 + a3 - <span class="number">1</span>) != <span class="number">61</span> )       <span class="comment">//不是最后两位 或 倒数第二位 不等于 &#x27;=&#x27;</span></span><br><span class="line">            *(_BYTE *)a1 = (_BYTE)v5 &lt;&lt; <span class="number">6</span>;      <span class="comment">// v5 &lt;&lt; 6</span></span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">3u</span>:</span><br><span class="line">          *(_BYTE *)a1++ += v5;                 +=v5</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      ++v3;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( v3 &lt; a3 );</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ps.我分析完以后才发现此处为base64解密，水平不够，哪怕发现了是3&#x2F;4的转换也没想到base64，分析代码的时候并没有发现，耗了很多时间</p>
+<p>以下为4020CD之后的一些二进制数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">004020CD  00 00 00 00 00 00 00 FD   63 62 58 00 00 00 00 02</span><br><span class="line">004020DD  00 00 00 67 00 00 00 B8   21 00 00 B8 11 00 00 50</span><br><span class="line">004020ED  31 40 00 A8 31 40 00 00   00 00 00 3E FF FF FF 3F</span><br><span class="line">004020FD  34 35 36 37 38 39 3A 3B   3C 3D FF FF FF FF FF FF</span><br><span class="line">0040210D  FF 00 01 02 03 04 05 06   07 08 09 0A 0B 0C 0D 0E</span><br><span class="line">0040211D  0F 10 11 12 13 14 15 16   17 18 19 FF FF FF FF FF</span><br><span class="line">0040212D  FF 1A 1B 1C 1D 1E 1F 20   21 22 23 24 25 26 27 28</span><br><span class="line">0040213D  29 2A 2B 2C 2D 2E 2F 30   31 32 33 6B 65 79 00 73</span><br><span class="line">0040214D  75 63 63 65 73 73 66 75   6C 00 00 67 69 76 65 20</span><br><span class="line">0040215D  6D 65 20 25 73 3A 00 25   73 00 00 66 61 69 6C 00</span><br><span class="line">0040216D  00 00 00 48 00 00 00 00   00 00 00 00 00 00 00 00</span><br></pre></td></tr></table></figure>
+
+<p>看完没什么思路。转向401000的分析。</p>
+<ul>
+<li>CALL 401000的分析</li>
+</ul>
+<p>IDA分析得：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __cdecl <span class="title">sub_401000</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v1; <span class="comment">// eax@1</span></span><br><span class="line">  <span class="type">signed</span> <span class="type">int</span> v2; <span class="comment">// edi@1</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> v3; <span class="comment">// ebx@1</span></span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// esi@4</span></span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> v5; <span class="comment">// al@5</span></span><br><span class="line">  <span class="type">int</span> v6; <span class="comment">// eax@7</span></span><br><span class="line">  __int64 v8; <span class="comment">// [sp+Ch] [bp-8h]@1</span></span><br><span class="line"></span><br><span class="line">  v1 = <span class="built_in">strlen</span>(a1);                              <span class="comment">// v1=变化后的字符串的长度</span></span><br><span class="line">  v2 = <span class="number">0</span>;</span><br><span class="line">  v3 = v1;                                      <span class="comment">// v3=v1</span></span><br><span class="line">  v8 = <span class="number">0</span>i64;                                    <span class="comment">// v8最终结果，初始化</span></span><br><span class="line">  <span class="keyword">if</span> ( !v1 || (<span class="type">signed</span> <span class="type">int</span>)v1 &gt; <span class="number">13</span> )             <span class="comment">// 在13位之前有一位为0，字符串长度小于等于13（没有0则等于15）</span></span><br><span class="line">    <span class="keyword">goto</span> LABEL_13;</span><br><span class="line">  <span class="keyword">if</span> ( (<span class="type">signed</span> <span class="type">int</span>)v1 &gt; <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v4 = <span class="number">8</span> * v1 + <span class="number">4206760</span>;                      <span class="comment">//v4为地址常量 (8 * v1 + 0x4030A8)</span></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">      v5 = a1[v2];                              <span class="comment">//v5为变化字符串的每一位，变化后的字符串中不是数字就是大写字母</span></span><br><span class="line">      <span class="keyword">if</span> ( v5 &lt; <span class="number">48</span> || v5 &gt; <span class="number">57</span> )                 </span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( v5 &lt; <span class="number">65</span> || v5 &gt; <span class="number">90</span> )               </span><br><span class="line">          <span class="keyword">goto</span> LABEL_13;</span><br><span class="line">        v6 = v5 - <span class="number">55</span>;                           <span class="comment">// v5是大写字母，v6=v5-55 v6属于[10,35]</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span>                                      </span><br><span class="line">      &#123;</span><br><span class="line">        v6 = v5 - <span class="number">48</span>;                           <span class="comment">// v5是数字，v6=v5-48     v6属于[0,9] ，综上，v6属于[0,35]</span></span><br><span class="line">      &#125;</span><br><span class="line">      v8 += v6 * *(_QWORD *)v4;                 <span class="comment">// v8 += v6 * (v4上的值)</span></span><br><span class="line">      ++v2;</span><br><span class="line">      v4 -= <span class="number">8</span>;                                  <span class="comment">// v4 -= 8</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> ( v2 &lt; (<span class="type">signed</span> <span class="type">int</span>)v3 );              <span class="comment">// 对变化字符串每一位操作</span></span><br><span class="line">    <span class="keyword">if</span> ( v8 &lt; <span class="number">0</span> )                               <span class="comment">// v8 == 7089074166928978739 &#x27;base2333&#x27; &#x27;0x 62617365 32333333&#x27;</span></span><br><span class="line">LABEL_13:</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> v8;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下为0x4030A8后的一些二进制数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">0x4030A8    0x59000000 5A000000</span><br><span class="line">			0x01000000 00000000</span><br><span class="line">			0x24000000 00000000</span><br><span class="line">			0x10050000 00000000</span><br><span class="line">			0x40B60000 00000000</span><br><span class="line">			0X00A11900 00000000</span><br><span class="line">			0X00A49A03 00000000</span><br><span class="line">			0x0010BF81 00000000</span><br><span class="line">			0x0040DE3E 12000000</span><br><span class="line">			0x000041D7 90020000</span><br><span class="line">			0x00002445 5E5C0000</span><br><span class="line">			0x000010B9 41FD0C00</span><br><span class="line">			0x00004006 3E9DD301</span><br><span class="line">			0x000000E1 B81CC241</span><br></pre></td></tr></table></figure>
+<p>由Little-Endian知，v4实际读取到的数据为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">0000005A00000059</span><br><span class="line">0000000000000001  36^0</span><br><span class="line">0000000000000024  36^1</span><br><span class="line">0000000000000510  36^2</span><br><span class="line">000000000000B640  36^3</span><br><span class="line">000000000019A100  36^4</span><br><span class="line">00000000039AA400  36^5</span><br><span class="line">0000000081BF1000  36^6</span><br><span class="line">000000123EDE4000  36^7</span><br><span class="line">00000290D7410000  36^8</span><br><span class="line">00005C5E45240000  36^9</span><br><span class="line">000CFD41B9100000  36^10</span><br><span class="line">01D39D3E06400000  36^11</span><br><span class="line">41C21CB8E1000000  36^12</span><br></pre></td></tr></table></figure>
+<p>发现其实是一个36进制到16进制的转换，转换的结果为6261736532333333h，反向计算的经过004010A0加密以后的字符串应该为<strong>1HUXV29D2KFUB</strong>。</p>
+<ul>
+<li>再转向CALL 004010A0<br>既然知道了加密后的字符串，通过004020CD处的数据慢慢解密（真的很慢，如果发现是base64就是几秒钟的事情了）可以得到最终的key：<strong>MUhVWFYyOUQyS0ZVQg&#x3D;&#x3D;</strong></li>
+</ul>
+<p>我艰辛的过程大致如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">01 |a*4|   |   |   |   |   |   |   |   |   |   |   |   |   |   | 77  M</span><br><span class="line">02 |b  |b*F|   |   |   |   |   |   |   |   |   |   |   |   |   | 85  U</span><br><span class="line">03 |   |c  |c  |   |   |   |   |   |   |   |   |   |   |   |   | 104 h</span><br><span class="line">04 |   |   |d  |   |   |   |   |   |   |   |   |   |   |   |   | 86  V</span><br><span class="line">05 |   |   |   |e*4|   |   |   |   |   |   |   |   |   |   |   | 87  W</span><br><span class="line">06 |   |   |   |f  |f*F|   |   |   |   |   |   |   |   |   |   | 70  F</span><br><span class="line">07 |   |   |   |   |g  |g  |   |   |   |   |   |   |   |   |   | 89  Y</span><br><span class="line">08 |   |   |   |   |   |h  |   |   |   |   |   |   |   |   |   | 121 y</span><br><span class="line">09 |   |   |   |   |   |   |i*4|   |   |   |   |   |   |   |   | 79  O</span><br><span class="line">10 |   |   |   |   |   |   |j  |j*F|   |   |   |   |   |   |   | 85  U</span><br><span class="line">11 |   |   |   |   |   |   |   |k  |k  |   |   |   |   |   |   | 81  Q</span><br><span class="line">12 |   |   |   |   |   |   |   |   |l  |   |   |   |   |   |   | 121 y</span><br><span class="line">13 |   |   |   |   |   |   |   |   |   |m*4|   |   |   |   |   | 83  S</span><br><span class="line">14 |   |   |   |   |   |   |   |   |   |n  |n*F|   |   |   |   | 48  0</span><br><span class="line">15 |   |   |   |   |   |   |   |   |   |   |o  |o  |   |   |   | 90  Z</span><br><span class="line">16 |   |   |   |   |   |   |   |   |   |   |   |p  |   |   |   | 86  V</span><br><span class="line">17 |   |   |   |   |   |   |   |   |   |   |   |   |q*4|   |   | 81  Q</span><br><span class="line">18 |   |   |   |   |   |   |   |   |   |   |   |   |2  |0  |   | 103 g</span><br><span class="line">19 |   |   |   |   |   |   |   |   |   |   |   |   |   |0  |s  |     =</span><br><span class="line">20 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |t  |     =</span><br><span class="line">   | 49| 72| 85| 88| 86| 50| 57| 68| 50| 75| 70| 85| 66| 00| 00|</span><br><span class="line">      1   H   U   X   V   2   9   D   2   K   F   U   B</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>后记</li>
+</ul>
+<p>虽说key是解出来了，但毕竟是入门的题目，解了这么就还是太慢，反思自己，连常见加密的算法都不熟练。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%BD%E8%B8%AA"><span class="toc-number">3.</span> <span class="toc-text">追踪</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&text=学长出的RE题"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&is_video=false&description=学长出的RE题"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=学长出的RE题&body=Check out this article: https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&title=学长出的RE题"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&name=学长出的RE题&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_02_16-%E5%AD%A6%E9%95%BF%E5%87%BA%E7%9A%84RE%E9%A2%98/&t=学长出的RE题"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

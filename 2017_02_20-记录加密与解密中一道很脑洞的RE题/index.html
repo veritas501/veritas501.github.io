@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="首先，这道题在《加密与解密》中有完整的分析，那我为什么要再写一遍？ 因为这题的脑洞你不自己做过是感受不到的。 文章位于《加密与解密》的5.5 KeyFile保护 文件：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1c1QBKWw 密码：vweu 界面： 首先，上面的那个编辑框不是给你输入用的，所以考虑是从注册表，ini或是其他类型文件读入。 观察程序的api调用，  发现有ReadFile，双击">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录《加密与解密》中一道很脑洞的RE题">
+<meta property="og:url" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="首先，这道题在《加密与解密》中有完整的分析，那我为什么要再写一遍？ 因为这题的脑洞你不自己做过是感受不到的。 文章位于《加密与解密》的5.5 KeyFile保护 文件：http:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1c1QBKWw 密码：vweu 界面： 首先，上面的那个编辑框不是给你输入用的，所以考虑是从注册表，ini或是其他类型文件读入。 观察程序的api调用，  发现有ReadFile，双击">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/1.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/2.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/3.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/4.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/5.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/6.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/7.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/8.png">
+<meta property="article:published_time" content="2017-02-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.334Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="RE">
+<meta property="article:tag" content="加密与解密">
+<meta property="article:tag" content="脑洞">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/1.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>记录《加密与解密》中一道很脑洞的RE题</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_03_01_HCTF_GAME_RE_Windows%E7%A4%BC%E5%8C%85/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_02_17-%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%86%E5%90%91/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&text=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&is_video=false&description=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记录《加密与解密》中一道很脑洞的RE题&body=Check out this article: https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&name=记录《加密与解密》中一道很脑洞的RE题&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&t=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        记录《加密与解密》中一道很脑洞的RE题
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-02-19T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-02-20</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.334Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/RE/" rel="tag">RE</a>, <a class="p-category" href="/tags/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86/" rel="tag">加密与解密</a>, <a class="p-category" href="/tags/%E8%84%91%E6%B4%9E/" rel="tag">脑洞</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>首先，这道题在《加密与解密》中有完整的分析，那我为什么要再写一遍？ 因为这题的脑洞你不自己做过是感受不到的。</p>
+<p>文章位于《加密与解密》的5.5 KeyFile保护</p>
+<p>文件：<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1c1QBKWw">http://pan.baidu.com/s/1c1QBKWw</a> 密码：vweu</p>
+<p>界面：<img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/1.png"></p>
+<p>首先，上面的那个编辑框不是给你输入用的，所以考虑是从注册表，ini或是其他类型文件读入。</p>
+<p>观察程序的api调用，</p>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/2.png"></p>
+<p>发现有ReadFile，双击过去下断，上面发现CreateFileA，发现是从一个叫做<code>KwazyWeb.bit</code>的文件读入。</p>
+<p>这里我没有书上那么好的水平，我用ida分析。（以下代码已经重命名过）</p>
+<ul>
+<li>在call 0x4012CF中有如下一段：</li>
+</ul>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/3.png"></p>
+<p>从而得知，注册文件由三部分组成，一字节的len_name，len_name字节的name，18字节的key。</p>
+<ul>
+<li>以下为calc_name()中的代码：</li>
+</ul>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/4.png"></p>
+<p>得知，name_calc为name每一位所对应的ascii数相加以后与0xFF做&amp;（与）运算。</p>
+<ul>
+<li>以下为sub_4010C9check函数的代码：</li>
+</ul>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/5.png"></p>
+<p>这里的string1和string2都是一串很长的字符串，这里我把他dump出来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">****************C*......*...****.*.****...*....*.*..**********.*..*....*...*...**.****.*.*...****.*....*.*******..*.***..*.....*.*..***.**.***.*...****....*X..*****************</span><br></pre></td></tr></table></figure>
+
+<p>后面call sub_40101D，我把代码也粘上：</p>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/6.png"></p>
+<p>代码很好懂，用name_calc对key每一位异或加密。</p>
+<p>来看下面的循环，首先<code>i = 0</code>，后面有<code>++i ！= 18</code>，大循环一共18次；然后对i累加的条件是<code>j = 0</code>，而<code>j = 8</code>,<code>j -= 2</code>，所以小循环是4次，一共循环18*4 &#x3D; 72次。</p>
+<p><code>(key[i] &gt;&gt; j) &amp; 3</code>是传入key的每2bits。传入的数据只有0,1,2,3四种可能。</p>
+<ul>
+<li>再看show_msg()函数：</li>
+</ul>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/7.png"></p>
+<p>根据传入的choice，pt_long_str的值会±1，±16。如果指针指向的字符为’*‘，直接失败；如果指针指向的字符为’X’，则成功。后面两句赋值无关紧要。</p>
+<p>代码逆向分析完了，<br>首先我们根据show_msg函数的判断逆出异或后的key_enc，然后根据自己输入的name算出name_calc，然后得到key &#x3D; name_calc ^ key_enc。然后按照格式创建注册信息文件。</p>
+<p>难就难在如何逆出key_enc。一开始我的思路断了。后来在思考为什么是±1和±16的时候恍然大悟，我们只要将之前那一长串字符串按照16位一组然后回车换行，我们就会得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">****************</span><br><span class="line">C*······*···****</span><br><span class="line">·*·****···*····*</span><br><span class="line">·*··**********·*</span><br><span class="line">··*····*···*···*</span><br><span class="line">*·****·*·*···***</span><br><span class="line">*·*····*·*******</span><br><span class="line">··*·***··*·····*</span><br><span class="line">·*··***·**·***·*</span><br><span class="line">···****····*X··*</span><br><span class="line">****************</span><br></pre></td></tr></table></figure>
+
+<p>这就是一个迷宫游戏，从c走到x。1就是向右走，-1就是向左走，16就是向下，-16就是向上。</p>
+<p>再根据判断条件编码一下，得到顺序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">move=[<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+
+<p>剩下的就轻松多了，直接上python脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calc_name</span>(<span class="params">name_str</span>):</span><br><span class="line">	tmp = <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> ch <span class="keyword">in</span> name_str:</span><br><span class="line">		tmp+=<span class="built_in">ord</span>(ch)</span><br><span class="line">	<span class="keyword">return</span> tmp&amp;<span class="number">255</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_key_enc</span>():</span><br><span class="line">	key_e_list=[]</span><br><span class="line">	move=[<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(move),<span class="number">4</span>):</span><br><span class="line">		key_e_list.append((move[i]&lt;&lt;<span class="number">6</span> | move[i+<span class="number">1</span>]&lt;&lt;<span class="number">4</span> | move[i+<span class="number">2</span>]&lt;&lt;<span class="number">2</span> | move[i+<span class="number">3</span>])&amp;<span class="number">255</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> key_e_list</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_key</span>(<span class="params">key_enc,name_calc</span>):</span><br><span class="line">	key=[]</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(key_enc)):</span><br><span class="line">		key.append(key_enc[i] ^ name_calc)</span><br><span class="line">	<span class="keyword">return</span> key</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">key_len = <span class="number">18</span></span><br><span class="line">name=<span class="string">&#x27;veritas501&#x27;</span></span><br><span class="line">len_name = <span class="built_in">len</span>(name)</span><br><span class="line">name_calc = calc_name(name)</span><br><span class="line"></span><br><span class="line">key_enc = generate_key_enc()</span><br><span class="line">key = generate_key(key_enc,name_calc)</span><br><span class="line"></span><br><span class="line">key_asc=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(key)):</span><br><span class="line">	key_asc+=<span class="built_in">chr</span>(key[i])</span><br><span class="line"></span><br><span class="line">content = <span class="built_in">chr</span>(len_name)+name+key_asc</span><br><span class="line"></span><br><span class="line">fp = <span class="built_in">open</span>(<span class="string">&#x27;KwazyWeb.bit&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>)</span><br><span class="line">fp.write(content)</span><br><span class="line">fp.close()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>破解成功！</p>
+<p><img src="/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/8.png"></p>
+<p>这次逆向最开脑洞的地方就是如何把数据隐藏起来不被轻松dump，之前我做到题都是用算法来隐藏，而这题的思路非常创新，值得我学习。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&text=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&is_video=false&description=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记录《加密与解密》中一道很脑洞的RE题&body=Check out this article: https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&title=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&name=记录《加密与解密》中一道很脑洞的RE题&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_02_20-%E8%AE%B0%E5%BD%95%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%E4%B8%AD%E4%B8%80%E9%81%93%E5%BE%88%E8%84%91%E6%B4%9E%E7%9A%84RE%E9%A2%98/&t=记录《加密与解密》中一道很脑洞的RE题"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

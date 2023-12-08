@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="入门写的一些笔记，此文绝对会有很多问题（希望大佬指出 :V 关于编译内核下载kernel源代码：https:&#x2F;&#x2F;www.kernel.org&#x2F; 随意选个版本，比如4.15.0https:&#x2F;&#x2F;mirrors.edge.kernel.org&#x2F;pub&#x2F;linux&#x2F;kernel&#x2F;v4.x&#x2F;linux-4.15.tar.gz 安装些必要的依赖 12sudo apt-get updatesudo apt-ge">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kernel环境配置">
+<meta property="og:url" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="入门写的一些笔记，此文绝对会有很多问题（希望大佬指出 :V 关于编译内核下载kernel源代码：https:&#x2F;&#x2F;www.kernel.org&#x2F; 随意选个版本，比如4.15.0https:&#x2F;&#x2F;mirrors.edge.kernel.org&#x2F;pub&#x2F;linux&#x2F;kernel&#x2F;v4.x&#x2F;linux-4.15.tar.gz 安装些必要的依赖 12sudo apt-get updatesudo apt-ge">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_e7b7d18553ec39f39d6df3a34a097766.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_4dcc40329917d3142fc20020283571b7.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_98fe63a73cb5ab8c092ec01cc5bf99e1.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_a48559c219f8a660b972260cac6ea4ed.png">
+<meta property="og:image" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_b6f48569ab35b5af103db7e4975c3bfc.png">
+<meta property="article:published_time" content="2018-06-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.422Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="kernel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_e7b7d18553ec39f39d6df3a34a097766.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>kernel环境配置</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2018_06_04-0CTF_final_baby_kernel/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2018_05_05-seccomp%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&text=kernel环境配置"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&is_video=false&description=kernel环境配置"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=kernel环境配置&body=Check out this article: https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&name=kernel环境配置&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&t=kernel环境配置"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8"><span class="toc-number">1.</span> <span class="toc-text">关于编译内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%B7%BB%E5%8A%A0syscall"><span class="toc-number">2.</span> <span class="toc-text">关于添加syscall</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91busybox"><span class="toc-number">3.</span> <span class="toc-text">编译busybox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-number">4.</span> <span class="toc-text">Reference</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        kernel环境配置
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2018-06-02T16:00:00.000Z" class="dt-published" itemprop="datePublished">2018-06-03</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.422Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/kernel/" rel="tag">kernel</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>入门写的一些笔记，此文绝对会有很多问题（希望大佬指出 :V</p>
+<h2 id="关于编译内核"><a href="#关于编译内核" class="headerlink" title="关于编译内核"></a>关于编译内核</h2><p>下载kernel源代码：<a target="_blank" rel="noopener" href="https://www.kernel.org/">https://www.kernel.org/</a></p>
+<p>随意选个版本，比如4.15.0<br><a target="_blank" rel="noopener" href="https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.15.tar.gz">https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.15.tar.gz</a></p>
+<p>安装些必要的依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc</span><br></pre></td></tr></table></figure>
+
+<p>解压源码后进目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>基本不需要改什么，直接save。</p>
+<p><a target="_blank" rel="noopener" href="http://eternalsakura13.com/2018/04/13/qemu/">sakura</a>的说法是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">进入kernel hacking</span><br><span class="line">勾选以下项目</span><br><span class="line">Kernel debugging</span><br><span class="line">Compile-time checks and compiler options —&gt; Compile the kernel with debug info和Compile the kernel with frame pointers</span><br><span class="line">KGDB</span><br><span class="line">然后保存退出</span><br></pre></td></tr></table></figure>
+
+<p>不过貌似这些默认都是已选的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make bzImage</span><br></pre></td></tr></table></figure>
+
+<p>玩几局游戏以后能看到如下信息就是编译OK了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Setup is 17244 bytes (padded to 17408 bytes).</span><br><span class="line">System is 7666 kB</span><br><span class="line">CRC 5c77cbfe</span><br><span class="line">Kernel: arch/x86/boot/bzImage is ready  (#1)</span><br></pre></td></tr></table></figure>
+
+<p>从<code>./arch/x86/boot/</code>拿到<code>bzImage</code>，从源码根目录拿到<code>vmlinux</code>。</p>
+<h2 id="关于添加syscall"><a href="#关于添加syscall" class="headerlink" title="关于添加syscall"></a>关于添加syscall</h2><p>添加一个helloworld的syscall做示例。</p>
+<p>以4.15.0版本的kernel为例子。</p>
+<p>源码根目录创建<code>helloworld</code>目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># veritas @ ubuntu in ~/sources/linux-mod-4.15/helloworld [13:56:08] </span><br><span class="line">$ tree          </span><br><span class="line">.</span><br><span class="line">├── helloworld.c</span><br><span class="line">└── Makefile</span><br><span class="line"></span><br><span class="line">0 directories, 2 files</span><br><span class="line"></span><br><span class="line"># veritas @ ubuntu in ~/sources/linux-mod-4.15/helloworld [13:56:14] </span><br><span class="line">$ cat helloworld.c    </span><br><span class="line">#include &lt;linux/kernel.h&gt;</span><br><span class="line"></span><br><span class="line">asmlinkage long sys_helloworld(void)&#123;</span><br><span class="line">	printk(&quot;&#123;==kernel==&#125; hello world\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;                                                                                                  </span><br><span class="line"># veritas @ ubuntu in ~/sources/linux-mod-4.15/helloworld [13:56:19] </span><br><span class="line">$ cat Makefile    </span><br><span class="line">obj-y=helloworld.o</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编辑源码根目录下的<code>Makefile</code>，添加<code>helloworld/</code></p>
+<p><img src="/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_e7b7d18553ec39f39d6df3a34a097766.png"></p>
+<p>编辑<code>include/linux/syscalls.h</code>，添加函数原型</p>
+<p><img src="/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_4dcc40329917d3142fc20020283571b7.png"></p>
+<p>编辑<code>arch/x86/entry/syscalls/syscall_32.tbl</code>和<code>arch/x86/entry/syscalls/syscall_64.tbl</code>，添加系统调用号</p>
+<p><img src="/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_98fe63a73cb5ab8c092ec01cc5bf99e1.png"></p>
+<p><img src="/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_a48559c219f8a660b972260cac6ea4ed.png"></p>
+<p>然后编译kernel。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make bzImage</span><br></pre></td></tr></table></figure>
+
+<p>从<code>./arch/x86/boot/</code>拿到<code>bzImage</code>。</p>
+<h2 id="编译busybox"><a href="#编译busybox" class="headerlink" title="编译busybox"></a>编译busybox</h2><p>上官网下载源代码编译<a target="_blank" rel="noopener" href="https://busybox.net/">https://busybox.net/</a></p>
+<p>以1.28.4为例。<a target="_blank" rel="noopener" href="http://busybox.net/downloads/busybox-1.28.4.tar.bz2">http://busybox.net/downloads/busybox-1.28.4.tar.bz2</a></p>
+<p>解压后到根目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+
+<p>进Settings，勾上<code>Build static binary (no shared libs)</code></p>
+<p><code>make install -j4</code></p>
+<p>编译完成后跟目录多了一个<code>_install</code>的目录，就是我们编译的结果了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd _install</span><br><span class="line">mkdir proc</span><br><span class="line">mkdir sys</span><br><span class="line">touch init</span><br><span class="line">chmod +x init</span><br></pre></td></tr></table></figure>
+
+<p>其中init中添加如下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">echo &quot;&#123;==DBG==&#125; INIT SCRIPT&quot;</span><br><span class="line">mkdir /tmp</span><br><span class="line">mount -t proc none /proc</span><br><span class="line">mount -t sysfs none /sys</span><br><span class="line">mount -t debugfs none /sys/kernel/debug</span><br><span class="line">mount -t tmpfs none /tmp</span><br><span class="line"># insmod /xxx.ko # load ko</span><br><span class="line">mdev -s # We need this to find /dev/sda later</span><br><span class="line">echo -e &quot;&#123;==DBG==&#125; Boot took $(cut -d&#x27; &#x27; -f1 /proc/uptime) seconds&quot;</span><br><span class="line">setsid /bin/cttyhack setuidgid 1000 /bin/sh #normal user</span><br><span class="line"># exec /bin/sh #root</span><br></pre></td></tr></table></figure>
+
+<p>可以写这样一个脚本来打包rootfs。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">echo &quot;Generate rootfs.img&quot;</span><br><span class="line">cd busybox # fs folder</span><br><span class="line">find . | cpio -o --format=newc &gt; ../rootfs.img</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>##启动qemu</p>
+<p>通过上面两步，我们得到了含有helloworld syscall的kernel bzImage和用busybox打包的fs。</p>
+<p>接下来只要用qemu启动就ok了。</p>
+<p>在这之前，可以先写一个测试程序来测试我们写的syscall。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//gcc test.c -static -o test</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span>&#123;</span><br><span class="line">	<span class="built_in">syscall</span>(<span class="number">1337</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>放在fs目录下，重新打包得到新的rootfs.img。</p>
+<p>可以写一个脚本来启动qemu。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">qemu-system-x86_64 \</span><br><span class="line">-m 64M \</span><br><span class="line">-kernel ./vmlinuz-4.15.0-22-generic \</span><br><span class="line">-initrd  ./rootfs.img \</span><br><span class="line">-append &quot;root=/dev/ram rw console=ttyS0 oops=panic panic=1 kalsr&quot; \</span><br><span class="line">-netdev user,id=t0, -device e1000,netdev=t0,id=nic0 \</span><br><span class="line">-nographic \</span><br><span class="line">-monitor /dev/null \</span><br><span class="line">-smp cores=2,threads=1 \</span><br><span class="line">-enable-kvm \</span><br><span class="line">-cpu kvm64,+smep \</span><br><span class="line"># -gdb tcp::1234 \</span><br><span class="line"># -S</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/ $ ls</span><br><span class="line">bin      etc      linuxrc  root     sys      test.c   usr</span><br><span class="line">dev      init     proc     sbin     test     tmp</span><br><span class="line">/ $ ./test</span><br><span class="line">[    7.920605] &#123;==kernel==&#125; hello world</span><br><span class="line">/ $ </span><br></pre></td></tr></table></figure>
+
+<p>##加载ko</p>
+<p>ko的载入很简单，只需要</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ insmod xxx.ko</span><br></pre></td></tr></table></figure>
+
+<p>但ko需要指定的kernel版本才能正常载入。</p>
+<p>例如0CTF final的baby kernel，他要求的kernel版本为<code>4.15.0-22-generic SMP mod_unload</code></p>
+<p>可以使用apt download 相应内核的deb包，然后解包得到bzImage。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt download linux-image-4.15.0-22-generic</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/kernel_b6f48569ab35b5af103db7e4975c3bfc.png"></p>
+<p>修改fs的init脚本，加入<code>insmod xxxx.ko</code>即可。</p>
+<p>载入系统后可以使用<code>lsmod</code>来查看载入的ko以及他的所在的内核地址</p>
+<p>##调试ko</p>
+<p>一般来说加<code>nokaslr</code>把kaslr关了调试起来会方便一些。</p>
+<p>把启动脚本的最后两行注释取消，则qemu在启动后会等待调试器的连接。</p>
+<p>写这样一个脚本来快速连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">gdb \</span><br><span class="line">-ex &quot;target remote localhost:1234&quot; \</span><br><span class="line">-ex &quot;continue&quot; \</span><br><span class="line">-ex &quot;disconnect&quot; \</span><br><span class="line">-ex &quot;set architecture i386:x86-64:intel&quot; \</span><br><span class="line">-ex &quot;target remote localhost:1234&quot; \</span><br><span class="line">-ex &quot;add-symbol-file ./busybox/baby.ko 0xdeadbeef&quot; \</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://pzhxbz.cn/?p=97">http://pzhxbz.cn/?p=97</a></li>
+<li><a target="_blank" rel="noopener" href="http://pzhxbz.cn/?p=98">http://pzhxbz.cn/?p=98</a></li>
+<li><a target="_blank" rel="noopener" href="http://pzhxbz.cn/?p=99">http://pzhxbz.cn/?p=99</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/85837">https://www.anquanke.com/post/id/85837</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/85840">https://www.anquanke.com/post/id/85840</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/85848">https://www.anquanke.com/post/id/85848</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.freebuf.com/articles/system/94198.html">http://www.freebuf.com/articles/system/94198.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.freebuf.com/articles/system/135402.html">http://www.freebuf.com/articles/system/135402.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lUNATICF/article/details/55098274">https://blog.csdn.net/lUNATICF/article/details/55098274</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.freecodecamp.org/building-and-installing-the-latest-linux-kernel-from-source-6d8df5345980">https://medium.freecodecamp.org/building-and-installing-the-latest-linux-kernel-from-source-6d8df5345980</a></li>
+<li><a target="_blank" rel="noopener" href="http://eternalsakura13.com/2018/04/13/qemu/">http://eternalsakura13.com/2018/04/13/qemu/</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@ssreehari/implementing-a-system-call-in-linux-kernel-4-7-1-6f98250a8c38">https:&#x2F;&#x2F;medium.com&#x2F;@ssreehari&#x2F;implementing-a-system-call-in-linux-kernel-4-7-1-6f98250a8c38</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%BC%96%E8%AF%91%E5%86%85%E6%A0%B8"><span class="toc-number">1.</span> <span class="toc-text">关于编译内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%B7%BB%E5%8A%A0syscall"><span class="toc-number">2.</span> <span class="toc-text">关于添加syscall</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91busybox"><span class="toc-number">3.</span> <span class="toc-text">编译busybox</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-number">4.</span> <span class="toc-text">Reference</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&text=kernel环境配置"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&is_video=false&description=kernel环境配置"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=kernel环境配置&body=Check out this article: https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&title=kernel环境配置"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&name=kernel环境配置&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2018_06_03-kernel%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/&t=kernel环境配置"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

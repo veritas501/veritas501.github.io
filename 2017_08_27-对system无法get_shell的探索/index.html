@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="有的时候，我们会遇到明明漏洞正常但用system无法get shell的情况。 下面以我目前已知的几种情况来讨论。 定制的libc有些情况，服务器的libc可能是定制的，故意除去了system函数。 作为一道题，肯定有其他方法来 get flag，一般是用 open ,read,write来print flag。 使用函数禁用了一些系统调用号在我的HITCON-training writeup一文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对system无法get shell的探索">
+<meta property="og:url" content="https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="有的时候，我们会遇到明明漏洞正常但用system无法get shell的情况。 下面以我目前已知的几种情况来讨论。 定制的libc有些情况，服务器的libc可能是定制的，故意除去了system函数。 作为一道题，肯定有其他方法来 get flag，一般是用 open ,read,write来print flag。 使用函数禁用了一些系统调用号在我的HITCON-training writeup一文">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.402Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="PWN">
+<meta property="article:tag" content="glibc">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>对system无法get shell的探索</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_10_05-%E6%B3%A8%E5%86%8C%E6%9C%BA%E9%9F%B3%E4%B9%90%E9%9A%8F%E8%AE%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_07_25-%E5%9B%BE%E5%BD%A2%E5%8C%96%E5%B1%95%E7%A4%BA%E5%A0%86%E5%88%A9%E7%94%A8%E8%BF%87%E7%A8%8B/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&text=对system无法get shell的探索"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&is_video=false&description=对system无法get shell的探索"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=对system无法get shell的探索&body=Check out this article: https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&name=对system无法get shell的探索&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&t=对system无法get shell的探索"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E5%88%B6%E7%9A%84libc"><span class="toc-number">1.</span> <span class="toc-text">定制的libc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0%E7%A6%81%E7%94%A8%E4%BA%86%E4%B8%80%E4%BA%9B%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%8F%B7"><span class="toc-number">2.</span> <span class="toc-text">使用函数禁用了一些系统调用号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%97%B6%E8%A6%86%E7%9B%96%E4%BA%86%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">漏洞利用时覆盖了环境变量</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        对system无法get shell的探索
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-08-26T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-08-27</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.402Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/PWN/" rel="tag">PWN</a>, <a class="p-category" href="/tags/glibc/" rel="tag">glibc</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>有的时候，我们会遇到明明漏洞正常但用system无法get shell的情况。</p>
+<p>下面以我目前已知的几种情况来讨论。</p>
+<h2 id="定制的libc"><a href="#定制的libc" class="headerlink" title="定制的libc"></a>定制的libc</h2><p>有些情况，服务器的libc可能是定制的，故意除去了system函数。</p>
+<p>作为一道题，肯定有其他方法来 get flag，一般是用 open ,read,write来print flag。</p>
+<h2 id="使用函数禁用了一些系统调用号"><a href="#使用函数禁用了一些系统调用号" class="headerlink" title="使用函数禁用了一些系统调用号"></a>使用函数禁用了一些系统调用号</h2><p>在我的<a target="_blank" rel="noopener" href="http://veritas501.space/2017/05/23/HITCON-training%20writeup/">HITCON-training writeup</a>一文中的lab2中，题目使用了PRCTL函数限制了我们的syscall，当然这种情况是execve用不了，system就更不用说了。</p>
+<h2 id="漏洞利用时覆盖了环境变量"><a href="#漏洞利用时覆盖了环境变量" class="headerlink" title="漏洞利用时覆盖了环境变量"></a>漏洞利用时覆盖了环境变量</h2><p>这种情况是本文讨论的重点，因为服务器并没有对system函数做出限制，没有get shell会很抓狂。</p>
+<p>我们从源码看起，为什么覆盖了环境变量会影响system。</p>
+<p>在<a target="_blank" rel="noopener" href="https://code.woboq.org/userspace/glibc/stdlib/stdlib.h.html">glibc&#x2F;stdlib&#x2F;stdlib.h</a>中有声明</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Execute the given line as a shell command.</span></span><br><span class="line"><span class="comment">	</span></span><br><span class="line"><span class="comment">   This function is a cancellation point and therefore not marked with</span></span><br><span class="line"><span class="comment">   __THROW.  */</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="type">int</span> <span class="title">system</span> <span class="params">(<span class="type">const</span> <span class="type">char</span> *__command)</span> __wur</span>;</span><br></pre></td></tr></table></figure>
+
+
+<p>代码在<a target="_blank" rel="noopener" href="https://code.woboq.org/userspace/glibc/sysdeps/posix/system.c.html">glibc&#x2F;sysdeps&#x2F;posix&#x2F;system.c</a></p>
+<p>首先在line 186</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">weak_alias</span> (__libc_system, system)</span><br></pre></td></tr></table></figure>
+
+<p><code>__libc_system</code>:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line">__libc_system (<span class="type">const</span> <span class="type">char</span> *line)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (line == <span class="literal">NULL</span>)</span><br><span class="line">    <span class="comment">/* Check that we have a command processor available.  It might</span></span><br><span class="line"><span class="comment">       not be available after a chroot(), for example.  */</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">do_system</span> (<span class="string">&quot;exit 0&quot;</span>) == <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">do_system</span> (line);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>do_system</code>:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>        SHELL_PATH        <span class="string">&quot;/bin/sh&quot;</span>        <span class="comment">/* Path of the shell.  */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span>        SHELL_NAME        <span class="string">&quot;sh&quot;</span>                <span class="comment">/* Name to give it.  */</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> _LIBC_REENTRANT</span></span><br><span class="line"><span class="type">static</span> <span class="keyword">struct</span> <span class="title class_">sigaction</span> intr, quit;</span><br><span class="line"><span class="type">static</span> <span class="type">int</span> sa_refcntr;</span><br><span class="line">__libc_lock_define_initialized (<span class="type">static</span>, lock);</span><br><span class="line"></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> DO_LOCK() __libc_lock_lock (lock)</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> DO_UNLOCK() __libc_lock_unlock (lock)</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> INIT_LOCK() (&#123; __libc_lock_init (lock); sa_refcntr = 0; &#125;)</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> ADD_REF() sa_refcntr++</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> SUB_REF() --sa_refcntr</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> DO_LOCK()</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> DO_UNLOCK()</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> INIT_LOCK()</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> ADD_REF() 0</span></span><br><span class="line"><span class="meta"># <span class="keyword">define</span> SUB_REF() 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Execute LINE as a shell command, returning its status.  */</span></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">int</span></span></span><br><span class="line"><span class="function"><span class="title">do_system</span> <span class="params">(<span class="type">const</span> <span class="type">char</span> *line)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> status, save;</span><br><span class="line">  <span class="type">pid_t</span> pid;</span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">sigaction</span> sa;</span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _LIBC_REENTRANT</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">sigaction</span> intr, quit;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  <span class="type">sigset_t</span> omask;</span><br><span class="line"></span><br><span class="line">  sa.sa_handler = SIG_IGN;</span><br><span class="line">  sa.sa_flags = <span class="number">0</span>;</span><br><span class="line">  __sigemptyset (&amp;sa.sa_mask);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">DO_LOCK</span> ();</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">ADD_REF</span> () == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (__sigaction (SIGINT, &amp;sa, &amp;intr) &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">          (<span class="type">void</span>) <span class="built_in">SUB_REF</span> ();</span><br><span class="line">          <span class="keyword">goto</span> out;</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="keyword">if</span> (__sigaction (SIGQUIT, &amp;sa, &amp;quit) &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">          save = errno;</span><br><span class="line">          (<span class="type">void</span>) <span class="built_in">SUB_REF</span> ();</span><br><span class="line">          <span class="keyword">goto</span> out_restore_sigint;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="built_in">DO_UNLOCK</span> ();</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* We reuse the bitmap in the &#x27;sa&#x27; structure.  */</span></span><br><span class="line">  __sigaddset (&amp;sa.sa_mask, SIGCHLD);</span><br><span class="line">  save = errno;</span><br><span class="line">  <span class="keyword">if</span> (__sigprocmask (SIG_BLOCK, &amp;sa.sa_mask, &amp;omask) &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _LIBC</span></span><br><span class="line">      <span class="keyword">if</span> (errno == ENOSYS)</span><br><span class="line">        __set_errno (save);</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="built_in">DO_LOCK</span> ();</span><br><span class="line">          <span class="keyword">if</span> (<span class="built_in">SUB_REF</span> () == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">              save = errno;</span><br><span class="line">              (<span class="type">void</span>) __sigaction (SIGQUIT, &amp;quit, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>);</span><br><span class="line">            out_restore_sigint:</span><br><span class="line">              (<span class="type">void</span>) __sigaction (SIGINT, &amp;intr, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>);</span><br><span class="line">              __set_errno (save);</span><br><span class="line">            &#125;</span><br><span class="line">        out:</span><br><span class="line">          <span class="built_in">DO_UNLOCK</span> ();</span><br><span class="line">          <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CLEANUP_HANDLER</span></span><br><span class="line">  CLEANUP_HANDLER;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> FORK</span></span><br><span class="line">  pid = <span class="built_in">FORK</span> ();</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">  pid = __fork ();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  <span class="keyword">if</span> (pid == (<span class="type">pid_t</span>) <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Child side.  */</span></span><br><span class="line">      <span class="type">const</span> <span class="type">char</span> *new_argv[<span class="number">4</span>];</span><br><span class="line">      new_argv[<span class="number">0</span>] = SHELL_NAME;</span><br><span class="line">      new_argv[<span class="number">1</span>] = <span class="string">&quot;-c&quot;</span>;</span><br><span class="line">      new_argv[<span class="number">2</span>] = line;</span><br><span class="line">      new_argv[<span class="number">3</span>] = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Restore the signals.  */</span></span><br><span class="line">      (<span class="type">void</span>) __sigaction (SIGINT, &amp;intr, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>);</span><br><span class="line">      (<span class="type">void</span>) __sigaction (SIGQUIT, &amp;quit, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>);</span><br><span class="line">      (<span class="type">void</span>) __sigprocmask (SIG_SETMASK, &amp;omask, (<span class="type">sigset_t</span> *) <span class="literal">NULL</span>);</span><br><span class="line">      <span class="built_in">INIT_LOCK</span> ();</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Exec the shell.  */</span></span><br><span class="line">      (<span class="type">void</span>) __execve (SHELL_PATH, (<span class="type">char</span> *<span class="type">const</span> *) new_argv, __environ);</span><br><span class="line">      _exit (<span class="number">127</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (pid &lt; (<span class="type">pid_t</span>) <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* The fork failed.  */</span></span><br><span class="line">    status = <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="comment">/* Parent side.  */</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Note the system() is a cancellation point.  But since we call</span></span><br><span class="line"><span class="comment">         waitpid() which itself is a cancellation point we do not</span></span><br><span class="line"><span class="comment">         have to do anything here.  */</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">TEMP_FAILURE_RETRY</span> (__waitpid (pid, &amp;status, <span class="number">0</span>)) != pid)</span><br><span class="line">        status = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CLEANUP_HANDLER</span></span><br><span class="line">  CLEANUP_RESET;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">  save = errno;</span><br><span class="line">  <span class="built_in">DO_LOCK</span> ();</span><br><span class="line">  <span class="keyword">if</span> ((<span class="built_in">SUB_REF</span> () == <span class="number">0</span></span><br><span class="line">       &amp;&amp; (__sigaction (SIGINT, &amp;intr, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>)</span><br><span class="line">           | __sigaction (SIGQUIT, &amp;quit, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>)) != <span class="number">0</span>)</span><br><span class="line">      || __sigprocmask (SIG_SETMASK, &amp;omask, (<span class="type">sigset_t</span> *) <span class="literal">NULL</span>) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _LIBC</span></span><br><span class="line">      <span class="comment">/* glibc cannot be used on systems without waitpid.  */</span></span><br><span class="line">      <span class="keyword">if</span> (errno == ENOSYS)</span><br><span class="line">        __set_errno (save);</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        status = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="built_in">DO_UNLOCK</span> ();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意到这一段</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> FORK</span></span><br><span class="line">  pid = <span class="built_in">FORK</span> ();</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">  pid = __fork ();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">  <span class="keyword">if</span> (pid == (<span class="type">pid_t</span>) <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Child side.  */</span></span><br><span class="line">      <span class="type">const</span> <span class="type">char</span> *new_argv[<span class="number">4</span>];</span><br><span class="line">      new_argv[<span class="number">0</span>] = SHELL_NAME;</span><br><span class="line">      new_argv[<span class="number">1</span>] = <span class="string">&quot;-c&quot;</span>;</span><br><span class="line">      new_argv[<span class="number">2</span>] = line;</span><br><span class="line">      new_argv[<span class="number">3</span>] = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Restore the signals.  */</span></span><br><span class="line">      (<span class="type">void</span>) __sigaction (SIGINT, &amp;intr, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>);</span><br><span class="line">      (<span class="type">void</span>) __sigaction (SIGQUIT, &amp;quit, (<span class="keyword">struct</span> sigaction *) <span class="literal">NULL</span>);</span><br><span class="line">      (<span class="type">void</span>) __sigprocmask (SIG_SETMASK, &amp;omask, (<span class="type">sigset_t</span> *) <span class="literal">NULL</span>);</span><br><span class="line">      <span class="built_in">INIT_LOCK</span> ();</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* Exec the shell.  */</span></span><br><span class="line">      (<span class="type">void</span>) __execve (SHELL_PATH, (<span class="type">char</span> *<span class="type">const</span> *) new_argv, __environ);</span><br><span class="line">      _exit (<span class="number">127</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (pid &lt; (<span class="type">pid_t</span>) <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* The fork failed.  */</span></span><br><span class="line">    status = <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="comment">/* Parent side.  */</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* Note the system() is a cancellation point.  But since we call</span></span><br><span class="line"><span class="comment">         waitpid() which itself is a cancellation point we do not</span></span><br><span class="line"><span class="comment">         have to do anything here.  */</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">TEMP_FAILURE_RETRY</span> (__waitpid (pid, &amp;status, <span class="number">0</span>)) != pid)</span><br><span class="line">        status = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>可以看到，system是fork了一个进程，然后利用execve去执行命令。然后<code>_exit(127)</code>结束这个进程。</p>
+<p><code>SHELL_PATH</code>和<code>new_argv</code>都没什么问题，有问题的是<code>__environ</code>。</p>
+<p>转到<a target="_blank" rel="noopener" href="https://code.woboq.org/userspace/glibc/posix/environ.c.html">glibc&#x2F;posix&#x2F;environ.c</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* This file just defines the `__environ&#x27; variable (and alias `environ&#x27;).  */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stddef.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* This must be initialized; we cannot have a weak alias into bss.  */</span></span><br><span class="line"><span class="type">char</span> **__environ = <span class="literal">NULL</span>;</span><br><span class="line"><span class="built_in">weak_alias</span> (__environ, environ)</span><br><span class="line"></span><br><span class="line"><span class="comment">/* The SVR4 ABI says `_environ&#x27; will be the name to use</span></span><br><span class="line"><span class="comment">   in case the user overrides the weak alias `environ&#x27;.  */</span></span><br><span class="line"><span class="built_in">weak_alias</span> (__environ, _environ)</span><br></pre></td></tr></table></figure>
+
+<p>查看关于<code>__environ</code>的所有调用，有一处比较在意，在<code>__libc_start_main</code></p>
+<p>转到<a target="_blank" rel="noopener" href="https://code.woboq.org/userspace/glibc/csu/libc-start.c.html#148">glibc&#x2F;csu&#x2F;libc-start.c</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="keyword">define</span> LIBC_START_MAIN __libc_start_main</span></span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Note: the fini parameter is ignored here for shared library.  It</span></span><br><span class="line"><span class="comment">   is registered with __cxa_atexit.  This had the disadvantage that</span></span><br><span class="line"><span class="comment">   finalizers were called in more than one place.  */</span></span><br><span class="line"><span class="function">STATIC <span class="type">int</span></span></span><br><span class="line"><span class="function"><span class="title">LIBC_START_MAIN</span> <span class="params">(<span class="type">int</span> (*main) (<span class="type">int</span>, <span class="type">char</span> **, <span class="type">char</span> ** MAIN_AUXVEC_DECL),</span></span></span><br><span class="line"><span class="params"><span class="function">                 <span class="type">int</span> argc, <span class="type">char</span> **argv,</span></span></span><br><span class="line"><span class="params"><span class="function">#ifdef LIBC_START_MAIN_AUXVEC_ARG</span></span></span><br><span class="line"><span class="params"><span class="function">                 ElfW(<span class="type">auxv_t</span>) *auxvec,</span></span></span><br><span class="line"><span class="params"><span class="function">#endif</span></span></span><br><span class="line"><span class="params"><span class="function">                 __typeof (main) init,</span></span></span><br><span class="line"><span class="params"><span class="function">                 <span class="type">void</span> (*fini) (<span class="type">void</span>),</span></span></span><br><span class="line"><span class="params"><span class="function">                 <span class="type">void</span> (*rtld_fini) (<span class="type">void</span>), <span class="type">void</span> *stack_end)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">/* Result of the &#x27;main&#x27; function.  */</span></span><br><span class="line">  <span class="type">int</span> result;</span><br><span class="line"></span><br><span class="line">  __libc_multiple_libcs = &amp;_dl_starting_up &amp;&amp; !_dl_starting_up;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> SHARED</span></span><br><span class="line">  <span class="type">char</span> **ev = &amp;argv[argc + <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">  __environ = ev;</span><br><span class="line">  </span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>所以<code>__environ</code>填的就是我们的<code>envp</code>，如果超长的栈溢出覆盖了环境变量，do_system中fork出来的子进程访问到非法指针就crash了，get shell就会（有可能）失败，这个时候就应该使用execve并把envp填NULL了。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E5%88%B6%E7%9A%84libc"><span class="toc-number">1.</span> <span class="toc-text">定制的libc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0%E7%A6%81%E7%94%A8%E4%BA%86%E4%B8%80%E4%BA%9B%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%8F%B7"><span class="toc-number">2.</span> <span class="toc-text">使用函数禁用了一些系统调用号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%97%B6%E8%A6%86%E7%9B%96%E4%BA%86%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">漏洞利用时覆盖了环境变量</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&text=对system无法get shell的探索"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&is_video=false&description=对system无法get shell的探索"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=对system无法get shell的探索&body=Check out this article: https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=对system无法get shell的探索"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&name=对system无法get shell的探索&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_08_27-%E5%AF%B9system%E6%97%A0%E6%B3%95get_shell%E7%9A%84%E6%8E%A2%E7%B4%A2/&t=对system无法get shell的探索"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

